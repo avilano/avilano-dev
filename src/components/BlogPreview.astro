@@ -1,0 +1,75 @@
+---
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog'))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 2);
+---
+
+<section id="blog" class="py-20 border-b border-dark-800 bg-[#080c14]">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+      <div>
+        <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded border border-dark-700 bg-dark-800 text-[11px] font-mono text-brand-400 uppercase tracking-wider mb-3">
+          <span>High-Signal Engineering Field Notes</span>
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+          Field Notes & Case Studies
+        </h2>
+        <p class="mt-3 text-slate-400 text-sm sm:text-base max-w-xl">
+          Zero marketing fluff. Real architectural patterns, test migration post-mortems, and WCAG CI enforcement blueprints from production systems.
+        </p>
+      </div>
+
+      <div class="mt-6 md:mt-0">
+        <a
+          href="/blog"
+          class="inline-flex items-center gap-2 text-sm font-mono text-brand-400 hover:text-brand-300 transition-colors group"
+        >
+          <span>View all articles</span>
+          <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+          </svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Articles Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {posts.map((post) => (
+        <a
+          href={`/blog/${post.slug}`}
+          class="group block p-7 rounded-xl border border-dark-700/80 bg-dark-900/60 hover:bg-dark-900 hover:border-brand-500/40 transition-all duration-200"
+        >
+          <div class="flex items-center justify-between gap-4 mb-4">
+            <div class="flex flex-wrap gap-2">
+              {post.data.tags.slice(0, 2).map((tag) => (
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider border border-dark-700 bg-dark-800 text-slate-300">
+                  {tag}
+                </span>
+              ))}
+            </div>
+            <span class="text-xs font-mono text-slate-400">{post.data.readTime}</span>
+          </div>
+
+          <h3 class="text-lg sm:text-xl font-bold text-white group-hover:text-brand-300 transition-colors mb-3 leading-snug">
+            {post.data.title}
+          </h3>
+
+          <p class="text-sm text-slate-300 line-clamp-3 leading-relaxed mb-6">
+            {post.data.description}
+          </p>
+
+          <div class="flex items-center gap-2 text-xs font-mono text-slate-400 group-hover:text-brand-400 transition-colors">
+            <span>Read full blueprint</span>
+            <svg class="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </div>
+        </a>
+      ))}
+    </div>
+
+  </div>
+</section>
