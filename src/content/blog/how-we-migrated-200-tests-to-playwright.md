@@ -8,7 +8,7 @@ readTime: "6 min read"
 
 When fast-shipping SaaS companies scale past their initial MVP, test automation suites written 3 to 5 years ago in Selenium or Cypress often become their single biggest bottleneck.
 
-At **Coursedog**, we faced this exact challenge: a legacy test suite that was slow, prone to arbitrary timing flakes, and delaying pull request merges.
+In a fast-growing, multi-tenant enterprise SaaS environment, we faced this exact challenge: a legacy test suite that was slow, prone to arbitrary timing flakes, and delaying pull request merges.
 
 Here is the exact architectural blueprint we used to migrate **200+ end-to-end tests to Playwright and TypeScript**, cutting overall pipeline runtime by **30%** with zero deployment downtime.
 
