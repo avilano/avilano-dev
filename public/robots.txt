@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://avilano.dev/sitemap-index.xml

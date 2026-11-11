@@ -1,0 +1,84 @@
+---
+---
+<section id="standards" class="py-16 bg-dark-800/40 border-y border-dark-700/50">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="text-center max-w-3xl mx-auto mb-14">
+      <h2 class="text-xs font-mono uppercase tracking-wider text-brand-400 font-semibold mb-2">The Regulatory Urgency</h2>
+      <h3 class="text-3xl sm:text-4xl font-bold text-white tracking-tight">
+        Why Static PDF Audits & Overlays Fail
+      </h3>
+      <p class="mt-4 text-slate-300 text-base sm:text-lg">
+        Enterprise procurement officers reject overlay widgets, and static 100-page audits expire the second your team pushes a new PR. 
+        We build a <strong class="text-white">permanent 3-layer automated testing gate</strong> wired directly into your GitHub Actions CI.
+      </p>
+    </div>
+
+    <!-- The 3 Layers Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      
+      <!-- Layer 1 -->
+      <div class="p-6 rounded-2xl bg-dark-900/90 border border-dark-700/80 shadow-lg relative overflow-hidden group hover:border-brand-500/50 transition-colors">
+        <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center font-mono font-bold mb-5">
+          01
+        </div>
+        <h4 class="text-xl font-bold text-white mb-2">Static DOM & Contrast Gates</h4>
+        <p class="text-xs font-mono text-brand-400 mb-3">Powered by @axe-core/playwright</p>
+        <p class="text-sm text-slate-300 leading-relaxed">
+          Automated scans verifying color contrast (4.5:1), missing form labels, invalid ARIA roles, and unsemantic markup on every page navigation. Fails CI on critical violations.
+        </p>
+        <div class="mt-5 pt-4 border-t border-dark-700/60 flex items-center justify-between text-xs text-slate-400">
+          <span>Standards:</span>
+          <span class="font-mono text-slate-200">WCAG 1.1.1, 1.4.3, 4.1.2</span>
+        </div>
+      </div>
+
+      <!-- Layer 2 -->
+      <div class="p-6 rounded-2xl bg-dark-900/90 border border-dark-700/80 shadow-lg relative overflow-hidden group hover:border-brand-500/50 transition-colors">
+        <div class="w-10 h-10 rounded-xl bg-brand-500/10 border border-brand-500/20 text-brand-400 flex items-center justify-center font-mono font-bold mb-5">
+          02
+        </div>
+        <h4 class="text-xl font-bold text-white mb-2">Deterministic Keyboard Testing</h4>
+        <p class="text-xs font-mono text-brand-400 mb-3">Playwright Keyboard Helpers</p>
+        <p class="text-sm text-slate-300 leading-relaxed">
+          Automated tests asserting sequential Tab flow, visible focus indicators, modal dialog focus-trapping, and Escape key focus restoration based on W3C ARIA APG standards.
+        </p>
+        <div class="mt-5 pt-4 border-t border-dark-700/60 flex items-center justify-between text-xs text-slate-400">
+          <span>Standards:</span>
+          <span class="font-mono text-slate-200">WCAG 2.1.1, 2.1.2, 2.4.3</span>
+        </div>
+      </div>
+
+      <!-- Layer 3 -->
+      <div class="p-6 rounded-2xl bg-dark-900/90 border border-dark-700/80 shadow-lg relative overflow-hidden group hover:border-brand-500/50 transition-colors">
+        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center font-mono font-bold mb-5">
+          03
+        </div>
+        <h4 class="text-xl font-bold text-white mb-2">Screen Reader Spoken Audio</h4>
+        <p class="text-xs font-mono text-brand-400 mb-3">Powered by Guidepup VoiceOver</p>
+        <p class="text-sm text-slate-300 leading-relaxed">
+          Programmatically drives native macOS VoiceOver to validate what visually impaired users actually hear. Verifies dynamic <code class="text-xs bg-dark-800 px-1 py-0.5 rounded text-emerald-300">aria-live</code> cart updates, toasts, and alert announcements.
+        </p>
+        <div class="mt-5 pt-4 border-t border-dark-700/60 flex items-center justify-between text-xs text-slate-400">
+          <span>Standards:</span>
+          <span class="font-mono text-slate-200">WCAG 4.1.3, Section 508</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Legal Compliance Callout Banner -->
+    <div class="mt-10 p-6 rounded-2xl bg-gradient-to-r from-brand-900/30 to-indigo-900/20 border border-brand-500/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div>
+        <h5 class="text-base font-bold text-white">Preparing for Enterprise RFPs or Federal Audits?</h5>
+        <p class="text-sm text-slate-300 mt-0.5">We align all tests with the <strong>DHS Section 508 ICT Testing Baseline</strong> and prepare your codebase for high-scoring <strong>VPAT 2.5 ACR</strong> filings.</p>
+      </div>
+      <a
+        href="#book-call"
+        class="whitespace-nowrap px-5 py-2.5 rounded-lg text-xs sm:text-sm font-semibold bg-white text-dark-900 hover:bg-slate-100 transition-colors"
+      >
+        Schedule VPAT Readiness Review
+      </a>
+    </div>
+
+  </div>
+</section>
