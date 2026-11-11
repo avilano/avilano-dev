@@ -36,24 +36,18 @@
       </div>
 
       <!-- Live Cal.com Inline Embed Container -->
-      <div class="w-full min-h-[550px] rounded-xl overflow-hidden bg-dark-950 flex flex-col items-center justify-center p-2 relative">
+      <div class="w-full min-h-[680px] rounded-xl overflow-hidden bg-dark-950 flex flex-col items-center justify-center p-2 relative">
         
         <!-- Cal.com target container -->
-        <div id="my-cal-inline" class="w-full h-full min-h-[550px]"></div>
+        <div id="my-cal-inline" style="width:100%;min-height:680px;overflow:auto"></div>
 
-        <!-- Fallback Button if user hasn't set up Cal.com username yet -->
-        <div class="mt-4 text-center pb-4">
-          <a
-            href="https://cal.com/avilano/15min"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center gap-2 px-6 py-3 rounded-lg text-xs font-semibold text-white bg-brand-500 hover:bg-brand-600 transition-colors shadow-sm"
-          >
-            <span>Open in Cal.com Directly</span>
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
-          </a>
-          <p class="text-[11px] font-mono text-slate-500 mt-3">
-            Prefer email? Send your repository or questions directly to <a href="mailto:contact@avilano.dev" class="text-brand-400 hover:underline">contact@avilano.dev</a>
+        <!-- Direct Link / Email Fallback -->
+        <div class="mt-4 text-center pb-4 pt-2">
+          <p class="text-xs text-slate-400">
+            Trouble seeing the calendar? <a href="https://cal.com/avilano/15min" target="_blank" rel="noopener noreferrer" class="text-brand-400 underline font-medium hover:text-brand-300">Open Cal.com in a new tab</a>
+          </p>
+          <p class="text-[11px] font-mono text-slate-500 mt-2">
+            Prefer email? Send your repository directly to <a href="mailto:contact@avilano.dev" class="text-slate-300 hover:underline">contact@avilano.dev</a>
           </p>
         </div>
 
