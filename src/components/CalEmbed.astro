@@ -36,10 +36,10 @@
       </div>
 
       <!-- Live Cal.com Inline Embed Container -->
-      <div class="w-full min-h-[680px] rounded-xl overflow-hidden bg-dark-950 flex flex-col items-center justify-center p-2 relative">
+      <div class="w-full min-h-[640px] rounded-xl overflow-hidden bg-[#080c14] border border-dark-700/70 flex flex-col items-center justify-center p-2 sm:p-4 relative">
         
         <!-- Cal.com target container -->
-        <div id="my-cal-inline" style="width:100%;min-height:680px;overflow:auto"></div>
+        <div id="my-cal-inline" style="width:100%;min-height:640px;height:100%;overflow:auto"></div>
 
         <!-- Direct Link / Email Fallback -->
         <div class="mt-4 text-center pb-4 pt-2">
@@ -87,16 +87,24 @@
 
   Cal("inline", {
     elementOrSelector: "#my-cal-inline",
-    config: { layout: "month_view" },
+    config: { layout: "column_view" },
     calLink: "avilano/15min",
   });
 
   Cal("ui", {
     theme: "dark",
     cssVarsPerTheme: {
-      dark: { "cal-brand": "#0ea5e9" }
+      dark: {
+        "cal-brand": "#0ea5e9",
+        "cal-text": "#f8fafc",
+        "cal-text-muted": "#94a3b8",
+        "cal-bg": "#080c14",
+        "cal-bg-emphasis": "#0f172a",
+        "cal-border": "#1e293b",
+        "cal-border-subtle": "#1e293b"
+      }
     },
-    hideEventTypeDetails: false,
-    layout: "month_view"
+    hideEventTypeDetails: true,
+    layout: "column_view"
   });
 </script>
