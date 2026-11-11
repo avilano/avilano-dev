@@ -1,57 +1,66 @@
 ---
+const faqs = [
+  {
+    question: "How does the 'Pause or Cancel Anytime' feature work?",
+    answer: "Engineering workloads fluctuate. If you finish a major product release and have no testing or accessibility tickets for the next month, you can pause your subscription with one click inside your Stripe billing portal. Your billing cycle freezes and your remaining days stay in your account until you're ready to resume."
+  },
+  {
+    question: "Why wouldn't I just hire a full-time Senior SDET?",
+    answer: "Recruiting a senior QA engineer takes 2 to 4 months and averages $180k–$220k in base salary plus benefits, equity, and recruiting agency fees. Moreover, many companies don't need 40 hours/week of continuous architecture once the system is stable. Our model gives you senior-level execution on demand at a fraction of the cost."
+  },
+  {
+    question: "How fast do you deliver tickets in the async queue?",
+    answer: "On average, discrete tickets (a flaky test fix, a new critical E2E journey, an accessibility component remediation) are delivered in 24 to 48 hours. Larger epics (like migrating an entire legacy test framework) are broken down into transparent 48-hour incremental pull requests."
+  },
+  {
+    question: "What tech stacks and frameworks do you support?",
+    answer: "We specialize in modern web architectures: TypeScript, Playwright, Vitest, React, Next.js, Vue, Tailwind, and Node.js. For CI/CD, we support GitHub Actions, GitLab CI, CircleCI, and Docker."
+  },
+  {
+    question: "How does your accessibility testing meet US Federal requirements?",
+    answer: "We test against the exact statutory standard codified in the US DOJ ADA Title II Final Rule and HHS Section 504: WCAG 2.1 Level AA. We align test cases with the DHS Section 508 ICT Testing Baseline, covering static DOM checks (@axe-core), keyboard focus-trapping (ARIA APG), and real screen-reader audio feedback (Guidepup VoiceOver)."
+  },
+  {
+    question: "How do we communicate without daily meetings?",
+    answer: "We work 100% asynchronously via a shared Slack Connect channel and a dedicated Linear/Trello board. Every deliverable, pull request, or complex architecture decision includes a 2–3 minute Loom video walkthrough explaining the code changes and test execution."
+  }
+];
 ---
-<section id="faq" class="py-16 md:py-24 border-t border-dark-700/50">
+
+<section id="faq" class="py-20 md:py-28 border-t border-dark-800 bg-dark-900/40">
   <div class="max-w-4xl mx-auto px-4 sm:px-6">
     
-    <div class="text-center max-w-2xl mx-auto mb-14">
-      <h2 class="text-xs font-mono uppercase tracking-wider text-brand-400 font-semibold mb-2">Frequently Asked Questions</h2>
-      <h3 class="text-3xl sm:text-4xl font-bold text-white tracking-tight">
-        Everything You Need to Know
-      </h3>
+    <div class="text-left max-w-2xl mb-14">
+      <div class="inline-flex items-center gap-2 font-mono text-xs text-brand-400 font-semibold mb-2 uppercase tracking-wider">
+        <span>Common Questions</span>
+      </div>
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+        Frequently Asked Questions
+      </h2>
+      <p class="mt-3 text-slate-400 text-sm sm:text-base">
+        Everything you need to know about the async queue, sprints, and delivery.
+      </p>
     </div>
 
-    <div class="space-y-6">
-      
-      <!-- FAQ 1 -->
-      <div class="p-6 rounded-2xl bg-dark-800/60 border border-dark-700/80">
-        <h4 class="text-base sm:text-lg font-bold text-white mb-2">How does the "Pause or Cancel Anytime" feature work?</h4>
-        <p class="text-sm text-slate-300 leading-relaxed">
-          We understand engineering workloads fluctuate. If you complete a major release sprint and have no testing or accessibility tickets for the next month, you can pause your subscription with one click inside your Stripe billing portal. Your remaining billing cycle pauses until you're ready to resume.
-        </p>
-      </div>
-
-      <!-- FAQ 2 -->
-      <div class="p-6 rounded-2xl bg-dark-800/60 border border-dark-700/80">
-        <h4 class="text-base sm:text-lg font-bold text-white mb-2">Why wouldn't I just hire a full-time Senior SDET?</h4>
-        <p class="text-sm text-slate-300 leading-relaxed">
-          Recruiting a senior QA engineer takes 2 to 4 months and averages $180k–$220k in base salary plus benefits, equity, and recruiting fees. Moreover, many companies don't need 40 hours/week of continuous architecture once the system is stable. Our subscription gives you senior-level execution on demand at a fraction of the cost.
-        </p>
-      </div>
-
-      <!-- FAQ 3 -->
-      <div class="p-6 rounded-2xl bg-dark-800/60 border border-dark-700/80">
-        <h4 class="text-base sm:text-lg font-bold text-white mb-2">How fast do you deliver tickets in the async queue?</h4>
-        <p class="text-sm text-slate-300 leading-relaxed">
-          On average, discrete tickets (a flaky test fix, a new E2E flow, an accessibility component remediation) are delivered in 24 to 48 hours. Larger epics (like migrating an entire test suite) are broken down into transparent 48-hour incremental milestones.
-        </p>
-      </div>
-
-      <!-- FAQ 4 -->
-      <div class="p-6 rounded-2xl bg-dark-800/60 border border-dark-700/80">
-        <h4 class="text-base sm:text-lg font-bold text-white mb-2">What tech stacks and frameworks do you support?</h4>
-        <p class="text-sm text-slate-300 leading-relaxed">
-          We specialize in modern web architectures: TypeScript, Playwright, Vitest, React, Next.js, Vue, Tailwind, and Node.js. For CI/CD, we support GitHub Actions, GitLab CI, CircleCI, and Docker.
-        </p>
-      </div>
-
-      <!-- FAQ 5 -->
-      <div class="p-6 rounded-2xl bg-dark-800/60 border border-dark-700/80">
-        <h4 class="text-base sm:text-lg font-bold text-white mb-2">How does your accessibility testing meet US Federal requirements?</h4>
-        <p class="text-sm text-slate-300 leading-relaxed">
-          We test against the exact statutory standard codified in the US DOJ ADA Title II Final Rule and HHS Section 504: <strong>WCAG 2.1 Level AA</strong>. We align test cases with the <strong>DHS Section 508 ICT Testing Baseline</strong>, covering static DOM checks (@axe-core), keyboard focus-trapping (ARIA APG), and real screen-reader audio feedback (Guidepup VoiceOver).
-        </p>
-      </div>
-
+    <!-- Accessible Animated Accordion List -->
+    <div class="space-y-3.5">
+      {faqs.map((faq, index) => (
+        <details class="group rounded-xl border border-dark-700 bg-dark-800/40 hover:border-dark-600 transition-colors overflow-hidden">
+          <summary class="flex items-center justify-between p-5 sm:p-6 text-left cursor-pointer list-none select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400">
+            <span class="text-sm sm:text-base font-semibold text-white group-hover:text-brand-300 transition-colors pr-4">
+              {faq.question}
+            </span>
+            <span class="w-7 h-7 rounded-lg bg-dark-700/80 border border-dark-600 flex items-center justify-center flex-shrink-0 text-slate-300 group-open:rotate-180 group-open:bg-brand-500/20 group-open:text-brand-300 transition-transform duration-200">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </span>
+          </summary>
+          <div class="px-5 sm:px-6 pb-6 pt-1 text-xs sm:text-sm text-slate-300 leading-relaxed border-t border-dark-700/40 mt-1">
+            <p>{faq.answer}</p>
+          </div>
+        </details>
+      ))}
     </div>
 
   </div>
