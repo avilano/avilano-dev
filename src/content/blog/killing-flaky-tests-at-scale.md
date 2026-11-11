@@ -10,7 +10,7 @@ Flaky tests are the silent killer of engineering velocity.
 
 When a test suite fails 15% to 25% of the time on completely valid pull requests, developers stop trusting CI. They hit the **"Re-run all jobs"** button, context switch, and waste 30 to 45 minutes waiting for a green checkmark.
 
-In high-throughput distributed architectures and enterprise backend pipelines, test stability isn't just a convenience—it is a critical release requirement. When you run over 1,200+ tests on every PR, a 1% failure rate means almost every single build fails randomly.
+In high-throughput distributed architectures and enterprise backend pipelines, test stability isn't just a convenience, it is a critical release requirement. When you run over 1,200+ tests on every PR, a 1% failure rate means almost every single build fails randomly.
 
 Here is the exact playbook we used to **eliminate chronic race conditions, cut test flakiness, and boost suite stability by >20% across 1,200+ tests**.
 
@@ -31,7 +31,7 @@ On a developer's local M3 MacBook, `3000ms` is more than enough time. But in a m
 
 ### The Fix: Web-First Assertions & Auto-Retrying Locators
 
-Playwright fundamentally solves this through its unified event loop integration. Never wait for an arbitrary duration—wait for the **exact state transition**:
+Playwright fundamentally solves this through its unified event loop integration. Never wait for an arbitrary duration; wait for the **exact state transition**:
 
 ```typescript
 // ✅ DETERMINISTIC: Web-first assertion auto-polls until timeout

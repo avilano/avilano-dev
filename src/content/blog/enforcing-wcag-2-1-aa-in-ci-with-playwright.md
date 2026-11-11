@@ -114,7 +114,7 @@ test('VoiceOver announces live cart updates', async ({ page }) => {
 ---
 
 ## Summary
-By combining all three layers, your engineering team catches accessibility regressions on every pull request in under **3 minutes of CI time**—ensuring continuous compliance and unblocking enterprise software procurement.
+By combining all three layers, your engineering team catches accessibility regressions on every pull request in under **3 minutes of CI time**, ensuring continuous compliance and unblocking enterprise software procurement.
 
 ---
 
