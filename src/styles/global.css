@@ -8,10 +8,10 @@
 
 body {
   @apply bg-dark-900 text-slate-100 font-sans antialiased selection:bg-brand-500 selection:text-white;
-  background-image: 
-    radial-gradient(circle at 50% 0%, rgba(14, 165, 233, 0.12) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 40%);
-  background-attachment: fixed;
+  background-color: #080c14;
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 64px 64px;
   min-height: 100vh;
 }
 
