@@ -5,14 +5,41 @@ import Analytics from '@vercel/analytics/astro';
 interface Props {
   title?: string;
   description?: string;
+  schema?: Record<string, any>;
 }
 
 const {
   title = "avilano | Senior AI QA Enablement, Playwright Architecture & WCAG 2.1 AA Compliance",
   description = "Partner with an independent Senior QA & Accessibility Architect. Flake-resilient Playwright test systems, US ADA Title II / HHS 504 compliance, and async engineering retainers.",
+  schema,
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://avilano.dev');
+
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "@id": "https://avilano.dev/#person",
+  "name": "Alberto E. Vilano Reyna",
+  "jobTitle": "Senior QA Automation & Systems Reliability Architect",
+  "url": "https://avilano.dev",
+  "sameAs": [
+    "https://github.com/avilano",
+    "https://linkedin.com/in/avilano"
+  ],
+  "knowsAbout": [
+    "Playwright Test Automation",
+    "WCAG 2.1 AA Accessibility",
+    "Continuous Integration & GitHub Actions",
+    "TypeScript",
+    "Distributed Systems Reliability",
+    "Page Object Model Architecture"
+  ],
+  "alumniOf": {
+    "@type": "CollegeOrUniversity",
+    "name": "The University of Texas Rio Grande Valley"
+  }
+};
 ---
 
 <!doctype html>
@@ -38,6 +65,13 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://avilano.
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:title" content={title} />
     <meta property="twitter:description" content={description} />
+
+    <!-- Schema.org Person & Identity Structured Data -->
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(personSchema)} />
+
+    {schema && (
+      <script type="application/ld+json" is:inline set:html={JSON.stringify(schema)} />
+    )}
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
