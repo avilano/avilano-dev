@@ -74,35 +74,40 @@
         <div class="rounded-xl border border-dark-700 bg-dark-900 shadow-xl overflow-hidden font-mono text-xs">
           
           <div class="px-4 py-3 bg-dark-800 border-b border-dark-700 flex items-center justify-between">
-            <span class="text-slate-300 text-[11px]">src/fixtures/base.fixture.ts</span>
-            <span class="text-slate-500 text-[11px]">TypeScript</span>
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-red-500/80"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-amber-500/80"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></span>
+              <span class="ml-2 text-slate-300 text-[11px] font-mono">src/fixtures/base.fixture.ts</span>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-semibold bg-sky-950/80 text-sky-400 border border-sky-800/60">TypeScript</span>
           </div>
 
-          <div class="p-5 overflow-x-auto text-slate-300 bg-[#070a11] leading-relaxed">
-            <pre is:raw><code class="text-slate-300">// Automated WCAG 2.1 AA fixture wired into CI
-export const test = base.extend<CustomFixtures>({
-  checkA11y: async ({ page }, use, testInfo) => {
-    const scanner = async (options = {}) => {
-      const builder = new AxeBuilder({ page })
-        .withTags(['wcag2a', 'wcag2aa', 'wcag21aa']);
+          <div class="p-5 overflow-x-auto bg-[#070a13] font-mono text-[12px] leading-relaxed select-text">
+            <pre class="font-mono"><code><span class="text-slate-500 italic">// Automated WCAG 2.1 AA fixture wired into CI</span>
+<span class="text-purple-400">export const</span> <span class="text-sky-300">test</span> <span class="text-slate-400">=</span> <span class="text-slate-200">base</span>.<span class="text-sky-400">extend</span>&lt;<span class="text-amber-300">CustomFixtures</span>&gt;(&#123;
+  <span class="text-sky-300">checkA11y</span><span class="text-slate-400">:</span> <span class="text-purple-400">async</span> (&#123; <span class="text-orange-300">page</span> &#125;, <span class="text-orange-300">use</span>, <span class="text-orange-300">testInfo</span>) <span class="text-purple-400">=&gt;</span> &#123;
+    <span class="text-purple-400">const</span> <span class="text-sky-300">scanner</span> <span class="text-slate-400">=</span> <span class="text-purple-400">async</span> (<span class="text-orange-300">options</span> <span class="text-slate-400">=</span> &#123;&#125;) <span class="text-purple-400">=&gt;</span> &#123;
+      <span class="text-purple-400">const</span> <span class="text-sky-300">builder</span> <span class="text-slate-400">=</span> <span class="text-purple-400">new</span> <span class="text-amber-300">AxeBuilder</span>(&#123; <span class="text-slate-200">page</span> &#125;)
+        .<span class="text-sky-400">withTags</span>([<span class="text-emerald-300">'wcag2a'</span>, <span class="text-emerald-300">'wcag2aa'</span>, <span class="text-emerald-300">'wcag21aa'</span>]);
 
-      const results = await builder.analyze();
-      const critical = results.violations.filter(
-        (v) => ['critical', 'serious'].includes(v.impact)
+      <span class="text-purple-400">const</span> <span class="text-sky-300">results</span> <span class="text-slate-400">=</span> <span class="text-purple-400">await</span> <span class="text-sky-300">builder</span>.<span class="text-sky-400">analyze</span>();
+      <span class="text-purple-400">const</span> <span class="text-sky-300">critical</span> <span class="text-slate-400">=</span> <span class="text-sky-300">results</span>.<span class="text-slate-200">violations</span>.<span class="text-sky-400">filter</span>(
+        (<span class="text-orange-300">v</span>) <span class="text-purple-400">=&gt;</span> [<span class="text-emerald-300">'critical'</span>, <span class="text-emerald-300">'serious'</span>].<span class="text-sky-400">includes</span>(<span class="text-orange-300">v</span>.<span class="text-slate-200">impact</span>)
       );
 
-      // Attach full audit artifact to Playwright report
-      await testInfo.attach('a11y-scan', {
-        body: JSON.stringify(results.violations, null, 2),
-        contentType: 'application/json',
-      });
+      <span class="text-slate-500 italic">// Attach full audit artifact to Playwright report</span>
+      <span class="text-purple-400">await</span> <span class="text-orange-300">testInfo</span>.<span class="text-sky-400">attach</span>(<span class="text-emerald-300">'a11y-scan'</span>, &#123;
+        <span class="text-slate-200">body</span><span class="text-slate-400">:</span> <span class="text-amber-300">JSON</span>.<span class="text-sky-400">stringify</span>(<span class="text-sky-300">results</span>.<span class="text-slate-200">violations</span>, <span class="text-purple-400">null</span>, <span class="text-orange-300">2</span>),
+        <span class="text-slate-200">contentType</span><span class="text-slate-400">:</span> <span class="text-emerald-300">'application/json'</span>,
+      &#125;);
 
-      expect(critical.length, 'WCAG Violations Found').toBe(0);
-    };
+      <span class="text-sky-400">expect</span>(<span class="text-sky-300">critical</span>.<span class="text-slate-200">length</span>, <span class="text-emerald-300">'WCAG Violations Found'</span>).<span class="text-sky-400">toBe</span>(<span class="text-orange-300">0</span>);
+    &#125;;
 
-    await use(scanner);
-  },
-});</code></pre>
+    <span class="text-purple-400">await</span> <span class="text-sky-400">use</span>(<span class="text-sky-300">scanner</span>);
+  &#125;,
+&#125;);</code></pre>
           </div>
 
           <div class="px-4 py-3 bg-dark-800/80 border-t border-dark-700 text-[11px] text-slate-400 flex items-center justify-between">
