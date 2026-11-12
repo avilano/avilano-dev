@@ -81,6 +81,10 @@ const personSchema = {
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap"
       rel="stylesheet"
     />
+    <!-- Progressive enhancement detection -->
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
   </head>
   <body class="flex flex-col min-h-screen">
     <!-- WCAG 2.4.1 Bypass Block / Skip to content -->
@@ -93,5 +97,35 @@ const personSchema = {
 
     <slot />
     <Analytics />
+
+    <!-- Universal Cross-Browser Viewport Motion (Zero-dependency Progressive Enhancement) -->
+    <script is:inline>
+      (function() {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, {
+          threshold: 0.08,
+          rootMargin: '0px 0px -40px 0px'
+        });
+
+        const init = () => {
+          document.querySelectorAll('.scroll-reveal').forEach((el) => {
+            observer.observe(el);
+          });
+        };
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', init);
+        } else {
+          init();
+        }
+      })();
+    </script>
   </body>
 </html>

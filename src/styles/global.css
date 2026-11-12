@@ -153,7 +153,35 @@ body {
    Modern Web Guidance: Fluid Native Accordion & Motion Transitions
    ========================================================================== */
 
-/* Modern CSS Intrinsic-Size Accordion Animation (zero JS) */
+/* Universal Progressive Viewport Reveals (Works across Safari, Chrome, Firefox) */
+html.js .scroll-reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+html.js .scroll-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Fluid Cross-Browser FAQ Accordion (CSS Grid Transition) */
+.faq-content-grid {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.25s ease-out;
+  opacity: 0;
+}
+
+details[open] .faq-content-grid {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+/* Modern CSS Intrinsic-Size Accordion Animation (zero JS progressive enhancement for Chrome 129+) */
 details::details-content {
   interpolate-size: allow-keywords;
   overflow: clip;
@@ -171,36 +199,34 @@ details:not([open])::details-content {
                 opacity 0.25s ease-out;
     transition-behavior: allow-discrete;
   }
+}
 
-  details:not([open])::details-content {
+/* Hero Section Entrance Motion */
+@keyframes hero-fade-up {
+  from {
     opacity: 0;
+    transform: translateY(18px);
   }
-
-  details[open]::details-content {
+  to {
     opacity: 1;
+    transform: translateY(0);
   }
 }
 
-/* Modern CSS Scroll-Driven Viewport Reveals (Chromium, Firefox, Safari 26+) */
-@media (prefers-reduced-motion: no-preference) {
-  @supports ((animation-timeline: view()) and (animation-range: entry)) {
-    @keyframes section-fade-up {
-      from {
-        opacity: 0;
-        transform: translateY(24px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+.hero-fade-1 {
+  animation: hero-fade-up 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
 
-    .scroll-reveal {
-      animation: section-fade-up auto cubic-bezier(0.16, 1, 0.3, 1) both;
-      animation-timeline: view();
-      animation-range: entry 10% entry 35%;
-    }
-  }
+.hero-fade-2 {
+  animation: hero-fade-up 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both;
+}
+
+.hero-fade-3 {
+  animation: hero-fade-up 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.24s both;
+}
+
+.hero-fade-terminal {
+  animation: hero-fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.16s both;
 }
 
 /* Interactive Card & Button Hover Micro-Elevation */
@@ -212,6 +238,33 @@ details:not([open])::details-content {
 
 @media (prefers-reduced-motion: no-preference) {
   .interactive-card:hover {
-    transform: translateY(-2px);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px -10px rgba(2, 132, 199, 0.18);
+  }
+}
+
+/* Strict Accessibility: Instant Display when User Requests Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  html.js .scroll-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .faq-content-grid {
+    transition: none !important;
+  }
+
+  .hero-fade-1,
+  .hero-fade-2,
+  .hero-fade-3,
+  .hero-fade-terminal {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .interactive-card:hover {
+    transform: none !important;
   }
 }
