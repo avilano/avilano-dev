@@ -7,7 +7,7 @@
 }
 
 body {
-  @apply bg-dark-900 text-slate-100 font-sans antialiased selection:bg-brand-500 selection:text-white;
+  @apply bg-dark-900 text-slate-100 font-sans antialiased selection:bg-brand-400 selection:text-slate-950;
   background-color: #080c14;
   background-image: linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
                     linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);

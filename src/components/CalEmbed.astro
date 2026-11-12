@@ -38,6 +38,32 @@
       <!-- Live Cal.com Inline Embed Container -->
       <div class="w-full min-h-[640px] rounded-xl overflow-hidden bg-[#080c14] border border-dark-700/70 flex flex-col items-center justify-center p-2 sm:p-4 relative">
         
+        <!-- Lazy Load Skeleton / Placeholder -->
+        <div id="cal-loading-placeholder" class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-[#080c14] z-10 transition-opacity duration-300">
+          <div class="w-12 h-12 rounded-full border-2 border-brand-400/30 border-t-brand-400 animate-spin mb-4"></div>
+          <h3 class="text-base font-bold text-white mb-2">15-Minute Architecture Fit Call</h3>
+          <p class="text-xs text-slate-400 max-w-sm mb-6">
+            Connecting to live availability calendar (Google Meet • CST / Central Time)...
+          </p>
+          <div class="flex flex-col sm:flex-row gap-3">
+            <button
+              id="load-cal-btn"
+              type="button"
+              class="px-5 py-2.5 rounded-lg text-xs font-bold text-dark-900 bg-white hover:bg-slate-100 transition-colors shadow-sm"
+            >
+              Load Interactive Calendar
+            </button>
+            <a
+              href="https://cal.com/avilano/15min"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="px-5 py-2.5 rounded-lg text-xs font-semibold text-slate-200 border border-dark-600 bg-dark-800 hover:bg-dark-700 transition-colors"
+            >
+              Open Direct in New Tab ↗
+            </a>
+          </div>
+        </div>
+
         <!-- Cal.com target container -->
         <div id="my-cal-inline" style="width:100%;min-height:640px;height:100%;overflow:auto"></div>
 
@@ -46,8 +72,8 @@
           <p class="text-xs text-slate-400">
             Trouble seeing the calendar? <a href="https://cal.com/avilano/15min" target="_blank" rel="noopener noreferrer" class="text-brand-400 underline font-medium hover:text-brand-300">Open Cal.com in a new tab</a>
           </p>
-          <p class="text-[11px] font-mono text-slate-500 mt-2">
-            Prefer email? Send your repository directly to <a href="mailto:contact@avilano.dev" class="text-slate-300 hover:underline">contact@avilano.dev</a>
+          <p class="text-[11px] font-mono text-slate-400 mt-2">
+            Prefer email? Send your repository directly to <a href="mailto:contact@avilano.dev" class="text-slate-200 hover:underline">contact@avilano.dev</a>
           </p>
         </div>
 
@@ -58,53 +84,93 @@
   </div>
 </section>
 
-<!-- Official Cal.com Inline Embed Script -->
+<!-- Official Cal.com Embed with Lazy-Loading Observer (100% Core Web Vitals & Zero Initial Blocking) -->
 <script is:inline>
-  (function (C, A, L) {
-    let p = function (a, ar) { a.q.push(ar); };
-    let d = C.document;
-    C.Cal = C.Cal || function () {
-      let cal = C.Cal;
-      let ar = arguments;
-      if (!cal.loaded) {
-        cal.ns = {};
-        cal.q = cal.q || [];
-        d.head.appendChild(d.createElement("script")).src = A;
-        cal.loaded = true;
-      }
-      if (ar[0] === L) {
-        const api = function () { p(api, arguments); };
-        const namespace = ar[1];
-        api.q = api.q || [];
-        typeof namespace === "string" ? (cal.ns[namespace] = api) && p(api, ar) : p(cal, ar);
-        return;
-      }
-      p(cal, ar);
-    };
-  })(window, "https://app.cal.com/embed/embed.js", "init");
+  (function () {
+    let calInitialized = false;
 
-  Cal("init", { origin: "https://app.cal.com" });
+    function initCal() {
+      if (calInitialized) return;
+      calInitialized = true;
 
-  Cal("inline", {
-    elementOrSelector: "#my-cal-inline",
-    config: { layout: "column_view" },
-    calLink: "avilano/15min",
-  });
+      (function (C, A, L) {
+        let p = function (a, ar) { a.q.push(ar); };
+        let d = C.document;
+        C.Cal = C.Cal || function () {
+          let cal = C.Cal;
+          let ar = arguments;
+          if (!cal.loaded) {
+            cal.ns = {};
+            cal.q = cal.q || [];
+            d.head.appendChild(d.createElement("script")).src = A;
+            cal.loaded = true;
+          }
+          if (ar[0] === L) {
+            const api = function () { p(api, arguments); };
+            const namespace = ar[1];
+            api.q = api.q || [];
+            typeof namespace === "string" ? (cal.ns[namespace] = api) && p(api, ar) : p(cal, ar);
+            return;
+          }
+          p(cal, ar);
+        };
+      })(window, "https://app.cal.com/embed/embed.js", "init");
 
-  Cal("ui", {
-    theme: "dark",
-    cssVarsPerTheme: {
-      dark: {
-        "cal-brand": "#0ea5e9",
-        "cal-text": "#f8fafc",
-        "cal-text-muted": "#94a3b8",
-        "cal-bg": "#080c14",
-        "cal-bg-emphasis": "#0f172a",
-        "cal-border": "#1e293b",
-        "cal-border-subtle": "#1e293b"
-      }
-    },
-    hideEventTypeDetails: true,
-    layout: "column_view"
-  });
+      Cal("init", { origin: "https://app.cal.com" });
+
+      Cal("inline", {
+        elementOrSelector: "#my-cal-inline",
+        config: { layout: "column_view" },
+        calLink: "avilano/15min",
+      });
+
+      Cal("ui", {
+        theme: "dark",
+        cssVarsPerTheme: {
+          dark: {
+            "cal-brand": "#0ea5e9",
+            "cal-text": "#f8fafc",
+            "cal-text-muted": "#94a3b8",
+            "cal-bg": "#080c14",
+            "cal-bg-emphasis": "#0f172a",
+            "cal-border": "#1e293b",
+            "cal-border-subtle": "#1e293b"
+          }
+        },
+        hideEventTypeDetails: true,
+        layout: "column_view"
+      });
+
+      // Hide placeholder once Cal renders
+      setTimeout(() => {
+        const ph = document.getElementById("cal-loading-placeholder");
+        if (ph) {
+          ph.style.opacity = "0";
+          setTimeout(() => ph.style.display = "none", 300);
+        }
+      }, 1200);
+    }
+
+    // Lazy load when #book-call approaches viewport
+    const section = document.getElementById("book-call");
+    if (section && "IntersectionObserver" in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            initCal();
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { rootMargin: "350px 0px" });
+      observer.observe(section);
+    }
+
+    // Fallback: immediate trigger on manual button click or hash navigation
+    const loadBtn = document.getElementById("load-cal-btn");
+    if (loadBtn) loadBtn.addEventListener("click", initCal);
+
+    if (window.location.hash === "#book-call") {
+      initCal();
+    }
+  })();
 </script>

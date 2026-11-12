@@ -84,7 +84,7 @@
           </div>
 
           <div class="p-5 overflow-x-auto bg-[#070a13] font-mono text-[12px] leading-relaxed select-text">
-            <pre class="font-mono"><code><span class="text-slate-500 italic">// Automated WCAG 2.1 AA fixture wired into CI</span>
+            <pre class="font-mono"><code><span class="text-slate-400 italic">// Automated WCAG 2.1 AA fixture wired into CI</span>
 <span class="text-purple-400">export const</span> <span class="text-sky-300">test</span> <span class="text-slate-400">=</span> <span class="text-slate-200">base</span>.<span class="text-sky-400">extend</span>&lt;<span class="text-amber-300">CustomFixtures</span>&gt;(&#123;
   <span class="text-sky-300">checkA11y</span><span class="text-slate-400">:</span> <span class="text-purple-400">async</span> (&#123; <span class="text-orange-300">page</span> &#125;, <span class="text-orange-300">use</span>, <span class="text-orange-300">testInfo</span>) <span class="text-purple-400">=&gt;</span> &#123;
     <span class="text-purple-400">const</span> <span class="text-sky-300">scanner</span> <span class="text-slate-400">=</span> <span class="text-purple-400">async</span> (<span class="text-orange-300">options</span> <span class="text-slate-400">=</span> &#123;&#125;) <span class="text-purple-400">=&gt;</span> &#123;
@@ -96,7 +96,7 @@
         (<span class="text-orange-300">v</span>) <span class="text-purple-400">=&gt;</span> [<span class="text-emerald-300">'critical'</span>, <span class="text-emerald-300">'serious'</span>].<span class="text-sky-400">includes</span>(<span class="text-orange-300">v</span>.<span class="text-slate-200">impact</span>)
       );
 
-      <span class="text-slate-500 italic">// Attach full audit artifact to Playwright report</span>
+      <span class="text-slate-400 italic">// Attach full audit artifact to Playwright report</span>
       <span class="text-purple-400">await</span> <span class="text-orange-300">testInfo</span>.<span class="text-sky-400">attach</span>(<span class="text-emerald-300">'a11y-scan'</span>, &#123;
         <span class="text-slate-200">body</span><span class="text-slate-400">:</span> <span class="text-amber-300">JSON</span>.<span class="text-sky-400">stringify</span>(<span class="text-sky-300">results</span>.<span class="text-slate-200">violations</span>, <span class="text-purple-400">null</span>, <span class="text-orange-300">2</span>),
         <span class="text-slate-200">contentType</span><span class="text-slate-400">:</span> <span class="text-emerald-300">'application/json'</span>,
