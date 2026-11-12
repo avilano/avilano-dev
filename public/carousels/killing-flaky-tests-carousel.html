@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Killing Flaky Tests at Scale - LinkedIn Carousel</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap');
+
+    @page {
+      size: 1080px 1350px;
+      margin: 0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #060911;
+      color: #f1f5f9;
+      font-family: 'Inter', -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .slide {
+      width: 1080px;
+      height: 1350px;
+      page-break-after: always;
+      position: relative;
+      padding: 80px 84px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: radial-gradient(circle at 85% 15%, rgba(14, 165, 233, 0.08) 0%, transparent 45%),
+                  radial-gradient(circle at 15% 85%, rgba(16, 185, 129, 0.05) 0%, transparent 45%),
+                  #070a12;
+      overflow: hidden;
+      border-bottom: 2px solid #1e293b;
+    }
+
+    /* Subtle grid background */
+    .slide::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 64px 64px;
+      pointer-events: none;
+    }
+
+    /* Top bar */
+    .top-bar {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 18px;
+      font-weight: 700;
+      color: #38bdf8;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: #10b981;
+    }
+
+    .slide-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 18px;
+      font-weight: 700;
+      color: #64748b;
+      padding: 6px 16px;
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid #1e293b;
+      border-radius: 20px;
+    }
+
+    /* Content Area */
+    .content {
+      position: relative;
+      z-index: 2;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      margin: 40px 0;
+    }
+
+    h1.hero-title {
+      font-size: 68px;
+      font-weight: 900;
+      line-height: 1.15;
+      letter-spacing: -2px;
+      color: #ffffff;
+      margin-bottom: 36px;
+    }
+
+    h2.slide-title {
+      font-size: 52px;
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -1.5px;
+      color: #ffffff;
+      margin-bottom: 24px;
+    }
+
+    .highlight-sky {
+      color: #38bdf8;
+    }
+
+    .highlight-emerald {
+      color: #34d399;
+    }
+
+    .highlight-rose {
+      color: #fb7185;
+    }
+
+    p.lead-text {
+      font-size: 26px;
+      line-height: 1.55;
+      color: #94a3b8;
+      max-width: 860px;
+      margin-bottom: 36px;
+    }
+
+    /* Code Card */
+    .code-card {
+      background: #04060a;
+      border: 1px solid #1e293b;
+      border-radius: 20px;
+      padding: 32px 36px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 20px;
+      line-height: 1.7;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+      margin: 16px 0;
+      position: relative;
+    }
+
+    .code-card.bad {
+      border-left: 6px solid #f43f5e;
+    }
+
+    .code-card.good {
+      border-left: 6px solid #10b981;
+    }
+
+    .badge-bad {
+      display: inline-block;
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #f43f5e;
+      background: rgba(244, 63, 94, 0.12);
+      padding: 4px 12px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      letter-spacing: 1px;
+    }
+
+    .badge-good {
+      display: inline-block;
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #10b981;
+      background: rgba(16, 185, 129, 0.12);
+      padding: 4px 12px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      letter-spacing: 1px;
+    }
+
+    /* Step Cards */
+    .step-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-top: 10px;
+    }
+
+    .step-card {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid #1e293b;
+      border-radius: 16px;
+      padding: 24px 28px;
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+    }
+
+    .step-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 24px;
+      font-weight: 800;
+      color: #38bdf8;
+      background: rgba(14, 165, 233, 0.12);
+      border: 1px solid rgba(14, 165, 233, 0.3);
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .step-text h4 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    .step-text p {
+      font-size: 18px;
+      color: #94a3b8;
+      line-height: 1.5;
+    }
+
+    /* Stat Box */
+    .stat-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 24px;
+    }
+
+    .stat-box {
+      background: #090d16;
+      border: 1px solid #1e293b;
+      border-radius: 18px;
+      padding: 28px;
+    }
+
+    .stat-value {
+      font-size: 48px;
+      font-weight: 900;
+      color: #ffffff;
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: 16px;
+      color: #94a3b8;
+      line-height: 1.4;
+    }
+
+    /* Bottom Bar */
+    .bottom-bar {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 28px;
+      border-top: 1px solid #1e293b;
+    }
+
+    .author-info {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0284c7, #6366f1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 18px;
+      color: #ffffff;
+      font-family: 'JetBrains Mono', monospace;
+      border: 2px solid #38bdf8;
+    }
+
+    .author-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .author-title {
+      font-size: 14px;
+      color: #64748b;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .cta-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 16px;
+      font-weight: 700;
+      color: #090d16;
+      background: #ffffff;
+      padding: 12px 24px;
+      border-radius: 30px;
+    }
+
+    .checklist {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin: 20px 0;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 22px;
+      color: #e2e8f0;
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid #1e293b;
+      padding: 18px 24px;
+      border-radius: 14px;
+    }
+
+    .check-icon {
+      color: #10b981;
+      font-size: 26px;
+      font-weight: 900;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== SLIDE 1: HOOK ==================== -->
+  <section class="slide">
+    <div class="top-bar">
+      <div class="eyebrow">PLAYWRIGHT TEST ARCHITECTURE</div>
+      <div class="slide-num">01 / 06</div>
+    </div>
+
+    <div class="content">
+      <h1 class="hero-title">
+        The Most Expensive Line of Code in Your Test Suite.
+      </h1>
+
+      <div class="code-card bad">
+        <span class="badge-bad">❌ The Anti-Pattern</span>
+        <pre><span style="color:#f43f5e;">await</span> page.<span style="color:#38bdf8;">waitForTimeout</span>(<span style="color:#fbbf24;">5000</span>);</pre>
+      </div>
+
+      <p class="lead-text">
+        Why arbitrary sleep timers cost scaling engineering teams <strong style="color:#ffffff;">$35,000/year</strong> in wasted CI compute, delayed pull requests, and broken developer trust.
+      </p>
+    </div>
+
+    <div class="bottom-bar">
+      <div class="author-info">
+        <div class="avatar">AV</div>
+        <div>
+          <div class="author-name">Alberto E. Vilano Reyna</div>
+          <div class="author-title">Senior SDET & AI Quality Engineer • avilano.dev</div>
+        </div>
+      </div>
+      <div class="cta-pill">Swipe ➔</div>
+    </div>
+  </section>
+
+  <!-- ==================== SLIDE 2: THE CI DEATH SPIRAL ==================== -->
+  <section class="slide">
+    <div class="top-bar">
+      <div class="eyebrow">THE MECHANISM OF A FLAKE</div>
+      <div class="slide-num">02 / 06</div>
+    </div>
+
+    <div class="content">
+      <h2 class="slide-title">The CI Flake Feedback Loop</h2>
+      <p class="lead-text">Flaky tests aren't random. They follow a predictable failure cycle:</p>
+
+      <div class="step-list">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-text">
+            <h4>Local Run Passes 100%</h4>
+            <p>Your MacBook M3 has plenty of CPU headroom and an unthrottled browser context.</p>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-text">
+            <h4>GitHub Actions Runner Throttles</h4>
+            <p>Under shared multi-tenant runner CPU contention, 5,000ms is not enough. The test flakes.</p>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-text">
+            <h4>Someone Bumps it to 10,000ms</h4>
+            <p>Instead of fixing the DOM race condition, developers inflate timeouts across 150 specs.</p>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">4</div>
+          <div class="step-text">
+            <h4>Pipeline Time Balloons to 35+ Min</h4>
+            <p>Developers stop waiting for CI. They hit "Re-run all jobs" 3 times or bypass checks.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-bar">
+      <div class="author-info">
+        <div class="avatar">AV</div>
+        <div>
+          <div class="author-name">Alberto E. Vilano Reyna</div>
+          <div class="author-title">avilano.dev</div>
+        </div>
+      </div>
+      <div class="cta-pill">Swipe ➔</div>
+    </div>
+  </section>
+
+  <!-- ==================== SLIDE 3: RULE 1 ==================== -->
+  <section class="slide">
+    <div class="top-bar">
+      <div class="eyebrow">RULE 01 • OBSERVABLE STATE</div>
+      <div class="slide-num">03 / 06</div>
+    </div>
+
+    <div class="content">
+      <h2 class="slide-title">Never Wait for Time.<br><span class="highlight-sky">Wait for State.</span></h2>
+      <p class="lead-text">Replace arbitrary timer sleeps with Playwright’s auto-waiting Web-First assertions.</p>
+
+      <div class="code-card bad">
+        <span class="badge-bad">❌ Brittle Sleep (Race Condition Prone)</span>
+        <pre><span style="color:#64748b;">// Waits 5s regardless of whether network responded</span>
+<span style="color:#f43f5e;">await</span> page.<span style="color:#38bdf8;">waitForTimeout</span>(<span style="color:#fbbf24;">5000</span>);
+<span style="color:#f43f5e;">const</span> visible = <span style="color:#f43f5e;">await</span> page.<span style="color:#38bdf8;">locator</span>(<span style="color:#a5f3fc;">'.success'</span>).<span style="color:#38bdf8;">isVisible</span>();
+<span style="color:#38bdf8;">expect</span>(visible).<span style="color:#38bdf8;">toBeTruthy</span>();</pre>
+      </div>
+
+      <div class="code-card good">
+        <span class="badge-good">✅ Auto-Waiting Web-First Assertion</span>
+        <pre><span style="color:#64748b;">// Passes the instant the DOM enters valid state</span>
+<span style="color:#f43f5e;">await</span> page.<span style="color:#38bdf8;">getByRole</span>(<span style="color:#a5f3fc;">'button'</span>, { name: <span style="color:#a5f3fc;">'Confirm Payment'</span> }).<span style="color:#38bdf8;">click</span>();
+<span style="color:#f43f5e;">await</span> <span style="color:#38bdf8;">expect</span>(page.<span style="color:#38bdf8;">getByRole</span>(<span style="color:#a5f3fc;">'alert'</span>)).<span style="color:#38bdf8;">toHaveText</span>(<span style="color:#a5f3fc;">/payment confirmed/i</span>);</pre>
+      </div>
+    </div>
+
+    <div class="bottom-bar">
+      <div class="author-info">
+        <div class="avatar">AV</div>
+        <div>
+          <div class="author-name">Alberto E. Vilano Reyna</div>
+          <div class="author-title">avilano.dev</div>
+        </div>
+      </div>
+      <div class="cta-pill">Swipe ➔</div>
+    </div>
+  </section>
+
+  <!-- ==================== SLIDE 4: RULE 2 ==================== -->
+  <section class="slide">
+    <div class="top-bar">
+      <div class="eyebrow">RULE 02 • RUNTIME ACCELERATION</div>
+      <div class="slide-num">04 / 06</div>
+    </div>
+
+    <div class="content">
+      <h2 class="slide-title">Stop Logging in via UI<br><span class="highlight-sky">on Every Single Test</span></h2>
+      <p class="lead-text">Testing the login page 200 times per build is a colossal waste of pipeline runtime.</p>
+
+      <div class="stat-row">
+        <div class="stat-box">
+          <div class="badge-bad">Legacy Approach</div>
+          <div class="stat-value highlight-rose">26.6 min</div>
+          <div class="stat-label">200 specs × 8s UI login flows (filling inputs, clicking submit, waiting for redirect)</div>
+        </div>
+
+        <div class="stat-box">
+          <div class="badge-good">Playwright StorageState</div>
+          <div class="stat-value highlight-emerald">&lt; 50 ms</div>
+          <div class="stat-label">Authenticate once via API setup project, serialize cookies/JWT, inject directly into context</div>
+        </div>
+      </div>
+
+      <div class="code-card good" style="margin-top: 24px;">
+        <span class="badge-good">playwright.config.ts</span>
+        <pre><span style="color:#f43f5e;">use</span>: {
+  <span style="color:#64748b;">// Every test starts authenticated instantly</span>
+  <span style="color:#38bdf8;">storageState</span>: <span style="color:#a5f3fc;">'playwright/.auth/user.json'</span>,
+}</pre>
+      </div>
+    </div>
+
+    <div class="bottom-bar">
+      <div class="author-info">
+        <div class="avatar">AV</div>
+        <div>
+          <div class="author-name">Alberto E. Vilano Reyna</div>
+          <div class="author-title">avilano.dev</div>
+        </div>
+      </div>
+      <div class="cta-pill">Swipe ➔</div>
+    </div>
+  </section>
+
+  <!-- ==================== SLIDE 5: RULE 3 ==================== -->
+  <section class="slide">
+    <div class="top-bar">
+      <div class="eyebrow">RULE 03 • ZERO SELECTOR CHURN</div>
+      <div class="slide-num">05 / 06</div>
+    </div>
+
+    <div class="content">
+      <h2 class="slide-title">Ditch Fragile XPaths for<br><span class="highlight-emerald">Accessible ARIA Roles</span></h2>
+      <p class="lead-text">CSS classes change with every Tailwind refactor. Accessible user roles never do.</p>
+
+      <div class="code-card bad">
+        <span class="badge-bad">❌ Fragile DOM Selectors (Breaks on CSS Changes)</span>
+        <pre>page.<span style="color:#38bdf8;">locator</span>(<span style="color:#a5f3fc;">'div.btn-container > button.sc-1234.btn-primary'</span>)</pre>
+      </div>
+
+      <div class="code-card good">
+        <span class="badge-good">✅ Semantic Accessible Role (WCAG Aligned)</span>
+        <pre>page.<span style="color:#38bdf8;">getByRole</span>(<span style="color:#a5f3fc;">'button'</span>, { name: <span style="color:#a5f3fc;">'Submit Application'</span> })</pre>
+      </div>
+
+      <div class="step-card" style="margin-top: 20px; background: rgba(16, 185, 129, 0.08); border-color: rgba(16, 185, 129, 0.3);">
+        <div class="step-text">
+          <h4 style="color:#34d399;">💡 The Double Win for Your Team</h4>
+          <p style="color:#cbd5e1;">If Playwright can't find your button by its accessible name, screen reader users can't find it either. You get automated WCAG accessibility auditing for free.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-bar">
+      <div class="author-info">
+        <div class="avatar">AV</div>
+        <div>
+          <div class="author-name">Alberto E. Vilano Reyna</div>
+          <div class="author-title">avilano.dev</div>
+        </div>
+      </div>
+      <div class="cta-pill">Swipe ➔</div>
+    </div>
+  </section>
+
+  <!-- ==================== SLIDE 6: SUMMARY & CTA ==================== -->
+  <section class="slide">
+    <div class="top-bar">
+      <div class="eyebrow">THE ARCHITECTURE SUMMARY</div>
+      <div class="slide-num">06 / 06</div>
+    </div>
+
+    <div class="content">
+      <h2 class="slide-title">Ready to Fix Your Pipeline<br><span class="highlight-sky">Once and for All?</span></h2>
+      <p class="lead-text">4 architectural pillars to eliminate test flakiness permanently:</p>
+
+      <div class="checklist">
+        <div class="check-item">
+          <span class="check-icon">✓</span>
+          <span><strong>Auto-waiting web-first assertions</strong> (zero sleep timers)</span>
+        </div>
+        <div class="check-item">
+          <span class="check-icon">✓</span>
+          <span><strong>API storageState caching</strong> (&lt;50ms authenticated specs)</span>
+        </div>
+        <div class="check-item">
+          <span class="check-icon">✓</span>
+          <span><strong>Accessible ARIA role locators</strong> (resilient to CSS refactors)</span>
+        </div>
+        <div class="check-item">
+          <span class="check-icon">✓</span>
+          <span><strong>Isolated test fixtures & CI sharding</strong> (zero test cross-talk)</span>
+        </div>
+      </div>
+
+      <div class="step-card" style="margin-top: 24px; background: #0b1120; border-color: #38bdf8;">
+        <div class="step-text">
+          <h4 style="color:#ffffff; font-size: 20px;">Need this architecture built in your codebase?</h4>
+          <p style="color:#94a3b8; font-size: 16px;">
+            Book a 48-Hour Diagnostic Audit ($950, 100% credited) or partner on a 21-Day Sprint.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-bar">
+      <div class="author-info">
+        <div class="avatar">AV</div>
+        <div>
+          <div class="author-name">Alberto E. Vilano Reyna</div>
+          <div class="author-title">Senior SDET & AI Quality Engineer • avilano.dev</div>
+        </div>
+      </div>
+      <div class="cta-pill">avilano.dev ↗</div>
+    </div>
+  </section>
+
+</body>
+</html>
