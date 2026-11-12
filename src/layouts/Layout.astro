@@ -15,9 +15,9 @@ const {
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://avilano.dev');
+const isHomePage = Astro.url.pathname === '/' || Astro.url.pathname === '';
 
 const personSchema = {
-  "@context": "https://schema.org",
   "@type": "Person",
   "@id": "https://avilano.dev/#person",
   "name": "Alberto E. Vilano Reyna",
@@ -42,6 +42,50 @@ const personSchema = {
     "name": "The University of Texas Rio Grande Valley"
   }
 };
+
+const websiteSchema = {
+  "@type": "WebSite",
+  "@id": "https://avilano.dev/#website",
+  "url": "https://avilano.dev",
+  "name": "avilano.dev",
+  "description": "Senior SDET and AI Quality Engineer | Playwright Architecture & WCAG 2.1 AA",
+  "publisher": {
+    "@id": "https://avilano.dev/#person"
+  }
+};
+
+const serviceSchema = {
+  "@type": "ProfessionalService",
+  "@id": "https://avilano.dev/#service",
+  "name": "avilano.dev - Senior SDET and AI Quality Engineering",
+  "url": "https://avilano.dev",
+  "image": "https://avilano.dev/og-image.png",
+  "priceRange": "$$$$",
+  "founder": {
+    "@id": "https://avilano.dev/#person"
+  },
+  "areaServed": [
+    {
+      "@type": "Country",
+      "name": "United States"
+    },
+    {
+      "@type": "Country",
+      "name": "Canada"
+    }
+  ],
+  "knowsAbout": [
+    "Playwright Test Automation",
+    "WCAG 2.1 AA Compliance",
+    "AI Systems Quality & Evaluation",
+    "CI/CD Reliability"
+  ]
+};
+
+const defaultGraph = {
+  "@context": "https://schema.org",
+  "@graph": isHomePage ? [personSchema, websiteSchema, serviceSchema] : [personSchema]
+};
 ---
 
 <!doctype html>
@@ -57,19 +101,25 @@ const personSchema = {
     <meta name="description" content={description} />
 
     <!-- Open Graph / Social Media -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://avilano.dev/" />
+    <meta property="og:type" content={schema ? 'article' : 'website'} />
+    <meta property="og:url" content={canonicalURL.href} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content="https://avilano.dev/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="avilano.dev - Senior SDET & AI Quality Engineer" />
 
     <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:title" content={title} />
-    <meta property="twitter:description" content={description} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalURL.href} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content="https://avilano.dev/og-image.png" />
+    <meta name="twitter:image:alt" content="avilano.dev - Senior SDET & AI Quality Engineer" />
 
-    <!-- Schema.org Person & Identity Structured Data -->
-    <script type="application/ld+json" is:inline set:html={JSON.stringify(personSchema)} />
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(defaultGraph)} />
 
     {schema && (
       <script type="application/ld+json" is:inline set:html={JSON.stringify(schema)} />

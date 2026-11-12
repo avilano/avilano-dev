@@ -16,7 +16,6 @@ const { post } = Astro.props;
 const { Content } = await post.render();
 
 const articleStructuredData = {
-  "@context": "https://schema.org",
   "@type": "TechArticle",
   "headline": post.data.title,
   "description": post.data.description,
@@ -46,20 +45,61 @@ const articleStructuredData = {
     "@id": `https://avilano.dev/blog/${post.slug}`
   }
 };
+
+const breadcrumbStructuredData = {
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://avilano.dev"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Architecture Notes",
+      "item": "https://avilano.dev/blog"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": post.data.title,
+      "item": `https://avilano.dev/blog/${post.slug}`
+    }
+  ]
+};
+
+const articleGraph = {
+  "@context": "https://schema.org",
+  "@graph": [articleStructuredData, breadcrumbStructuredData]
+};
 ---
 
 <Layout
   title={`${post.data.title} | avilano.dev`}
   description={post.data.description}
-  schema={articleStructuredData}
+  schema={articleGraph}
 >
   <Header />
 
   <article class="flex-grow py-16 md:py-24 max-w-3xl mx-auto px-4 sm:px-6 w-full">
-    <!-- Back to blog link -->
-    <a href="/blog" class="text-xs font-mono text-slate-400 hover:text-brand-400 transition-colors inline-flex items-center gap-1.5 mb-8">
-      <span>← Back to all articles</span>
-    </a>
+    <!-- Accessible Breadcrumb Navigation -->
+    <nav aria-label="Breadcrumbs" class="mb-8 font-mono text-xs text-slate-400">
+      <ol class="flex items-center gap-2 flex-wrap">
+        <li>
+          <a href="/" class="hover:text-brand-400 transition-colors">Home</a>
+        </li>
+        <li class="text-slate-600">/</li>
+        <li>
+          <a href="/blog" class="hover:text-brand-400 transition-colors">Architecture Notes</a>
+        </li>
+        <li class="text-slate-600">/</li>
+        <li class="text-slate-300 truncate max-w-xs sm:max-w-md font-medium" aria-current="page">
+          {post.data.title}
+        </li>
+      </ol>
+    </nav>
 
     <!-- Header -->
     <header class="mb-10 pb-8 border-b border-dark-800">
