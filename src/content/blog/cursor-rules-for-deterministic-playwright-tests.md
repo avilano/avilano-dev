@@ -40,7 +40,7 @@ alwaysApply: false
 
 # Playwright Test Standards & Architecture
 
-You are a Senior QA Automation Architect. When writing or refactoring Playwright tests, you MUST strictly adhere to the following rules:
+You are a Senior SDET and AI Quality Engineer. When writing or refactoring Playwright tests, you MUST strictly adhere to the following rules:
 
 ## 1. Locator Priority Hierarchy (Accessibility First)
 Never use XPath or brittle CSS selectors (`div > span`, classes, or IDs). Always query through user-facing accessibility semantics in this exact priority:

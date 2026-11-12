@@ -21,6 +21,7 @@ const articleStructuredData = {
   "headline": post.data.title,
   "description": post.data.description,
   "url": `https://avilano.dev/blog/${post.slug}`,
+  "image": "https://avilano.dev/og-image.png",
   "datePublished": post.data.pubDate.toISOString(),
   "dateModified": post.data.pubDate.toISOString(),
   "proficiencyLevel": "Advanced",
@@ -34,7 +35,11 @@ const articleStructuredData = {
   "publisher": {
     "@type": "Person",
     "@id": "https://avilano.dev/#person",
-    "name": "Alberto E. Vilano Reyna"
+    "name": "Alberto E. Vilano Reyna",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://avilano.dev/og-image.png"
+    }
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
@@ -90,7 +95,7 @@ const articleStructuredData = {
         <div class="w-7 h-7 rounded-full bg-brand-500/20 text-brand-300 flex items-center justify-center font-bold">
           AV
         </div>
-        <span>By Alberto E. Vilano Reyna • Senior QA Automation Architect</span>
+        <span>By Alberto E. Vilano Reyna • Senior SDET and AI Quality Engineer</span>
       </div>
     </header>
 

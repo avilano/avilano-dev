@@ -2,7 +2,7 @@
   "name": "avilano-dev",
   "type": "module",
   "version": "1.0.0",
-  "description": "avilano.dev - Senior AI QA Enablement, Playwright Architecture & Automated WCAG Accessibility",
+  "description": "avilano.dev - Senior SDET and AI Quality Engineer | Playwright Architecture & Automated WCAG Accessibility",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
