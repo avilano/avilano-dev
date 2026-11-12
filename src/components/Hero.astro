@@ -70,13 +70,20 @@
               <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></span>
               <span class="ml-2 text-slate-400 text-[11px]">playwright-ci-runner (sharded)</span>
             </div>
-            <span class="text-emerald-400 text-[11px] font-bold">PASSING</span>
+            <div class="flex items-center gap-1.5">
+              <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span class="text-emerald-400 text-[11px] font-bold">PASSING</span>
+            </div>
           </div>
 
           <!-- Terminal Body -->
           <div class="p-5 space-y-3 bg-[#070a11]">
-            <div class="text-slate-400 text-[11px]">
-              $ npx playwright test --project=chromium
+            <div class="text-slate-400 text-[11px] flex items-center">
+              <span>$ npx playwright test --project=chromium</span>
+              <span class="inline-block w-1.5 h-3.5 bg-brand-400 ml-1.5 animate-pulse"></span>
             </div>
             
             <div class="space-y-2 pt-1">
