@@ -82,7 +82,7 @@ const blogBreadcrumbs = {
           </div>
 
           <h2 class="text-xl sm:text-2xl font-bold text-white group-hover:text-brand-300 transition-colors">
-            <a href={`/blog/${post.slug}`}>
+            <a href={`/blog/${post.id}`}>
               {post.data.title}
             </a>
           </h2>
@@ -93,7 +93,7 @@ const blogBreadcrumbs = {
 
           <div class="mt-5">
             <a
-              href={`/blog/${post.slug}`}
+              href={`/blog/${post.id}`}
               class="inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-brand-400 group-hover:text-brand-300"
             >
               <span>Read article</span>

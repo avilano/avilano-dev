@@ -1,5 +1,5 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
@@ -7,19 +7,19 @@ import Footer from '../../components/Footer.astro';
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
   return posts.map((post) => ({
-    params: { slug: post.slug },
+    params: { slug: post.id },
     props: { post },
   }));
 }
 
 const { post } = Astro.props;
-const { Content } = await post.render();
+const { Content } = await render(post);
 
 const articleStructuredData = {
   "@type": "TechArticle",
   "headline": post.data.title,
   "description": post.data.description,
-  "url": `https://avilano.dev/blog/${post.slug}`,
+  "url": `https://avilano.dev/blog/${post.id}`,
   "image": "https://avilano.dev/og-image.png",
   "datePublished": post.data.pubDate.toISOString(),
   "dateModified": post.data.pubDate.toISOString(),
@@ -42,7 +42,7 @@ const articleStructuredData = {
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": `https://avilano.dev/blog/${post.slug}`
+    "@id": `https://avilano.dev/blog/${post.id}`
   }
 };
 
@@ -65,7 +65,7 @@ const breadcrumbStructuredData = {
       "@type": "ListItem",
       "position": 3,
       "name": post.data.title,
-      "item": `https://avilano.dev/blog/${post.slug}`
+      "item": `https://avilano.dev/blog/${post.id}`
     }
   ]
 };

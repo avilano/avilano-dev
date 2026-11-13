@@ -1,0 +1,32 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "build(deps)"
+    labels:
+      - "dependencies"
+    groups:
+      minor-and-patch:
+        applies-to: version-updates
+        update-types:
+          - "minor"
+          - "patch"
+    ignore:
+      - dependency-name: "astro"
+        update-types:
+          - "version-update:semver-major"
+      - dependency-name: "@astrojs/*"
+        update-types:
+          - "version-update:semver-major"
+      - dependency-name: "tailwindcss"
+        update-types:
+          - "version-update:semver-major"
+      - dependency-name: "@tailwindcss/*"
+        update-types:
+          - "version-update:semver-major"

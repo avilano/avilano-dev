@@ -39,7 +39,7 @@ const posts = (await getCollection('blog'))
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       {posts.map((post) => (
         <a
-          href={`/blog/${post.slug}`}
+          href={`/blog/${post.id}`}
           class="group block p-7 rounded-xl border border-dark-700/80 bg-dark-900/60 hover:bg-dark-900 hover:border-brand-500/40 transition-all duration-200 interactive-card"
         >
           <div class="flex items-center justify-between gap-4 mb-4">
