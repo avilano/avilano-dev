@@ -4,6 +4,8 @@ description: "How granular failure analysis across 15 stratified support tickets
 pubDate: 2026-11-12
 tags: ["LLM Evals", "AI Quality", "Prompt Engineering"]
 readTime: "5 min read"
+repoUrl: "https://github.com/avilano/agent-keeper"
+repoLabel: "avilano/agent-keeper"
 ---
 
 In conventional software testing, 6 failing tests out of 15 means your code is broken. In AI evaluation engineering, those 6 failures are often the exact reason you built the quality gate.

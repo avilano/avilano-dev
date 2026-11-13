@@ -4,6 +4,8 @@ description: "Applying the Elephant-Goldfish Model (EGM) to catch rate-limit con
 pubDate: 2026-11-12
 tags: ["AI Architecture", "Multi-Agent Systems", "Design Review"]
 readTime: "6 min read"
+repoUrl: "https://github.com/avilano/agent-keeper"
+repoLabel: "avilano/agent-keeper"
 ---
 
 Asking the same AI session that wrote an architecture specification to "review it for bugs" almost always fails. Shared conversational history creates **shared confirmation bias**: the model remembers why it made compromises earlier in the thread and rationalizes away missing sections or contradictions.

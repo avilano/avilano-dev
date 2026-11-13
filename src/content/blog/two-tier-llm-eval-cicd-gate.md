@@ -4,6 +4,8 @@ description: "How Agent Keeper combines a zero-token deterministic gate (<10s) w
 pubDate: 2026-11-12
 tags: ["AI Engineering", "LLM Evals", "CI/CD", "Pydantic"]
 readTime: "7 min read"
+repoUrl: "https://github.com/avilano/agent-keeper"
+repoLabel: "avilano/agent-keeper"
 ---
 
 When LLM applications move from prototypes to production, a single sentence edit in a system prompt—or an upstream model update—can silently degrade behavior. Traditional unit tests cannot detect semantic regressions, and manual review does not scale across pull requests.
