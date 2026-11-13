@@ -79,7 +79,3 @@ Never use `pull_request_target` to expose secrets to untrusted forks. Tier 1 run
 | **Single-Provider (`gemini-3.8-flash`)** | Halted | Crashed on `TC-01` (`429 RESOURCE_EXHAUSTED`) |
 | **Two-Tier Cold Run (Groq + Gemini 3.5)** | `3m 08s` | **100%** schema pass; caught **6** boundary regressions |
 | **Two-Tier Cached CI (`actions/cache@v4`)** | `< 1s` | **0** API tokens consumed on unchanged prompts |
-
----
-
-*Preparing to add automated LLM regression gates or deterministic CI quality checks to your AI stack? [Book a 15-Minute Architecture Call](https://cal.com/avilano/15min) or explore our [Services](https://avilano.dev/#services).*

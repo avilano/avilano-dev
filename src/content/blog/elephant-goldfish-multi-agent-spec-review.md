@@ -39,7 +39,3 @@ EGM separates two complementary cognitive roles:
 Adversarial critics naturally suggest adding complexity. During an intermediate **Zoom-Out Gate**, the Skeptical Architect persona explicitly **rejected** reviewer bloat that would have crippled the pipeline:
 * **Rejected:** 3-pass majority voting, dynamic token-bucket limiters, and VCR recording fixtures (which would have tripled API burn on free tiers).
 * **Shipped Instead:** Sequential execution (~10–12 RPM), `temperature=0.0`, and graceful `pytest.skip` on fork PRs.
-
----
-
-*Building multi-agent workflows or AI quality gates? [Book a 15-Minute Architecture Call](https://cal.com/avilano/15min) or explore our [Services](https://avilano.dev/#services).*

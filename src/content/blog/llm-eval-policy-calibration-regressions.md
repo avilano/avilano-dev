@@ -33,7 +33,3 @@ When we executed **Agent Keeper's** 15-case stratified golden suite using Groq (
 Without an automated regression gate, defensive model conservatism silently floods on-call rotations:
 1. **Ambiguous Policy Calibration (`TC-08`):** The system prompt stated *"Security breaches or lost 2FA must escalate."* When a customer forwarded a phishing email asking if it was authentic, the model flagged it as a breach. The failing test forced the team to explicitly decide: *Should customer phishing inquiries page on-call?*
 2. **Severity Drift (`TC-09`, `TC-12`):** The model's default bias pushed borderline tickets into `P0`/`P1`. Catching this in CI lets teams tune few-shot rubrics before deploying prompt edits to production.
-
----
-
-*Want to replace prompt "vibes" with automated regression gates? [Book a 15-Minute Architecture Call](https://cal.com/avilano/15min) or explore our [Services](https://avilano.dev/#services).*

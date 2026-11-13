@@ -54,7 +54,3 @@ Instead of running every slow test on trivial PRs, `risk-engine.ts` inspects `gi
 
 ### 5. Dual-Run Migration Recipes
 When replacing legacy Selenium or Cypress suites, teams run Playwright in parallel as an informational check until domain parity is proven, avoiding feature freezes.
-
----
-
-*Want to wire this architecture into your product team's CI pipeline? [Book a 15-Minute Architecture Call](https://cal.com/avilano/15min) or explore our [21-Day WCAG Compliance Sprint](https://avilano.dev/#services).*
