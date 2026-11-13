@@ -1,0 +1,53 @@
+---
+import { matchProductForPost } from '../data/products';
+
+interface Props {
+  slug: string;
+  tags: string[];
+}
+
+const { slug, tags } = Astro.props;
+const product = matchProductForPost(slug, tags);
+---
+
+<aside
+  aria-label="Recommended Digital Kit"
+  class="mt-12 p-6 sm:p-7 rounded-2xl border border-brand-500/30 bg-gradient-to-br from-dark-900 via-dark-900 to-brand-950/30"
+>
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+    <div class="space-y-2">
+      <div class="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-wider text-brand-400">
+        <span class="px-2 py-0.5 rounded bg-brand-500/15 border border-brand-500/30">
+          {product.format}
+        </span>
+        <span>Ready-to-Use Kit</span>
+      </div>
+      <h3 class="text-lg sm:text-xl font-bold text-white">
+        {product.title}
+      </h3>
+      <p class="text-sm text-slate-300 max-w-xl leading-relaxed">
+        {product.tagline}
+      </p>
+    </div>
+
+    <div class="flex flex-col items-stretch sm:items-end gap-2 shrink-0">
+      <a
+        href={product.checkoutUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg text-xs font-bold text-dark-900 bg-white hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-400"
+      >
+        <span>Get the Kit (${product.price})</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </svg>
+      </a>
+      <a
+        href="/products"
+        class="text-center sm:text-right font-mono text-xs text-slate-400 hover:text-brand-400 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-400 rounded"
+      >
+        Or get all 5 kits for $69 →
+      </a>
+    </div>
+  </div>
+</aside>

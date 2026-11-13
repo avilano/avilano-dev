@@ -1,0 +1,149 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { ALL_ACCESS_BUNDLE, DIGITAL_PRODUCTS } from '../data/products';
+---
+
+<Layout
+  title="Digital Kits & Field Guides | avilano.dev"
+  description="Production-tested WCAG 2.1 AA checklists, ADA Title II playbooks, deterministic Playwright Cursor rules, and LLM eval CI/CD blueprints."
+>
+  <Header />
+
+  <main id="main-content" class="flex-grow py-16 md:py-24 max-w-6xl mx-auto px-4 sm:px-6 w-full">
+    <!-- Page Header -->
+    <div class="max-w-3xl mb-12">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md border border-dark-700 bg-dark-800 text-xs font-mono text-brand-400 mb-5">
+        <span>Instant Digital Download • Commercial Team License</span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-tight">
+        Field-Tested QA, Accessibility &amp; AI Quality Kits
+      </h1>
+      <p class="mt-4 text-base sm:text-lg text-slate-300 leading-relaxed">
+        Skip weeks of trial and error. Grab the exact checklists, Cursor rules, ESLint guardrails, and CI/CD templates used in production engineering engagements.
+      </p>
+    </div>
+
+    <!-- Featured All-Access Bundle -->
+    <section
+      aria-labelledby="bundle-heading"
+      class="mb-14 p-7 sm:p-9 rounded-2xl border border-brand-500/40 bg-gradient-to-br from-dark-900 via-dark-900 to-brand-950/30 shadow-lg"
+    >
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <div class="lg:col-span-8 space-y-4">
+          <div class="flex flex-wrap items-center gap-3">
+            <span class="px-2.5 py-1 rounded bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-mono text-xs font-semibold">
+              SAVE 41% • COMPLETE BUNDLE
+            </span>
+            <span class="font-mono text-xs text-slate-400">
+              {ALL_ACCESS_BUNDLE.format}
+            </span>
+          </div>
+          <h2 id="bundle-heading" class="text-2xl sm:text-3xl font-bold text-white">
+            {ALL_ACCESS_BUNDLE.title}
+          </h2>
+          <p class="text-sm sm:text-base text-slate-300 leading-relaxed">
+            {ALL_ACCESS_BUNDLE.tagline}
+          </p>
+          <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2 text-sm text-slate-200">
+            {ALL_ACCESS_BUNDLE.highlights.map((item) => (
+              <li class="flex items-start gap-2">
+                <span class="text-emerald-400 font-bold" aria-hidden="true">✓</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="lg:col-span-4 flex flex-col items-start lg:items-end justify-center gap-3 border-t lg:border-t-0 lg:border-l border-dark-700/70 pt-6 lg:pt-0 lg:pl-8">
+          <div class="flex items-baseline gap-3">
+            <span class="text-4xl font-extrabold text-white">${ALL_ACCESS_BUNDLE.price}</span>
+            <span class="text-base font-mono text-slate-400 line-through">${ALL_ACCESS_BUNDLE.compareAtPrice}</span>
+          </div>
+          <p class="text-xs font-mono text-slate-400">One-time purchase • Instant .zip</p>
+          <a
+            href={ALL_ACCESS_BUNDLE.checkoutUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-full lg:w-auto px-6 py-3.5 rounded-lg text-sm font-bold text-dark-900 bg-white hover:bg-slate-100 transition-colors text-center focus:outline-none focus:ring-2 focus:ring-brand-400"
+          >
+            Get All 5 Kits (${ALL_ACCESS_BUNDLE.price})
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Individual Kits Grid -->
+    <section aria-labelledby="kits-heading">
+      <h2 id="kits-heading" class="text-xl font-bold text-white mb-6">
+        Or Pick an Individual Kit
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {DIGITAL_PRODUCTS.map((product) => (
+          <article class="flex flex-col justify-between p-6 rounded-2xl border border-dark-700 bg-dark-900/80 hover:border-dark-600 transition-colors">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-3">
+                <span class="font-mono text-xs px-2.5 py-0.5 rounded bg-dark-800 border border-dark-700 text-brand-400">
+                  {product.format}
+                </span>
+                <span class="font-mono text-xs text-slate-400">
+                  {product.badge}
+                </span>
+              </div>
+
+              <h3 class="text-xl font-bold text-white mb-2">
+                {product.title}
+              </h3>
+              <p class="text-sm text-slate-300 leading-relaxed mb-5">
+                {product.tagline}
+              </p>
+
+              <ul class="space-y-2 mb-6 text-sm text-slate-300">
+                {product.highlights.map((item) => (
+                  <li class="flex items-start gap-2">
+                    <span class="text-emerald-400 font-bold" aria-hidden="true">✓</span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div class="pt-4 border-t border-dark-800 flex items-center justify-between gap-4">
+              <div>
+                <span class="text-2xl font-extrabold text-white">${product.price}</span>
+                <span class="ml-1.5 text-xs font-mono text-slate-400">USD</span>
+              </div>
+              <a
+                href={product.checkoutUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="px-5 py-2.5 rounded-lg text-xs font-bold text-dark-900 bg-white hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-400"
+              >
+                Buy Now
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <!-- Trust & Delivery Note -->
+    <section class="mt-14 p-6 rounded-xl border border-dark-800 bg-dark-900/50 text-sm text-slate-300 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div>
+        <h3 class="font-bold text-white mb-1">Checkout, Invoices &amp; Team Licensing</h3>
+        <p class="text-slate-400">
+          Payments, global VAT/sales tax invoices, and instant file delivery are handled securely by Polar.sh. Every kit includes a commercial license for your team.
+        </p>
+      </div>
+      <a
+        href="/#book-call"
+        class="shrink-0 px-4 py-2 rounded-lg text-xs font-semibold text-slate-200 border border-dark-700 bg-dark-800 hover:bg-dark-700 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-400"
+      >
+        Need Custom Implementation?
+      </a>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
