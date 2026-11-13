@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Policy Calibration in LLM Evals - LinkedIn Carousel</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap');
+    @page { size: 1080px 1350px; margin: 0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background-color: #060911; color: #f1f5f9; font-family: 'Inter', -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
+    .slide {
+      width: 1080px; height: 1350px; page-break-after: always; position: relative; padding: 80px 84px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      background: radial-gradient(circle at 85% 15%, rgba(14, 165, 233, 0.08) 0%, transparent 45%),
+                  radial-gradient(circle at 15% 85%, rgba(16, 185, 129, 0.05) 0%, transparent 45%), #070a12;
+      overflow: hidden; border-bottom: 2px solid #1e293b;
+    }
+    .slide::before {
+      content: ""; position: absolute; inset: 0;
+      background-image: linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 64px 64px; pointer-events: none;
+    }
+    .top-bar { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #38bdf8; }
+    .eyebrow-dot { width: 8px; height: 8px; border-radius: 50%; background: #38bdf8; box-shadow: 0 0 12px #38bdf8; }
+    .slide-num { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; color: #94a3b8; letter-spacing: 0.05em; }
+    .content { position: relative; z-index: 2; flex: 1; display: flex; flex-direction: column; justify-content: center; margin: 36px 0; }
+    .hook-badge-emerald { display: inline-block; align-self: flex-start; padding: 8px 18px; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 9999px; color: #34d399; font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 24px; }
+    .slide-title { font-size: 48px; line-height: 1.15; font-weight: 800; letter-spacing: -0.03em; color: #ffffff; margin-bottom: 20px; }
+    .highlight-sky { color: #38bdf8; }
+    .highlight-red { color: #f87171; }
+    .highlight-emerald { color: #34d399; }
+    .lead-text { font-size: 22px; line-height: 1.45; color: #94a3b8; margin-bottom: 32px; font-weight: 400; }
+    .step-card { background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 16px; padding: 24px 28px; margin-bottom: 16px; display: flex; gap: 20px; align-items: flex-start; }
+    .step-card.danger { border-color: rgba(239, 68, 68, 0.35); background: rgba(239, 68, 68, 0.05); }
+    .step-card.success { border-color: rgba(16, 185, 129, 0.35); background: rgba(16, 185, 129, 0.05); }
+    .step-icon { font-size: 26px; line-height: 1; padding-top: 2px; }
+    .step-text h4 { font-size: 20px; font-weight: 700; color: #ffffff; margin-bottom: 6px; }
+    .step-text p { font-size: 17px; line-height: 1.45; color: #cbd5e1; }
+    .mono { font-family: 'JetBrains Mono', monospace; font-size: 14px; }
+    .checklist { display: flex; flex-direction: column; gap: 14px; margin: 16px 0; }
+    .check-item { display: flex; align-items: center; gap: 16px; background: rgba(15, 23, 42, 0.6); border: 1px solid #1e293b; padding: 18px 22px; border-radius: 12px; font-size: 18px; color: #e2e8f0; line-height: 1.45; }
+    .check-icon { color: #34d399; font-weight: 900; font-size: 20px; }
+    .bottom-bar { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; padding-top: 24px; border-top: 1px solid rgba(255, 255, 255, 0.08); }
+    .author-info { display: flex; align-items: center; gap: 14px; }
+    .avatar { width: 44px; height: 44px; border-radius: 10px; background: #0284c7; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; color: white; }
+    .author-name { font-size: 16px; font-weight: 700; color: #ffffff; }
+    .author-title { font-size: 13px; color: #94a3b8; }
+    .cta-pill { background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8; padding: 8px 18px; border-radius: 9999px; font-size: 13px; font-weight: 700; letter-spacing: 0.05em; }
+  </style>
+</head>
+<body>
+
+  <!-- SLIDE 1: COVER -->
+  <section class="slide">
+    <div class="top-bar">
+      <div class="eyebrow"><span class="eyebrow-dot"></span><span>LLM EVALUATION &amp; POLICY CALIBRATION</span></div>
+      <div class="slide-num">01 / 05</div>
+    </div>
+    <div class="content">
+      <div class="hook-badge-emerald">🎯 DIAGNOSTIC GOLD</div>
+      <h1 class="slide-title">When 6 Failing Eval Tests<br><span class="highlight-sky">Are Actually a Win</span></h1>
+      <p class="lead-text">
+        In traditional testing, 6 failures out of 15 means your code is broken. In AI evaluation engineering, those 6 failures are often the exact reason you built the quality gate.
+      </p>
+      <div class="step-card">
+        <div class="step-icon">💡</div>
+        <div class="step-text">
+          <h4>The Insight</h4>
+          <p>Automated evals don't just catch broken JSON. They expose ambiguous prompt instructions before defensive model bias floods your on-call team.</p>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-bar">
+      <div class="author-info"><div class="avatar">AV</div><div><div class="author-name">Alberto E. Vilano Reyna</div><div class="author-title">Senior SDET &amp; AI Quality Engineer • avilano.dev</div></div></div>
+      <div class="cta-pill">Swipe ➔</div>
+    </div>
+  </section>
+
+  <!-- SLIDE 2: STRUCTURAL PASS VS SEMANTIC DRIFT -->
+  <section class="slide">
+    <div class="top-bar">
+      <div class="eyebrow">THE EVALUATION BREAKDOWN</div>
+      <div class="slide-num">02 / 05</div>
+    </div>
+    <div class="content">
+      <h2 class="slide-title">100% Valid Schema.<br><span class="highlight-red">6 Policy Mismatches.</span></h2>
+      <p class="lead-text">Across 15 stratified support tickets, every single response passed structural and safety gates:</p>
+      <div class="step-card success">
+        <div class="step-icon">✅</div>
+        <div class="step-text">
+          <h4 style="color:#34d399;">Passed Across All 15 Scenarios</h4>
+          <p>Strict Pydantic v2 schema conformance, PII regex scans, Factual Consistency (&ge; 0.85), and Hallucination (&le; 0.10).</p>
+        </div>
+      </div>
+      <div class="step-card danger">
+        <div class="step-icon">⚠️</div>
+        <div class="step-text">
+          <h4 style="color:#f87171;">6 Boundary Regressions Caught</h4>
+          <p>The model returned valid JSON and zero hallucinations, yet misrouted priority and escalation severity on edge cases.</p>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-bar">
+      <div class="author-info"><div class="avatar">AV</div><div><div class="author-name">Alberto E. Vilano Reyna</div><div class="author-title">avilano.dev</div></div></div>
+      <div class="cta-pill">Swipe ➔</div>
+    </div>
+  </section>
+
+  <!-- SLIDE 3: 3 REAL POLICY TRAPS -->
+  <section class="slide">
+    <div class="top-bar">
+      <div class="eyebrow">REAL EDGE CASES CAUGHT</div>
+      <div class="slide-num">03 / 05</div>
+    </div>
+    <div class="content">
+      <h2 class="slide-title">3 Policy Traps Exposed<br><span class="highlight-sky">Before Production</span></h2>
+      <div class="step-card danger">
+        <div class="step-icon">🎣</div>
+        <div class="step-text">
+          <h4 style="color:#f87171;">1. Phishing Question Over-Escalation</h4>
+          <p>A user forwarded a suspicious email asking if it was real. The model treated it as an active breach and paged on-call.</p>
+        </div>
+      </div>
+      <div class="step-card danger">
+        <div class="step-icon">🚨</div>
+        <div class="step-text">
+          <h4 style="color:#f87171;">2. Unauthorized Token Severity Drift</h4>
+          <p>Defensive conservatism pushed a P1 token revocation straight to P0 emergency status.</p>
+        </div>
+      </div>
+      <div class="step-card danger">
+        <div class="step-icon">💬</div>
+        <div class="step-text">
+          <h4 style="color:#f87171;">3. Keyword Triggering Without Context</h4>
+          <p>A vague "system broken" ticket jumped from P3 to P1 because the model over-indexed on one word.</p>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-bar">
+      <div class="author-info"><div class="avatar">AV</div><div><div class="author-name">Alberto E. Vilano Reyna</div><div class="author-title">avilano.dev</div></div></div>
+      <div class="cta-pill">Swipe ➔</div>
+    </div>
+  </section>
+
+  <!-- SLIDE 4: CALIBRATION LOOP -->
+  <section class="slide">
+    <div class="top-bar">
+      <div class="eyebrow">THE CALIBRATION LOOP</div>
+      <div class="slide-num">04 / 05</div>
+    </div>
+    <div class="content">
+      <h2 class="slide-title">Turn Prompt "Vibes"<br><span class="highlight-emerald">Into Explicit Policy</span></h2>
+      <p class="lead-text">Failing boundary cases force product and engineering teams to resolve ambiguity once:</p>
+      <div class="checklist">
+        <div class="check-item"><span class="check-icon">1.</span><span><strong>Catch the drift in CI</strong> on stratified edge-case tickets.</span></div>
+        <div class="check-item"><span class="check-icon">2.</span><span><strong>Decide the policy explicitly</strong> (e.g., phishing questions route to support, not on-call).</span></div>
+        <div class="check-item"><span class="check-icon">3.</span><span><strong>Lock it into few-shot rubrics</strong> so future prompt edits never regress.</span></div>
+      </div>
+    </div>
+    <div class="bottom-bar">
+      <div class="author-info"><div class="avatar">AV</div><div><div class="author-name">Alberto E. Vilano Reyna</div><div class="author-title">avilano.dev</div></div></div>
+      <div class="cta-pill">Swipe ➔</div>
+    </div>
+  </section>
+
+  <!-- SLIDE 5: CHECKLIST + CTA -->
+  <section class="slide">
+    <div class="top-bar">
+      <div class="eyebrow">EVALUATION CHECKLIST</div>
+      <div class="slide-num">05 / 05</div>
+    </div>
+    <div class="content">
+      <h2 class="slide-title">3 Rules for Calibrating<br><span class="highlight-sky">LLM Prompts in CI</span></h2>
+      <div class="checklist">
+        <div class="check-item"><span class="check-icon">✓</span><span><strong>Include adversarial &amp; vague cases</strong> in your golden dataset, not just happy paths.</span></div>
+        <div class="check-item"><span class="check-icon">✓</span><span><strong>Separate schema/safety passes</strong> from policy-boundary failures.</span></div>
+        <div class="check-item"><span class="check-icon">✓</span><span><strong>Pin <span class="mono">temperature=0.0</span></strong> so boundary shifts reflect prompt edits, not noise.</span></div>
+      </div>
+      <div class="step-card" style="margin-top: 24px; background: #0b1120; border-color: #38bdf8;">
+        <div class="step-text">
+          <h4 style="color:#ffffff; font-size: 20px;">Read the Full 6-Case Breakdown</h4>
+          <p style="color:#94a3b8; font-size: 16px;">Inspect the full regression table and source repo from the links in the first comment below.</p>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-bar">
+      <div class="author-info"><div class="avatar">AV</div><div><div class="author-name">Alberto E. Vilano Reyna</div><div class="author-title">Follow for AI Quality Engineering • avilano.dev</div></div></div>
+      <div class="cta-pill">Save &amp; Follow ★</div>
+    </div>
+  </section>
+
+</body>
+</html>

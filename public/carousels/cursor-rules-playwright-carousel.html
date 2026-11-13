@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cursor Rules for Deterministic Playwright Tests - LinkedIn Carousel</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap');
+    @page { size: 1080px 1350px; margin: 0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background-color: #060911; color: #f1f5f9; font-family: 'Inter', -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
+    .slide {
+      width: 1080px; height: 1350px; page-break-after: always; position: relative; padding: 80px 84px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      background: radial-gradient(circle at 85% 15%, rgba(14, 165, 233, 0.08) 0%, transparent 45%),
+                  radial-gradient(circle at 15% 85%, rgba(16, 185, 129, 0.05) 0%, transparent 45%), #070a12;
+      overflow: hidden; border-bottom: 2px solid #1e293b;
+    }
+    .slide::before {
+      content: ""; position: absolute; inset: 0;
+      background-image: linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 64px 64px; pointer-events: none;
+    }
+    .top-bar { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #38bdf8; }
+    .eyebrow-dot { width: 8px; height: 8px; border-radius: 50%; background: #38bdf8; box-shadow: 0 0 12px #38bdf8; }
+    .slide-num { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; color: #94a3b8; letter-spacing: 0.05em; }
+    .content { position: relative; z-index: 2; flex: 1; display: flex; flex-direction: column; justify-content: center; margin: 36px 0; }
+    .hook-badge { display: inline-block; align-self: flex-start; padding: 8px 18px; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.35); border-radius: 9999px; color: #f87171; font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 24px; }
+    .slide-title { font-size: 48px; line-height: 1.15; font-weight: 800; letter-spacing: -0.03em; color: #ffffff; margin-bottom: 20px; }
+    .highlight-sky { color: #38bdf8; }
+    .highlight-red { color: #f87171; }
+    .lead-text { font-size: 22px; line-height: 1.45; color: #94a3b8; margin-bottom: 32px; font-weight: 400; }
+    .step-card { background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 16px; padding: 24px 28px; margin-bottom: 16px; display: flex; gap: 20px; align-items: flex-start; }
+    .step-card.danger { border-color: rgba(239, 68, 68, 0.35); background: rgba(239, 68, 68, 0.05); }
+    .step-icon { font-size: 26px; line-height: 1; padding-top: 2px; }
+    .step-text h4 { font-size: 20px; font-weight: 700; color: #ffffff; margin-bottom: 6px; }
+    .step-text p { font-size: 17px; line-height: 1.45; color: #cbd5e1; }
+    .code-card { background: #05070d; border: 1px solid #1e293b; border-radius: 14px; padding: 22px 26px; margin-bottom: 16px; font-family: 'JetBrains Mono', monospace; font-size: 15px; line-height: 1.55; }
+    .code-card.bad { border-left: 4px solid #ef4444; background: rgba(239, 68, 68, 0.03); }
+    .code-card.good { border-left: 4px solid #10b981; background: rgba(16, 185, 129, 0.03); }
+    .badge-bad { display: inline-block; color: #f87171; font-weight: 700; font-size: 13px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .badge-good { display: inline-block; color: #34d399; font-weight: 700; font-size: 13px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .code-card pre { white-space: pre-wrap; color: #e2e8f0; }
+    .mono { font-family: 'JetBrains Mono', monospace; font-size: 14px; }
+    .checklist { display: flex; flex-direction: column; gap: 14px; margin: 16px 0; }
+    .check-item { display: flex; align-items: center; gap: 16px; background: rgba(15, 23, 42, 0.6); border: 1px solid #1e293b; padding: 18px 22px; border-radius: 12px; font-size: 18px; color: #e2e8f0; line-height: 1.45; }
+    .check-icon { color: #34d399; font-weight: 900; font-size: 20px; }
+    .bottom-bar { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; padding-top: 24px; border-top: 1px solid rgba(255, 255, 255, 0.08); }
+    .author-info { display: flex; align-items: center; gap: 14px; }
+    .avatar { width: 44px; height: 44px; border-radius: 10px; background: #0284c7; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; color: white; }
+    .author-name { font-size: 16px; font-weight: 700; color: #ffffff; }
+    .author-title { font-size: 13px; color: #94a3b8; }
+    .cta-pill { background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8; padding: 8px 18px; border-radius: 9999px; font-size: 13px; font-weight: 700; letter-spacing: 0.05em; }
+  </style>
+</head>
+<body>
+
+  <!-- SLIDE 1: COVER -->
+  <section class="slide">
+    <div class="top-bar">
+      <div class="eyebrow"><span class="eyebrow-dot"></span><span>AI CODING STANDARDS</span></div>
+      <div class="slide-num">01 / 05</div>
+    </div>
+    <div class="content">
+      <div class="hook-badge">🤖 STOP GENERATING TEST SLOP</div>
+      <h1 class="slide-title">Cursor Rules for<br><span class="highlight-sky">Deterministic Playwright</span></h1>
+      <p class="lead-text">
+        Ask an AI assistant to write E2E tests and you can ship 50 specs in an afternoon, then spend six months debugging CI flakes.
+        <br><br>
+        AI isn't bad at writing tests. It's bad at guessing your architectural standards.
+      </p>
+      <div class="step-card">
+        <div class="step-icon">📜</div>
+        <div class="step-text">
+          <h4>The Fix</h4>
+          <p>Pin Cursor and Claude to a strict <span class="mono">.cursor/rules/*.mdc</span> contract so deterministic patterns are the only code they emit.</p>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-bar">
+      <div class="author-info"><div class="avatar">AV</div><div><div class="author-name">Alberto E. Vilano Reyna</div><div class="author-title">Senior SDET &amp; AI Quality Engineer • avilano.dev</div></div></div>
+      <div class="cta-pill">Swipe ➔</div>
+    </div>
+  </section>
+
+  <!-- SLIDE 2: WHY LLMS EMIT FLAKES -->
+  <section class="slide">
+    <div class="top-bar">
+      <div class="eyebrow">THE ROOT CAUSE</div>
+      <div class="slide-num">02 / 05</div>
+    </div>
+    <div class="content">
+      <h2 class="slide-title">Why LLMs Default to<br><span class="highlight-red">2018 Selenium Habits</span></h2>
+      <p class="lead-text">Public training data is full of legacy scripts. Without guardrails, AI assistants reproduce three classic anti-patterns:</p>
+      <div class="step-card danger">
+        <div class="step-icon">🎯</div>
+        <div class="step-text">
+          <h4 style="color:#f87171;">1. Brittle CSS &amp; XPath Chains</h4>
+          <p>Deep DOM paths (<span class="mono">div.container &gt; div:nth-child(2)</span>) break the moment a designer adjusts Tailwind classes.</p>
+        </div>
+      </div>
+      <div class="step-card danger">
+        <div class="step-icon">⏱️</div>
+        <div class="step-text">
+          <h4 style="color:#f87171;">2. Arbitrary <span class="mono">waitForTimeout()</span> Sleeps</h4>
+          <p>Hardcoded 5-second waits inflate CI runtime and still flake whenever backend latency spikes.</p>
+        </div>
+      </div>
+      <div class="step-card danger">
+        <div class="step-icon">🍝</div>
+        <div class="step-text">
+          <h4 style="color:#f87171;">3. Monolithic Test Scripts</h4>
+          <p>200-line procedural specs with zero Page Object encapsulation become unmaintainable within weeks.</p>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-bar">
+      <div class="author-info"><div class="avatar">AV</div><div><div class="author-name">Alberto E. Vilano Reyna</div><div class="author-title">avilano.dev</div></div></div>
+      <div class="cta-pill">Swipe ➔</div>
+    </div>
+  </section>
+
+  <!-- SLIDE 3: LOCATOR HIERARCHY -->
+  <section class="slide">
+    <div class="top-bar">
+      <div class="eyebrow">THE CURSOR CONTRACT</div>
+      <div class="slide-num">03 / 05</div>
+    </div>
+    <div class="content">
+      <h2 class="slide-title">The Accessibility-First<br><span class="highlight-sky">Locator Hierarchy</span></h2>
+      <p class="lead-text">Force the AI to query the browser's Accessibility Tree in this exact priority order:</p>
+      <div class="checklist">
+        <div class="check-item"><span class="check-icon">1.</span><span><span class="mono" style="color:#38bdf8;">page.getByRole('button', { name })</span> (First choice)</span></div>
+        <div class="check-item"><span class="check-icon">2.</span><span><span class="mono" style="color:#38bdf8;">page.getByLabel('Work Email')</span> (Form fields)</span></div>
+        <div class="check-item"><span class="check-icon">3.</span><span><span class="mono" style="color:#38bdf8;">page.getByPlaceholder(...)</span> (When no label exists)</span></div>
+        <div class="check-item"><span class="check-icon">4.</span><span><span class="mono" style="color:#38bdf8;">page.getByText('Success')</span> (Non-interactive text)</span></div>
+        <div class="check-item"><span class="check-icon">5.</span><span><span class="mono" style="color:#94a3b8;">page.getByTestId(...)</span> (Last resort only)</span></div>
+      </div>
+    </div>
+    <div class="bottom-bar">
+      <div class="author-info"><div class="avatar">AV</div><div><div class="author-name">Alberto E. Vilano Reyna</div><div class="author-title">avilano.dev</div></div></div>
+      <div class="cta-pill">Swipe ➔</div>
+    </div>
+  </section>
+
+  <!-- SLIDE 4: BEFORE VS AFTER -->
+  <section class="slide">
+    <div class="top-bar">
+      <div class="eyebrow">AI OUTPUT COMPARISON</div>
+      <div class="slide-num">04 / 05</div>
+    </div>
+    <div class="content">
+      <h2 class="slide-title">Before vs. After<br><span class="highlight-sky">Pinning .cursor/rules/</span></h2>
+      <div class="code-card bad">
+        <span class="badge-bad">❌ Without Rules (Brittle &amp; Slow)</span>
+        <pre>await page.locator('#email_input_field').fill(email);
+await page.click('.btn-primary-blue');
+await page.waitForTimeout(4000);
+expect(await page.locator('.title').innerText()).toBe('Home');</pre>
+      </div>
+      <div class="code-card good">
+        <span class="badge-good">✅ With Rules (POM + Auto-Wait + A11y)</span>
+        <pre>await loginPage.login(email, password);
+await expect(dashboardPage.heading).toBeVisible();
+await loginPage.checkAccessibility();</pre>
+      </div>
+    </div>
+    <div class="bottom-bar">
+      <div class="author-info"><div class="avatar">AV</div><div><div class="author-name">Alberto E. Vilano Reyna</div><div class="author-title">avilano.dev</div></div></div>
+      <div class="cta-pill">Swipe ➔</div>
+    </div>
+  </section>
+
+  <!-- SLIDE 5: CHECKLIST + CTA -->
+  <section class="slide">
+    <div class="top-bar">
+      <div class="eyebrow">RULE CHECKLIST</div>
+      <div class="slide-num">05 / 05</div>
+    </div>
+    <div class="content">
+      <h2 class="slide-title">3 Guardrails to Put in<br><span class="highlight-sky">.cursor/rules/ Today</span></h2>
+      <div class="checklist">
+        <div class="check-item"><span class="check-icon">✓</span><span><strong>Ban <span class="mono">waitForTimeout()</span> and XPath</strong> explicitly in your rule file.</span></div>
+        <div class="check-item"><span class="check-icon">✓</span><span><strong>Enforce a strict POM boundary</strong> so specs only call intent methods.</span></div>
+        <div class="check-item"><span class="check-icon">✓</span><span><strong>Require <span class="mono">@axe-core/playwright</span></strong> on every critical user flow.</span></div>
+      </div>
+      <div class="step-card" style="margin-top: 24px; background: #0b1120; border-color: #38bdf8;">
+        <div class="step-text">
+          <h4 style="color:#ffffff; font-size: 20px;">Copy the Full Rule Template</h4>
+          <p style="color:#94a3b8; font-size: 16px;">Grab the ready-to-paste <span class="mono">.mdc</span> rule file from the link in the first comment below.</p>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-bar">
+      <div class="author-info"><div class="avatar">AV</div><div><div class="author-name">Alberto E. Vilano Reyna</div><div class="author-title">Follow for AI QA &amp; Playwright • avilano.dev</div></div></div>
+      <div class="cta-pill">Save &amp; Follow ★</div>
+    </div>
+  </section>
+
+</body>
+</html>
