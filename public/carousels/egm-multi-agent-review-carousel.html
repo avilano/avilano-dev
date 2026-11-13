@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>The Elephant-Goldfish Model: Multi-Agent Spec Review - LinkedIn Carousel</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap');
+    @page { size: 1080px 1350px; margin: 0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background-color: #060911; color: #f1f5f9; font-family: 'Inter', -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
+    .slide {
+      width: 1080px; height: 1350px; page-break-after: always; position: relative; padding: 80px 84px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      background: radial-gradient(circle at 85% 15%, rgba(14, 165, 233, 0.08) 0%, transparent 45%),
+                  radial-gradient(circle at 15% 85%, rgba(16, 185, 129, 0.05) 0%, transparent 45%), #070a12;
+      overflow: hidden; border-bottom: 2px solid #1e293b;
+    }
+    .slide::before {
+      content: ""; position: absolute; inset: 0;
+      background-image: linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 64px 64px; pointer-events: none;
+    }
+    .top-bar { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #38bdf8; }
+    .eyebrow-dot { width: 8px; height: 8px; border-radius: 50%; background: #38bdf8; box-shadow: 0 0 12px #38bdf8; }
+    .slide-num { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; color: #94a3b8; letter-spacing: 0.05em; }
+    .content { position: relative; z-index: 2; flex: 1; display: flex; flex-direction: column; justify-content: center; margin: 36px 0; }
+    .hook-badge { display: inline-block; align-self: flex-start; padding: 8px 18px; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.35); border-radius: 9999px; color: #f87171; font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 24px; }
+    .hook-badge-emerald { display: inline-block; align-self: flex-start; padding: 8px 18px; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 9999px; color: #34d399; font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 24px; }
+    .slide-title { font-size: 48px; line-height: 1.15; font-weight: 800; letter-spacing: -0.03em; color: #ffffff; margin-bottom: 20px; }
+    .highlight-sky { color: #38bdf8; }
+    .highlight-red { color: #f87171; }
+    .highlight-emerald { color: #34d399; }
+    .lead-text { font-size: 22px; line-height: 1.45; color: #94a3b8; margin-bottom: 32px; font-weight: 400; }
+    .step-card { background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 16px; padding: 24px 28px; margin-bottom: 16px; display: flex; gap: 20px; align-items: flex-start; }
+    .step-card.danger { border-color: rgba(239, 68, 68, 0.35); background: rgba(239, 68, 68, 0.05); }
+    .step-card.success { border-color: rgba(16, 185, 129, 0.35); background: rgba(16, 185, 129, 0.05); }
+    .step-icon { font-size: 26px; line-height: 1; padding-top: 2px; }
+    .step-text h4 { font-size: 20px; font-weight: 700; color: #ffffff; margin-bottom: 6px; }
+    .step-text p { font-size: 17px; line-height: 1.45; color: #cbd5e1; }
+    .bench-table { width: 100%; border-collapse: collapse; margin: 12px 0 24px 0; font-size: 16px; background: rgba(15, 23, 42, 0.7); border-radius: 14px; overflow: hidden; border: 1px solid #1e293b; }
+    .bench-table th { text-align: left; padding: 16px 20px; background: rgba(30, 41, 59, 0.7); color: #38bdf8; font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; }
+    .bench-table td { padding: 16px 20px; border-top: 1px solid #1e293b; color: #e2e8f0; vertical-align: top; line-height: 1.45; }
+    .mono { font-family: 'JetBrains Mono', monospace; font-size: 14px; }
+    .checklist { display: flex; flex-direction: column; gap: 14px; margin: 16px 0; }
+    .check-item { display: flex; align-items: center; gap: 16px; background: rgba(15, 23, 42, 0.6); border: 1px solid #1e293b; padding: 18px 22px; border-radius: 12px; font-size: 18px; color: #e2e8f0; line-height: 1.45; }
+    .check-icon { color: #34d399; font-weight: 900; font-size: 20px; }
+    .bottom-bar { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; padding-top: 24px; border-top: 1px solid rgba(255, 255, 255, 0.08); }
+    .author-info { display: flex; align-items: center; gap: 14px; }
+    .avatar { width: 44px; height: 44px; border-radius: 10px; background: #0284c7; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; color: white; }
+    .author-name { font-size: 16px; font-weight: 700; color: #ffffff; }
+    .author-title { font-size: 13px; color: #94a3b8; }
+    .cta-pill { background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8; padding: 8px 18px; border-radius: 9999px; font-size: 13px; font-weight: 700; letter-spacing: 0.05em; }
+  </style>
+</head>
+<body>
+
+  <!-- SLIDE 1: COVER -->
+  <section class="slide">
+    <div class="top-bar">
+      <div class="eyebrow"><span class="eyebrow-dot"></span><span>AI SYSTEMS DESIGN REVIEW</span></div>
+      <div class="slide-num">01 / 07</div>
+    </div>
+    <div class="content">
+      <div class="hook-badge-emerald">🐘 + 🐠 MULTI-AGENT AUDIT</div>
+      <h1 class="slide-title">7 Stateless Subagents<br><span class="highlight-sky">Audited Our Spec</span></h1>
+      <p class="lead-text">
+        Before writing a single line of production code, we ran our CI/CD architecture through the <strong>Elephant-Goldfish Model (EGM)</strong>—catching rate-limit contradictions, security holes, and framework bloat upfront.
+      </p>
+      <div class="step-card">
+        <div class="step-icon">🎯</div>
+        <div class="step-text">
+          <h4>Who This Is For</h4>
+          <p>AI Architects, Staff Engineers, and Tech Leads using AI agents to design and review production systems.</p>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-bar">
+      <div class="author-info"><div class="avatar">AV</div><div><div class="author-name">Alberto E. Vilano Reyna</div><div class="author-title">Senior SDET &amp; AI Quality Engineer • avilano.dev</div></div></div>
+      <div class="cta-pill">Swipe ➔</div>
+    </div>
+  </section>
+
+  <!-- SLIDE 2: THE INDUSTRY STANDARD -->
+  <section class="slide">
+    <div class="top-bar">
+      <div class="eyebrow">THE PROBLEM WITH SINGLE-CONTEXT AI</div>
+      <div class="slide-num">02 / 07</div>
+    </div>
+    <div class="content">
+      <div class="hook-badge">CONFIRMATION BIAS IN LONG CHATS</div>
+      <h2 class="slide-title">Why One Agent<br><span class="highlight-red">Rubber-Stamps Its Own Flaws</span></h2>
+      <p class="lead-text">Asking the same AI session that wrote your design doc to "review it for bugs" fails for two reasons:</p>
+      <div class="step-card danger">
+        <div class="step-icon">🧠</div>
+        <div class="step-text">
+          <h4 style="color:#f87171;">Shared Context = Shared Blindspots</h4>
+          <p>The model remembers why it made compromises earlier in the thread—and rationalizes away missing sections or contradictions.</p>
+        </div>
+      </div>
+      <div class="step-card danger">
+        <div class="step-icon">🌀</div>
+        <div class="step-text">
+          <h4 style="color:#f87171;">Attention Dilution</h4>
+          <p>In a 50-turn conversation, architectural invariants get buried in the middle of the context window.</p>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-bar">
+      <div class="author-info"><div class="avatar">AV</div><div><div class="author-name">Alberto E. Vilano Reyna</div><div class="author-title">avilano.dev</div></div></div>
+      <div class="cta-pill">Swipe ➔</div>
+    </div>
+  </section>
+
+  <!-- SLIDE 3: WHAT THE AUDIT CAUGHT -->
+  <section class="slide">
+    <div class="top-bar">
+      <div class="eyebrow">WHAT THE AUDIT CAUGHT</div>
+      <div class="slide-num">03 / 07</div>
+    </div>
+    <div class="content">
+      <h2 class="slide-title">3 Blockers Caught<br><span class="highlight-red">Before Line 1 of Code</span></h2>
+      <p class="lead-text">Spawning fresh, stateless reviewer personas exposed real flaws our primary context missed:</p>
+      <div class="step-card danger">
+        <div class="step-icon">🧮</div>
+        <div class="step-text">
+          <h4 style="color:#f87171;">1. Rate-Limit Math Contradiction</h4>
+          <p>The spec promised 30 LLM calls in under 90s (20 RPM)—which violated the provider's 15 RPM free-tier ceiling.</p>
+        </div>
+      </div>
+      <div class="step-card danger">
+        <div class="step-icon">🔓</div>
+        <div class="step-text">
+          <h4 style="color:#f87171;">2. Fork PR Secret Exposure</h4>
+          <p>External contributor PRs lack GitHub Actions secrets, meaning live cloud evals would crash every outside contribution.</p>
+        </div>
+      </div>
+      <div class="step-card danger">
+        <div class="step-icon">🔀</div>
+        <div class="step-text">
+          <h4 style="color:#f87171;">3. Doc-vs-Code Drift</h4>
+          <p>The roadmap cited a heavyweight third-party framework while the actual codebase used a lightweight native SDK.</p>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-bar">
+      <div class="author-info"><div class="avatar">AV</div><div><div class="author-name">Alberto E. Vilano Reyna</div><div class="author-title">avilano.dev</div></div></div>
+      <div class="cta-pill">Swipe ➔</div>
+    </div>
+  </section>
+
+  <!-- SLIDE 4: THE SYSTEMS INVARIANT -->
+  <section class="slide">
+    <div class="top-bar">
+      <div class="eyebrow">THE ELEPHANT-GOLDFISH MODEL</div>
+      <div class="slide-num">04 / 07</div>
+    </div>
+    <div class="content">
+      <div class="hook-badge-emerald">COGNITIVE SEPARATION</div>
+      <h2 class="slide-title">Pair Persistent Memory<br><span class="highlight-emerald">With Stateless Critics</span></h2>
+      <p class="lead-text">Separate the builder who holds institutional memory from the critics who audit the artifact cold:</p>
+      <div class="step-card success">
+        <div class="step-icon">🐘</div>
+        <div class="step-text">
+          <h4 style="color:#34d399;">The Elephant (Persistent Resolver)</h4>
+          <p>Primary context with full project history. Synthesizes findings, rejects over-engineering, and applies final fixes.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-icon">🐠</div>
+        <div class="step-text">
+          <h4>The Goldfish (Stateless Auditors)</h4>
+          <p>Ephemeral subagents spawned with <strong>zero chat history</strong>—forced to judge the design doc purely on what is written.</p>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-bar">
+      <div class="author-info"><div class="avatar">AV</div><div><div class="author-name">Alberto E. Vilano Reyna</div><div class="author-title">avilano.dev</div></div></div>
+      <div class="cta-pill">Swipe ➔</div>
+    </div>
+  </section>
+
+  <!-- SLIDE 5: THE 7 PERSONAS -->
+  <section class="slide">
+    <div class="top-bar">
+      <div class="eyebrow">SPECIALIZED AUDITORS</div>
+      <div class="slide-num">05 / 07</div>
+    </div>
+    <div class="content">
+      <h2 class="slide-title">7 Lenses That Stress-Test<br><span class="highlight-sky">Every Architecture Doc</span></h2>
+      <p class="lead-text">Each Goldfish persona enforces one non-negotiable engineering standard:</p>
+      <table class="bench-table">
+        <thead>
+          <tr><th>Persona</th><th>Core Mandate</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Skeptical Architect</strong></td><td>Enforces YAGNI; rejects reviewer bloat (e.g., blocked 3-pass voting)</td></tr>
+          <tr><td><strong>Naive Reader</strong></td><td>Flags unstated assumptions &amp; missing file schemas</td></tr>
+          <tr><td><strong>Hostile Design Critic</strong></td><td>Audits scalability, rate-limit math, and security boundaries</td></tr>
+          <tr><td><strong>Pragmatic Tech Lead</strong></td><td>Enforces Zero-Decision Rule &amp; exit verification commands</td></tr>
+          <tr><td><strong>Codebase Auditor</strong></td><td>Verifies spec-to-code parity &amp; catches framework drift</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="bottom-bar">
+      <div class="author-info"><div class="avatar">AV</div><div><div class="author-name">Alberto E. Vilano Reyna</div><div class="author-title">avilano.dev</div></div></div>
+      <div class="cta-pill">Swipe ➔</div>
+    </div>
+  </section>
+
+  <!-- SLIDE 6: CRUCIAL INTERVENTION -->
+  <section class="slide">
+    <div class="top-bar">
+      <div class="eyebrow">PREVENTING OVER-ENGINEERING</div>
+      <div class="slide-num">06 / 07</div>
+    </div>
+    <div class="content">
+      <h2 class="slide-title">The Zoom-Out Gate:<br><span class="highlight-emerald">Rejecting Reviewer Bloat</span></h2>
+      <p class="lead-text">Critics love suggesting complexity. An intermediate Skeptical Architect pass keeps the core lean:</p>
+      <div class="step-card danger">
+        <div class="step-icon">🚫</div>
+        <div class="step-text">
+          <h4 style="color:#f87171;">Rejected by Skeptical Architect</h4>
+          <p>3-pass majority voting, dynamic token-bucket limiters, and VCR recording fixtures that would triple free-tier API burn.</p>
+        </div>
+      </div>
+      <div class="step-card success">
+        <div class="step-icon">✅</div>
+        <div class="step-text">
+          <h4 style="color:#34d399;">Shipped Instead</h4>
+          <p>Pure sequential pacing (~10–12 RPM), <span class="mono">temperature=0.0</span>, and graceful <span class="mono">pytest.skip</span> on fork PRs.</p>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-bar">
+      <div class="author-info"><div class="avatar">AV</div><div><div class="author-name">Alberto E. Vilano Reyna</div><div class="author-title">avilano.dev</div></div></div>
+      <div class="cta-pill">Swipe ➔</div>
+    </div>
+  </section>
+
+  <!-- SLIDE 7: ACTION CHECKLIST + CTA -->
+  <section class="slide">
+    <div class="top-bar">
+      <div class="eyebrow">DESIGN REVIEW CHECKLIST</div>
+      <div class="slide-num">07 / 07</div>
+    </div>
+    <div class="content">
+      <h2 class="slide-title">3 Rules for AI-Assisted<br><span class="highlight-sky">Architecture Reviews</span></h2>
+      <p class="lead-text">Catch systemic flaws before your team writes production code:</p>
+      <div class="checklist">
+        <div class="check-item"><span class="check-icon">✓</span><span><strong>Review in a fresh context:</strong> Never let the author session grade its own spec.</span></div>
+        <div class="check-item"><span class="check-icon">✓</span><span><strong>Assign adversarial roles:</strong> Separate security, comprehension, and codebase parity checks.</span></div>
+        <div class="check-item"><span class="check-icon">✓</span><span><strong>Add a Zoom-Out gate:</strong> Explicitly reject over-engineered suggestions before implementation.</span></div>
+      </div>
+      <div class="step-card" style="margin-top: 24px; background: #0b1120; border-color: #38bdf8;">
+        <div class="step-text">
+          <h4 style="color:#ffffff; font-size: 20px;">Read the Full EGM Case Study</h4>
+          <p style="color:#94a3b8; font-size: 16px;">Inspect the full 10-stage pipeline and audit findings at <strong>avilano.dev</strong> (link in first comment).</p>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-bar">
+      <div class="author-info"><div class="avatar">AV</div><div><div class="author-name">Alberto E. Vilano Reyna</div><div class="author-title">Follow for AI Systems Architecture • avilano.dev</div></div></div>
+      <div class="cta-pill">Save &amp; Follow ★</div>
+    </div>
+  </section>
+
+</body>
+</html>

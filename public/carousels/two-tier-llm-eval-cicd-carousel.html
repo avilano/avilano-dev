@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Two-Tier Free-Tier LLM Evaluation CI/CD Gate - LinkedIn Carousel</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap');
+
+    @page {
+      size: 1080px 1350px;
+      margin: 0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #060911;
+      color: #f1f5f9;
+      font-family: 'Inter', -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .slide {
+      width: 1080px;
+      height: 1350px;
+      page-break-after: always;
+      position: relative;
+      padding: 80px 84px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: radial-gradient(circle at 85% 15%, rgba(14, 165, 233, 0.08) 0%, transparent 45%),
+                  radial-gradient(circle at 15% 85%, rgba(16, 185, 129, 0.05) 0%, transparent 45%),
+                  #070a12;
+      overflow: hidden;
+      border-bottom: 2px solid #1e293b;
+    }
+
+    /* Subtle grid background */
+    .slide::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 64px 64px;
+      pointer-events: none;
+    }
+
+    /* Top bar */
+    .top-bar {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #38bdf8;
+    }
+
+    .eyebrow-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #38bdf8;
+      box-shadow: 0 0 12px #38bdf8;
+    }
+
+    .slide-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 15px;
+      font-weight: 700;
+      color: #94a3b8;
+      letter-spacing: 0.05em;
+    }
+
+    /* Content Area */
+    .content {
+      position: relative;
+      z-index: 2;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      margin: 36px 0;
+    }
+
+    .hook-badge {
+      display: inline-block;
+      align-self: flex-start;
+      padding: 8px 18px;
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      border-radius: 9999px;
+      color: #f87171;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .hook-badge-emerald {
+      display: inline-block;
+      align-self: flex-start;
+      padding: 8px 18px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      border-radius: 9999px;
+      color: #34d399;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .slide-title {
+      font-size: 48px;
+      line-height: 1.15;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #ffffff;
+      margin-bottom: 20px;
+    }
+
+    .highlight-sky {
+      color: #38bdf8;
+    }
+
+    .highlight-red {
+      color: #f87171;
+    }
+
+    .highlight-emerald {
+      color: #34d399;
+    }
+
+    .lead-text {
+      font-size: 22px;
+      line-height: 1.45;
+      color: #94a3b8;
+      margin-bottom: 32px;
+      font-weight: 400;
+    }
+
+    /* Cards */
+    .step-card {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-bottom: 16px;
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    .step-card.danger {
+      border-color: rgba(239, 68, 68, 0.35);
+      background: rgba(239, 68, 68, 0.05);
+    }
+
+    .step-card.success {
+      border-color: rgba(16, 185, 129, 0.35);
+      background: rgba(16, 185, 129, 0.05);
+    }
+
+    .step-icon {
+      font-size: 26px;
+      line-height: 1;
+      padding-top: 2px;
+    }
+
+    .step-text h4 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    .step-text p {
+      font-size: 17px;
+      line-height: 1.45;
+      color: #cbd5e1;
+    }
+
+    /* Code diff cards */
+    .code-card {
+      background: #05070d;
+      border: 1px solid #1e293b;
+      border-radius: 14px;
+      padding: 22px 26px;
+      margin-bottom: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 15px;
+      line-height: 1.55;
+    }
+
+    .code-card.bad {
+      border-left: 4px solid #ef4444;
+      background: rgba(239, 68, 68, 0.03);
+    }
+
+    .code-card.good {
+      border-left: 4px solid #10b981;
+      background: rgba(16, 185, 129, 0.03);
+    }
+
+    .badge-bad {
+      display: inline-block;
+      color: #f87171;
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .badge-good {
+      display: inline-block;
+      color: #34d399;
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .code-card pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: #e2e8f0;
+    }
+
+    /* Benchmark Table */
+    .bench-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0 24px 0;
+      font-size: 16px;
+      background: rgba(15, 23, 42, 0.7);
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid #1e293b;
+    }
+
+    .bench-table th {
+      text-align: left;
+      padding: 16px 20px;
+      background: rgba(30, 41, 59, 0.7);
+      color: #38bdf8;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 700;
+    }
+
+    .bench-table td {
+      padding: 18px 20px;
+      border-top: 1px solid #1e293b;
+      color: #e2e8f0;
+      vertical-align: top;
+      line-height: 1.45;
+    }
+
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+    }
+
+    /* Checklist */
+    .checklist {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin: 16px 0;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid #1e293b;
+      padding: 18px 22px;
+      border-radius: 12px;
+      font-size: 18px;
+      color: #e2e8f0;
+      line-height: 1.45;
+    }
+
+    .check-icon {
+      color: #34d399;
+      font-weight: 900;
+      font-size: 20px;
+    }
+
+    /* Bottom bar */
+    .bottom-bar {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .author-info {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: #0284c7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 16px;
+      color: white;
+    }
+
+    .author-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .author-title {
+      font-size: 13px;
+      color: #94a3b8;
+    }
+
+    .cta-pill {
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: #38bdf8;
+      padding: 8px 18px;
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== SLIDE 1: COVER ==================== -->
+  <section class="slide">
+    <div class="top-bar">
+      <div class="eyebrow">
+        <span class="eyebrow-dot"></span>
+        <span>AI QUALITY &amp; CI/CD ARCHITECTURE</span>
+      </div>
+      <div class="slide-num">01 / 07</div>
+    </div>
+
+    <div class="content">
+      <div class="hook-badge">⚡ WHY LLM EVALS FAIL IN CI</div>
+      <h1 class="slide-title">
+        Stop Burning LLM<br>
+        <span class="highlight-sky">Tokens in CI/CD</span>
+      </h1>
+      <p class="lead-text">
+        One prompt tweak can silently break production AI features. Yet standard CI evaluation playbooks blow through API quotas and stall pull requests.
+        <br><br>
+        Here is the <strong>Two-Tier Quality Gate</strong> architecture that runs on free-tier limits and catches regressions before merge.
+      </p>
+
+      <div class="step-card">
+        <div class="step-icon">🎯</div>
+        <div class="step-text">
+          <h4>Who This Is For</h4>
+          <p>Engineering Leaders, Tech Leads, and AI Platform Teams shipping LLM features without wanting a runaway CI bill.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-bar">
+      <div class="author-info">
+        <div class="avatar">AV</div>
+        <div>
+          <div class="author-name">Alberto E. Vilano Reyna</div>
+          <div class="author-title">Senior SDET &amp; AI Quality Engineer • avilano.dev</div>
+        </div>
+      </div>
+      <div class="cta-pill">Swipe ➔</div>
+    </div>
+  </section>
+
+  <!-- ==================== SLIDE 2: THE INDUSTRY STANDARD ("THE META") ==================== -->
+  <section class="slide">
+    <div class="top-bar">
+      <div class="eyebrow">THE INDUSTRY STANDARD</div>
+      <div class="slide-num">02 / 07</div>
+    </div>
+
+    <div class="content">
+      <div class="hook-badge">WHAT STANDARD PLAYBOOKS RECOMMEND</div>
+      <h2 class="slide-title">Heavy Frameworks,<br><span class="highlight-red">Retries &amp; Single Keys</span></h2>
+      <p class="lead-text">Most CI/CD guides for LLM apps assume unlimited paid API budgets and treat every test case as an expensive cloud call.</p>
+
+      <div class="step-card danger">
+        <div class="step-icon">🔁</div>
+        <div class="step-text">
+          <h4 style="color:#f87171;">Multi-Pass Voting (<span class="mono">repeat: 3</span>)</h4>
+          <p>To handle non-deterministic outputs, teams run every test 3–5 times in parallel—instantly tripling API calls and rate-limit pressure.</p>
+        </div>
+      </div>
+
+      <div class="step-card danger">
+        <div class="step-icon">🔑</div>
+        <div class="step-text">
+          <h4 style="color:#f87171;">Single-Provider Bottlenecks</h4>
+          <p>Both the app-under-test and the LLM judge hit the exact same API key and quota pool on every pull request.</p>
+        </div>
+      </div>
+
+      <div class="step-card danger">
+        <div class="step-icon">📦</div>
+        <div class="step-text">
+          <h4 style="color:#f87171;">Framework Bloat</h4>
+          <p>Heavyweight eval wrappers pull in hundreds of MBs of dependencies just to assert basic schema and policy rules.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-bar">
+      <div class="author-info">
+        <div class="avatar">AV</div>
+        <div>
+          <div class="author-name">Alberto E. Vilano Reyna</div>
+          <div class="author-title">avilano.dev</div>
+        </div>
+      </div>
+      <div class="cta-pill">Swipe ➔</div>
+    </div>
+  </section>
+
+  <!-- ==================== SLIDE 3: THE HIDDEN PRODUCTION FAILURE ==================== -->
+  <section class="slide">
+    <div class="top-bar">
+      <div class="eyebrow">THE HIDDEN FAILURE</div>
+      <div class="slide-num">03 / 07</div>
+    </div>
+
+    <div class="content">
+      <h2 class="slide-title">3 Ways Standard CI<br><span class="highlight-red">Evals Break at Scale</span></h2>
+      <p class="lead-text">Even a tiny 15-case regression suite (1 generation + 1 judge call = 30 requests) exposes three structural flaws:</p>
+
+      <div class="step-card danger">
+        <div class="step-icon">🛑</div>
+        <div class="step-text">
+          <h4 style="color:#f87171;">1. Instant Rate-Limit Deadlocks (HTTP 429)</h4>
+          <p>Free-tier preview models (like Gemini Flash at <strong>20 requests/day</strong>) halt on the very first test case when generation and judging share one quota.</p>
+        </div>
+      </div>
+
+      <div class="step-card danger">
+        <div class="step-icon">💥</div>
+        <div class="step-text">
+          <h4 style="color:#f87171;">2. Silent JSON Schema Drift</h4>
+          <p>Asking an LLM to <em>"Output valid JSON"</em> still drops required fields in production—crashing downstream microservices that expect strict contracts.</p>
+        </div>
+      </div>
+
+      <div class="step-card danger">
+        <div class="step-icon">🔒</div>
+        <div class="step-text">
+          <h4 style="color:#f87171;">3. Broken External Contributor PRs</h4>
+          <p>GitHub Actions strips API secrets on fork PRs. Without a zero-token local gate, external contributions fail CI before review.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-bar">
+      <div class="author-info">
+        <div class="avatar">AV</div>
+        <div>
+          <div class="author-name">Alberto E. Vilano Reyna</div>
+          <div class="author-title">avilano.dev</div>
+        </div>
+      </div>
+      <div class="cta-pill">Swipe ➔</div>
+    </div>
+  </section>
+
+  <!-- ==================== SLIDE 4: THE CORE SYSTEMS INVARIANT ==================== -->
+  <section class="slide">
+    <div class="top-bar">
+      <div class="eyebrow">THE SYSTEMS INVARIANT</div>
+      <div class="slide-num">04 / 07</div>
+    </div>
+
+    <div class="content">
+      <div class="hook-badge-emerald">ARCHITECTURAL SHIFT</div>
+      <h2 class="slide-title">Decouple Structural<br><span class="highlight-emerald">From Semantic Gates</span></h2>
+      <p class="lead-text">Never burn LLM tokens on what deterministic code can reject in 10 seconds—and never share a quota pool between your app and your judge.</p>
+
+      <div class="step-card success">
+        <div class="step-icon">1️⃣</div>
+        <div class="step-text">
+          <h4 style="color:#34d399;">Tier 1: Zero-Token Fast Gate (&lt; 10s)</h4>
+          <p>Validates JSON schemas, scans for leaked PII (cards, SSNs, keys), and enforces token budgets locally. Runs on 100% of PRs—even forks.</p>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-icon">2️⃣</div>
+        <div class="step-text">
+          <h4>Tier 2: Dual-Provider Semantic Judge</h4>
+          <p>Routes app inference to a high-quota provider (Groq: 14,400 req/day) and isolates quality judging on a separate provider (Gemini).</p>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-icon">💾</div>
+        <div class="step-text">
+          <h4>Deterministic SHA-256 Cache Replay</h4>
+          <p>Unchanged prompts replay from CI cache in under 1 second—consuming <strong>zero API tokens</strong> across repeated commits.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-bar">
+      <div class="author-info">
+        <div class="avatar">AV</div>
+        <div>
+          <div class="author-name">Alberto E. Vilano Reyna</div>
+          <div class="author-title">avilano.dev</div>
+        </div>
+      </div>
+      <div class="cta-pill">Swipe ➔</div>
+    </div>
+  </section>
+
+  <!-- ==================== SLIDE 5: PRODUCTION IMPLEMENTATION DIFF ==================== -->
+  <section class="slide">
+    <div class="top-bar">
+      <div class="eyebrow">PRODUCTION ARCHITECTURE DIFF</div>
+      <div class="slide-num">05 / 07</div>
+    </div>
+
+    <div class="content">
+      <h2 class="slide-title">Grammar-Constrained<br><span class="highlight-sky">Native SDK Judge</span></h2>
+      <p class="lead-text">Replace fragile JSON prompting and heavyweight wrappers with schema-enforced native SDK calls.</p>
+
+      <div class="code-card bad">
+        <span class="badge-bad">❌ Before: Single Quota + Fragile JSON Prompt</span>
+        <pre><span style="color:#94a3b8;"># Both app &amp; judge hit the same 20 req/day limit</span>
+app_model = "gemini-3.8-flash"
+judge     = "gemini-3.8-flash"  <span style="color:#f87171;"># 429 crash + missing fields</span></pre>
+      </div>
+
+      <div class="code-card good">
+        <span class="badge-good">✅ After: Decoupled Providers + Enforced Schema</span>
+        <pre><span style="color:#94a3b8;"># 1. Inference on Groq (14,400 RPD) + SHA-256 cache</span>
+<span style="color:#94a3b8;"># 2. Judge on Gemini with strict Pydantic grammar:</span>
+config = {
+    <span style="color:#a5f3fc;">"response_mime_type"</span>: <span style="color:#a5f3fc;">"application/json"</span>,
+    <span style="color:#a5f3fc;">"response_schema"</span>: TriageResult, <span style="color:#34d399;"># 100% field guarantee</span>
+    <span style="color:#a5f3fc;">"temperature"</span>: <span style="color:#fbbf24;">0.0</span>,
+}</pre>
+      </div>
+
+      <div class="step-card" style="background: rgba(56, 189, 248, 0.08); border-color: rgba(56, 189, 248, 0.3);">
+        <div class="step-icon">⚡</div>
+        <div class="step-text">
+          <h4 style="color:#38bdf8;">70 Lines vs. Hundreds of MBs</h4>
+          <p>Using the native provider SDK directly eliminates third-party eval framework bloat and gives bit-exact schema validation.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-bar">
+      <div class="author-info">
+        <div class="avatar">AV</div>
+        <div>
+          <div class="author-name">Alberto E. Vilano Reyna</div>
+          <div class="author-title">avilano.dev</div>
+        </div>
+      </div>
+      <div class="cta-pill">Swipe ➔</div>
+    </div>
+  </section>
+
+  <!-- ==================== SLIDE 6: EMPIRICAL BENCHMARK PROOF ==================== -->
+  <section class="slide">
+    <div class="top-bar">
+      <div class="eyebrow">EMPIRICAL BENCHMARK PROOF</div>
+      <div class="slide-num">06 / 07</div>
+    </div>
+
+    <div class="content">
+      <h2 class="slide-title">15-Ticket Suite:<br><span class="highlight-emerald">Before vs. After</span></h2>
+      <p class="lead-text">Tested across real enterprise scenarios: P0 outages, PII leaks, billing disputes, and prompt injections.</p>
+
+      <table class="bench-table">
+        <thead>
+          <tr>
+            <th>CI Configuration</th>
+            <th>Runtime</th>
+            <th>Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Single-Provider</strong><br><span style="color:#94a3b8; font-size:14px;">Shared free-tier quota</span></td>
+            <td class="mono" style="color:#f87171;">Halted</td>
+            <td>Crashed on Case 1 (<span class="mono">429</span> daily limit hit)</td>
+          </tr>
+          <tr>
+            <td><strong>Two-Tier Cold Run</strong><br><span style="color:#94a3b8; font-size:14px;">Groq + Gemini Judge</span></td>
+            <td class="mono" style="color:#38bdf8;">3m 08s</td>
+            <td><strong>100%</strong> schema pass; caught <strong>6</strong> subtle prompt regressions</td>
+          </tr>
+          <tr>
+            <td><strong>Two-Tier Cached CI</strong><br><span style="color:#94a3b8; font-size:14px;">GitHub Actions cache</span></td>
+            <td class="mono" style="color:#34d399;">&lt; 1s</td>
+            <td><strong>0</strong> API tokens consumed on unchanged prompts</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="step-card success">
+        <div class="step-icon">🎯</div>
+        <div class="step-text">
+          <h4 style="color:#34d399;">High-Signal Catch Rate</h4>
+          <p>Caught silent escalation drift (e.g., treating routine phishing questions as P0 emergencies) before a single user was impacted.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-bar">
+      <div class="author-info">
+        <div class="avatar">AV</div>
+        <div>
+          <div class="author-name">Alberto E. Vilano Reyna</div>
+          <div class="author-title">avilano.dev</div>
+        </div>
+      </div>
+      <div class="cta-pill">Swipe ➔</div>
+    </div>
+  </section>
+
+  <!-- ==================== SLIDE 7: ACTION CHECKLIST + CTA ==================== -->
+  <section class="slide">
+    <div class="top-bar">
+      <div class="eyebrow">PR AUDIT CHECKLIST</div>
+      <div class="slide-num">07 / 07</div>
+    </div>
+
+    <div class="content">
+      <h2 class="slide-title">3 Rules to Audit<br><span class="highlight-sky">In Today's AI PRs</span></h2>
+      <p class="lead-text">Treat prompts as production software without blowing your CI budget:</p>
+
+      <div class="checklist">
+        <div class="check-item">
+          <span class="check-icon">✓</span>
+          <span><strong>Gate with Tier 1 first (&lt;10s, 0 tokens):</strong> Enforce schemas, PII scans, and token limits before calling any LLM.</span>
+        </div>
+        <div class="check-item">
+          <span class="check-icon">✓</span>
+          <span><strong>Enforce <span class="mono">response_schema</span>:</strong> Use grammar-constrained decoding instead of fragile JSON prompting.</span>
+        </div>
+        <div class="check-item">
+          <span class="check-icon">✓</span>
+          <span><strong>Decouple &amp; Cache:</strong> Separate inference and judge providers, persist SHA-256 caches, and skip live keys on fork PRs.</span>
+        </div>
+      </div>
+
+      <div class="step-card" style="margin-top: 24px; background: #0b1120; border-color: #38bdf8;">
+        <div class="step-text">
+          <h4 style="color:#ffffff; font-size: 20px;">Read the Full Technical Paper</h4>
+          <p style="color:#94a3b8; font-size: 16px;">
+            Inspect the complete Two-Tier CI/CD architecture and 6-case regression breakdown at <strong>avilano.dev</strong> (link in first comment).
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-bar">
+      <div class="author-info">
+        <div class="avatar">AV</div>
+        <div>
+          <div class="author-name">Alberto E. Vilano Reyna</div>
+          <div class="author-title">Follow for Applied AI &amp; SDET Architecture • avilano.dev</div>
+        </div>
+      </div>
+      <div class="cta-pill">Save &amp; Follow ★</div>
+    </div>
+  </section>
+
+</body>
+</html>

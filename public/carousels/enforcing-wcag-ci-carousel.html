@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Enforcing WCAG 2.1 AA in CI with Playwright - LinkedIn Carousel</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap');
+    @page { size: 1080px 1350px; margin: 0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background-color: #060911; color: #f1f5f9; font-family: 'Inter', -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
+    .slide {
+      width: 1080px; height: 1350px; page-break-after: always; position: relative; padding: 80px 84px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      background: radial-gradient(circle at 85% 15%, rgba(14, 165, 233, 0.08) 0%, transparent 45%),
+                  radial-gradient(circle at 15% 85%, rgba(16, 185, 129, 0.05) 0%, transparent 45%), #070a12;
+      overflow: hidden; border-bottom: 2px solid #1e293b;
+    }
+    .slide::before {
+      content: ""; position: absolute; inset: 0;
+      background-image: linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 64px 64px; pointer-events: none;
+    }
+    .top-bar { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #38bdf8; }
+    .eyebrow-dot { width: 8px; height: 8px; border-radius: 50%; background: #38bdf8; box-shadow: 0 0 12px #38bdf8; }
+    .slide-num { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; color: #94a3b8; letter-spacing: 0.05em; }
+    .content { position: relative; z-index: 2; flex: 1; display: flex; flex-direction: column; justify-content: center; margin: 36px 0; }
+    .hook-badge { display: inline-block; align-self: flex-start; padding: 8px 18px; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.35); border-radius: 9999px; color: #f87171; font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 24px; }
+    .hook-badge-emerald { display: inline-block; align-self: flex-start; padding: 8px 18px; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 9999px; color: #34d399; font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 24px; }
+    .slide-title { font-size: 48px; line-height: 1.15; font-weight: 800; letter-spacing: -0.03em; color: #ffffff; margin-bottom: 20px; }
+    .highlight-sky { color: #38bdf8; }
+    .highlight-red { color: #f87171; }
+    .highlight-emerald { color: #34d399; }
+    .lead-text { font-size: 22px; line-height: 1.45; color: #94a3b8; margin-bottom: 32px; font-weight: 400; }
+    .step-card { background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 16px; padding: 24px 28px; margin-bottom: 16px; display: flex; gap: 20px; align-items: flex-start; }
+    .step-card.danger { border-color: rgba(239, 68, 68, 0.35); background: rgba(239, 68, 68, 0.05); }
+    .step-card.success { border-color: rgba(16, 185, 129, 0.35); background: rgba(16, 185, 129, 0.05); }
+    .step-icon { font-size: 26px; line-height: 1; padding-top: 2px; }
+    .step-text h4 { font-size: 20px; font-weight: 700; color: #ffffff; margin-bottom: 6px; }
+    .step-text p { font-size: 17px; line-height: 1.45; color: #cbd5e1; }
+    .code-card { background: #05070d; border: 1px solid #1e293b; border-radius: 14px; padding: 22px 26px; margin-bottom: 16px; font-family: 'JetBrains Mono', monospace; font-size: 15px; line-height: 1.55; }
+    .code-card.bad { border-left: 4px solid #ef4444; background: rgba(239, 68, 68, 0.03); }
+    .code-card.good { border-left: 4px solid #10b981; background: rgba(16, 185, 129, 0.03); }
+    .badge-bad { display: inline-block; color: #f87171; font-weight: 700; font-size: 13px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .badge-good { display: inline-block; color: #34d399; font-weight: 700; font-size: 13px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .code-card pre { white-space: pre-wrap; word-break: break-word; color: #e2e8f0; }
+    .bench-table { width: 100%; border-collapse: collapse; margin: 12px 0 24px 0; font-size: 16px; background: rgba(15, 23, 42, 0.7); border-radius: 14px; overflow: hidden; border: 1px solid #1e293b; }
+    .bench-table th { text-align: left; padding: 16px 20px; background: rgba(30, 41, 59, 0.7); color: #38bdf8; font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; }
+    .bench-table td { padding: 18px 20px; border-top: 1px solid #1e293b; color: #e2e8f0; vertical-align: top; line-height: 1.45; }
+    .mono { font-family: 'JetBrains Mono', monospace; font-size: 14px; }
+    .checklist { display: flex; flex-direction: column; gap: 14px; margin: 16px 0; }
+    .check-item { display: flex; align-items: center; gap: 16px; background: rgba(15, 23, 42, 0.6); border: 1px solid #1e293b; padding: 18px 22px; border-radius: 12px; font-size: 18px; color: #e2e8f0; line-height: 1.45; }
+    .check-icon { color: #34d399; font-weight: 900; font-size: 20px; }
+    .bottom-bar { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; padding-top: 24px; border-top: 1px solid rgba(255, 255, 255, 0.08); }
+    .author-info { display: flex; align-items: center; gap: 14px; }
+    .avatar { width: 44px; height: 44px; border-radius: 10px; background: #0284c7; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; color: white; }
+    .author-name { font-size: 16px; font-weight: 700; color: #ffffff; }
+    .author-title { font-size: 13px; color: #94a3b8; }
+    .cta-pill { background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8; padding: 8px 18px; border-radius: 9999px; font-size: 13px; font-weight: 700; letter-spacing: 0.05em; }
+  </style>
+</head>
+<body>
+
+  <!-- SLIDE 1: COVER -->
+  <section class="slide">
+    <div class="top-bar">
+      <div class="eyebrow"><span class="eyebrow-dot"></span><span>WCAG 2.1 AA CI/CD ARCHITECTURE</span></div>
+      <div class="slide-num">01 / 07</div>
+    </div>
+    <div class="content">
+      <div class="hook-badge">⚖️ ADA TITLE II &amp; HHS SECTION 504</div>
+      <h1 class="slide-title">Enforcing WCAG 2.1 AA<br><span class="highlight-sky">In Under 3 Minutes of CI</span></h1>
+      <p class="lead-text">
+        Static accessibility linters only catch ~35% of defects. Yet teams still spend $25,000 on one-off PDF audits that go stale on the next pull request.
+        <br><br>
+        Here is the <strong>3-Layer Automated Defense</strong> that blocks accessibility regressions before merge.
+      </p>
+      <div class="step-card">
+        <div class="step-icon">🎯</div>
+        <div class="step-text">
+          <h4>Who This Is For</h4>
+          <p>Engineering Leaders, Frontend Architects, and SaaS Teams preparing for enterprise procurement and federal compliance.</p>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-bar">
+      <div class="author-info"><div class="avatar">AV</div><div><div class="author-name">Alberto E. Vilano Reyna</div><div class="author-title">Senior SDET &amp; AI Quality Engineer • avilano.dev</div></div></div>
+      <div class="cta-pill">Swipe ➔</div>
+    </div>
+  </section>
+
+  <!-- SLIDE 2: THE INDUSTRY STANDARD -->
+  <section class="slide">
+    <div class="top-bar">
+      <div class="eyebrow">THE INDUSTRY STANDARD</div>
+      <div class="slide-num">02 / 07</div>
+    </div>
+    <div class="content">
+      <div class="hook-badge">THE TWO FLAWED DEFAULTS</div>
+      <h2 class="slide-title">Overlay Widgets &amp;<br><span class="highlight-red">Stale PDF Audits</span></h2>
+      <p class="lead-text">Most SaaS teams treat accessibility as a one-time checkbox rather than a continuous CI invariant.</p>
+      <div class="step-card danger">
+        <div class="step-icon">🔌</div>
+        <div class="step-text">
+          <h4 style="color:#f87171;">Third-Party Overlay Widgets</h4>
+          <p>Rejected by disability rights groups and federal courts—and an automatic red flag during enterprise vendor security reviews.</p>
+        </div>
+      </div>
+      <div class="step-card danger">
+        <div class="step-icon">📄</div>
+        <div class="step-text">
+          <h4 style="color:#f87171;">$25,000 Point-in-Time PDF Audits</h4>
+          <p>A 100-page manual audit becomes obsolete the moment a developer ships a new modal or refactors a button component.</p>
+        </div>
+      </div>
+      <div class="step-card danger">
+        <div class="step-icon">🔍</div>
+        <div class="step-text">
+          <h4 style="color:#f87171;">Axe-Only CI Checks</h4>
+          <p>Running <span class="mono">@axe-core</span> alone leaves 65% of interactive keyboard and screen-reader failures completely untested.</p>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-bar">
+      <div class="author-info"><div class="avatar">AV</div><div><div class="author-name">Alberto E. Vilano Reyna</div><div class="author-title">avilano.dev</div></div></div>
+      <div class="cta-pill">Swipe ➔</div>
+    </div>
+  </section>
+
+  <!-- SLIDE 3: THE HIDDEN PRODUCTION FAILURE -->
+  <section class="slide">
+    <div class="top-bar">
+      <div class="eyebrow">THE HIDDEN FAILURE</div>
+      <div class="slide-num">03 / 07</div>
+    </div>
+    <div class="content">
+      <h2 class="slide-title">What Static Linters<br><span class="highlight-red">Completely Miss</span></h2>
+      <p class="lead-text">A page can score 100% on a static DOM scan and still be completely unusable for keyboard and screen-reader users:</p>
+      <div class="step-card danger">
+        <div class="step-icon">⌨️</div>
+        <div class="step-text">
+          <h4 style="color:#f87171;">1. Modal Focus Traps (WCAG 2.1.2)</h4>
+          <p>When a dialog opens, pressing <span class="mono">Tab</span> leaks focus into the background page—or <span class="mono">Escape</span> fails to return focus to the trigger button.</p>
+        </div>
+      </div>
+      <div class="step-card danger">
+        <div class="step-icon">🔇</div>
+        <div class="step-text">
+          <h4 style="color:#f87171;">2. Silent Async State Changes (WCAG 4.1.3)</h4>
+          <p>Sighted users see a red error toast or updated cart total; screen-reader users hear dead silence without <span class="mono">aria-live</span> verification.</p>
+        </div>
+      </div>
+      <div class="step-card danger">
+        <div class="step-icon">⏳</div>
+        <div class="step-text">
+          <h4 style="color:#f87171;">3. Silent Regressions Between Audits</h4>
+          <p>Without a PR merge gate, accessibility fixes degrade within weeks of an annual compliance review.</p>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-bar">
+      <div class="author-info"><div class="avatar">AV</div><div><div class="author-name">Alberto E. Vilano Reyna</div><div class="author-title">avilano.dev</div></div></div>
+      <div class="cta-pill">Swipe ➔</div>
+    </div>
+  </section>
+
+  <!-- SLIDE 4: THE CORE SYSTEMS INVARIANT -->
+  <section class="slide">
+    <div class="top-bar">
+      <div class="eyebrow">THE SYSTEMS INVARIANT</div>
+      <div class="slide-num">04 / 07</div>
+    </div>
+    <div class="content">
+      <div class="hook-badge-emerald">THE 3-LAYER CI DEFENSE</div>
+      <h2 class="slide-title">Test Semantics, Keyboard<br><span class="highlight-emerald">&amp; Spoken Audio in CI</span></h2>
+      <p class="lead-text">Treat accessibility like unit testing: automated, layered, and enforced on every pull request.</p>
+      <div class="step-card success">
+        <div class="step-icon">1️⃣</div>
+        <div class="step-text">
+          <h4 style="color:#34d399;">Layer 1: Static DOM Gate (@axe-core/playwright)</h4>
+          <p>Fails the build on any <span class="mono">critical</span> or <span class="mono">serious</span> WCAG 2.1 AA violation and attaches full JSON traces to the report.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-icon">2️⃣</div>
+        <div class="step-text">
+          <h4>Layer 2: Deterministic Keyboard &amp; Focus Traps</h4>
+          <p>Drives <span class="mono">Tab</span> and <span class="mono">Escape</span> via Playwright to prove focus stays inside modals and returns to the trigger on dismiss.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-icon">3️⃣</div>
+        <div class="step-text">
+          <h4>Layer 3: Real Screen-Reader Audio (Guidepup)</h4>
+          <p>Automates native macOS VoiceOver to assert what users actually hear on dynamic live-region updates.</p>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-bar">
+      <div class="author-info"><div class="avatar">AV</div><div><div class="author-name">Alberto E. Vilano Reyna</div><div class="author-title">avilano.dev</div></div></div>
+      <div class="cta-pill">Swipe ➔</div>
+    </div>
+  </section>
+
+  <!-- SLIDE 5: PRODUCTION IMPLEMENTATION DIFF -->
+  <section class="slide">
+    <div class="top-bar">
+      <div class="eyebrow">PRODUCTION IMPLEMENTATION</div>
+      <div class="slide-num">05 / 07</div>
+    </div>
+    <div class="content">
+      <h2 class="slide-title">Beyond Linters:<br><span class="highlight-sky">Keyboard &amp; Audio Gates</span></h2>
+      <p class="lead-text">Pair static Axe scans with deterministic interaction and VoiceOver assertions in Playwright.</p>
+      <div class="code-card bad">
+        <span class="badge-bad">❌ Incomplete: Static DOM Scan Only</span>
+        <pre>const results = await new AxeBuilder({ page }).analyze();
+expect(results.violations).toEqual([]); <span style="color:#f87171;">// Misses 65% of UX flaws</span></pre>
+      </div>
+      <div class="code-card good">
+        <span class="badge-good">✅ Complete: Focus Restoration + Spoken Audio</span>
+        <pre><span style="color:#94a3b8;">// Layer 2: Assert Escape restores focus to trigger</span>
+await page.keyboard.press(<span style="color:#a5f3fc;">'Escape'</span>);
+await expect(triggerButton).toBeFocused();
+
+<span style="color:#94a3b8;">// Layer 3: Assert VoiceOver announces live update</span>
+const spoken = await voiceOver.itemText();
+expect(spoken).toMatch(<span style="color:#a5f3fc;">/cart updated|1 item added/i</span>);</pre>
+      </div>
+    </div>
+    <div class="bottom-bar">
+      <div class="author-info"><div class="avatar">AV</div><div><div class="author-name">Alberto E. Vilano Reyna</div><div class="author-title">avilano.dev</div></div></div>
+      <div class="cta-pill">Swipe ➔</div>
+    </div>
+  </section>
+
+  <!-- SLIDE 6: EMPIRICAL BENCHMARK PROOF -->
+  <section class="slide">
+    <div class="top-bar">
+      <div class="eyebrow">OPERATIONAL IMPACT</div>
+      <div class="slide-num">06 / 07</div>
+    </div>
+    <div class="content">
+      <h2 class="slide-title">Continuous Compliance<br><span class="highlight-emerald">At PR Velocity</span></h2>
+      <p class="lead-text">How the 3-layer Playwright gate compares to legacy compliance workflows:</p>
+      <table class="bench-table">
+        <thead>
+          <tr><th>Approach</th><th>Coverage</th><th>Feedback Loop</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Overlay Widgets</strong></td><td style="color:#f87171;">0% Legal Immunity</td><td>Fails enterprise audits</td></tr>
+          <tr><td><strong>Manual PDF Audit</strong></td><td style="color:#fbbf24;">Point-in-time</td><td>Stale on next deploy ($25k)</td></tr>
+          <tr><td><strong>3-Layer Playwright CI</strong></td><td style="color:#34d399;"><strong>DOM + Keyboard + Audio</strong></td><td><strong>&lt; 3 min</strong> on every PR</td></tr>
+        </tbody>
+      </table>
+      <div class="step-card success">
+        <div class="step-icon">🚀</div>
+        <div class="step-text">
+          <h4 style="color:#34d399;">Unblocks Enterprise Procurement</h4>
+          <p>Every pull request generates attachable JSON compliance traces—giving RFP and security teams verifiable proof.</p>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-bar">
+      <div class="author-info"><div class="avatar">AV</div><div><div class="author-name">Alberto E. Vilano Reyna</div><div class="author-title">avilano.dev</div></div></div>
+      <div class="cta-pill">Swipe ➔</div>
+    </div>
+  </section>
+
+  <!-- SLIDE 7: ACTION CHECKLIST + CTA -->
+  <section class="slide">
+    <div class="top-bar">
+      <div class="eyebrow">PR AUDIT CHECKLIST</div>
+      <div class="slide-num">07 / 07</div>
+    </div>
+    <div class="content">
+      <h2 class="slide-title">3 Gates to Add<br><span class="highlight-sky">To Your CI Pipeline</span></h2>
+      <p class="lead-text">Shift accessibility left before 2026–2027 enforcement deadlines hit:</p>
+      <div class="checklist">
+        <div class="check-item"><span class="check-icon">✓</span><span><strong>Fail PRs on critical/serious Axe violations</strong> with <span class="mono">wcag21aa</span> tags enabled.</span></div>
+        <div class="check-item"><span class="check-icon">✓</span><span><strong>Test modal focus traps &amp; Escape restoration</strong> using Playwright keyboard assertions.</span></div>
+        <div class="check-item"><span class="check-icon">✓</span><span><strong>Verify dynamic <span class="mono">aria-live</span> announcements</strong> with Guidepup VoiceOver audio checks.</span></div>
+      </div>
+      <div class="step-card" style="margin-top: 24px; background: #0b1120; border-color: #38bdf8;">
+        <div class="step-text">
+          <h4 style="color:#ffffff; font-size: 20px;">Read the Full Implementation Guide</h4>
+          <p style="color:#94a3b8; font-size: 16px;">Get the composable Playwright fixtures and CI setup at <strong>avilano.dev</strong> (link in first comment).</p>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-bar">
+      <div class="author-info"><div class="avatar">AV</div><div><div class="author-name">Alberto E. Vilano Reyna</div><div class="author-title">Follow for WCAG &amp; Playwright Architecture • avilano.dev</div></div></div>
+      <div class="cta-pill">Save &amp; Follow ★</div>
+    </div>
+  </section>
+
+</body>
+</html>
