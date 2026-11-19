@@ -52,6 +52,24 @@ test.describe('Header navigation', () => {
     // Verify header CTA on /blog points back to /#book-call
     const ctaLink = page.locator('header a[href="/#book-call"]');
     await expect(ctaLink).toBeVisible();
+
+    // Verify /blog has no horizontal overflow and all tag pills stay inside their article cards
+    const blogLayout = await page.evaluate(() => {
+      const hasOverflow =
+        document.documentElement.scrollWidth > document.documentElement.clientWidth;
+      const clippedPills: string[] = [];
+      for (const article of document.querySelectorAll('article')) {
+        const cardRight = article.getBoundingClientRect().right;
+        for (const pill of article.querySelectorAll('span.whitespace-nowrap')) {
+          if (pill.getBoundingClientRect().right > cardRight + 1) {
+            clippedPills.push(pill.textContent?.trim() ?? '');
+          }
+        }
+      }
+      return { hasOverflow, clippedPills };
+    });
+    expect(blogLayout.hasOverflow).toBe(false);
+    expect(blogLayout.clippedPills).toEqual([]);
   });
 
   test('desktop navigation renders inline without mobile menu button', async ({

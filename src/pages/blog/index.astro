@@ -71,10 +71,10 @@ const blogBreadcrumbs = {
             </time>
             <span>•</span>
             <span>{post.data.readTime}</span>
-            <span>•</span>
-            <div class="flex gap-2">
+            <span class="hidden sm:inline">•</span>
+            <div class="flex flex-wrap items-center gap-2">
               {post.data.tags.map((tag) => (
-                <span class="px-2 py-0.5 rounded bg-dark-700 text-slate-300 text-[11px]">
+                <span class="px-2 py-0.5 rounded bg-dark-700 text-slate-300 text-[11px] whitespace-nowrap">
                   {tag}
                 </span>
               ))}
