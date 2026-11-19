@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+set -eu
+
+echo "[pre-commit] Running Astro typecheck and unit/component tests..."
+ASTRO_TELEMETRY_DISABLED=1 npx astro check
+npm run test:unit

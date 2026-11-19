@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+set -eu
+
+echo "[pre-push] Building site and running Playwright E2E suite..."
+ASTRO_TELEMETRY_DISABLED=1 npm run build
+npm run test:e2e

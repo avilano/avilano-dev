@@ -1,9 +1,12 @@
 ---
+import { PRIMARY_NAV_LINKS, HEADER_CTA, isCurrentPage } from '../data/navigation';
+
+const currentPath = Astro.url.pathname;
 ---
-<header class="sticky top-0 z-40 w-full border-b border-dark-700/60 bg-dark-900/80 backdrop-blur-md">
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+<header class="site-header sticky top-0 z-40 w-full border-b border-dark-700/60 bg-dark-900/80 backdrop-blur-md">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
     <!-- Brand / Logo -->
-    <a href="/" class="flex items-center gap-2 group">
+    <a href="/" class="flex items-center gap-2 group shrink-0">
       <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center font-mono font-bold text-white shadow-md shadow-brand-500/20 group-hover:scale-105 transition-transform">
         a.
       </div>
@@ -12,23 +15,268 @@
       </span>
     </a>
 
-    <!-- Nav Links -->
-    <nav class="hidden md:flex items-center gap-7 text-sm font-medium text-slate-300">
-      <a href="/#services" class="hover:text-white transition-colors">Services & Pricing</a>
-      <a href="/products" class="hover:text-white transition-colors">Digital Kits</a>
-      <a href="/#standards" class="hover:text-white transition-colors">WCAG Standards</a>
-      <a href="/blog" class="hover:text-white transition-colors">Articles</a>
-      <a href="/#faq" class="hover:text-white transition-colors">FAQ</a>
+    <!-- Single semantic Primary Navigation landmark for both mobile popover and desktop inline -->
+    <nav class="site-nav flex items-center md:flex-1 md:justify-center order-3 md:order-2" aria-label="Primary">
+      <button
+        type="button"
+        class="menu-button inline-flex items-center justify-center gap-1.5 min-h-[44px] min-w-[44px] px-3 py-2 rounded-lg border border-dark-700/80 bg-dark-800/80 text-sm font-medium text-slate-200 hover:text-white hover:border-brand-500/50 transition-colors cursor-pointer"
+        popovertarget="site-menu"
+        popovertargetaction="toggle"
+        aria-controls="site-menu"
+        aria-expanded="false"
+      >
+        <svg class="menu-icon-open w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="4" y1="7" x2="20" y2="7" />
+          <line x1="4" y1="12" x2="20" y2="12" />
+          <line x1="4" y1="17" x2="20" y2="17" />
+        </svg>
+        <svg class="menu-icon-close w-5 h-5 shrink-0 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+        <span>Menu</span>
+      </button>
+
+      <ul id="site-menu" class="site-menu" popover="auto">
+        {PRIMARY_NAV_LINKS.map((link) => {
+          const active = isCurrentPage(link.href, currentPath);
+          return (
+            <li>
+              <a
+                href={link.href}
+                aria-current={active ? 'page' : undefined}
+                class="site-menu-link"
+              >
+                {link.label}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
     </nav>
 
     <!-- Header CTA -->
-    <div class="flex items-center gap-3">
+    <div class="flex items-center shrink-0 order-2 md:order-3">
       <a
-        href="#book-call"
-        class="inline-flex items-center justify-center px-4 py-2 text-xs sm:text-sm font-medium rounded-lg text-white bg-gradient-to-r from-brand-500 to-indigo-600 hover:from-brand-600 hover:to-indigo-700 shadow-md shadow-brand-500/10 transition-all hover:scale-[1.02]"
+        href={HEADER_CTA.href}
+        class="inline-flex items-center justify-center min-h-[44px] sm:min-h-0 px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-lg text-white bg-gradient-to-r from-brand-500 to-indigo-600 hover:from-brand-600 hover:to-indigo-700 shadow-md shadow-brand-500/10 transition-all hover:scale-[1.02] whitespace-nowrap"
       >
-        Book a 15-Min Fit Call
+        <span class="sm:hidden">{HEADER_CTA.shortLabel}</span>
+        <span class="hidden sm:inline">{HEADER_CTA.fullLabel}</span>
       </a>
     </div>
   </div>
 </header>
+
+<style is:global>
+  .site-header .menu-button {
+    anchor-name: --menu-button;
+  }
+
+  .site-header .menu-button[aria-expanded="true"] .menu-icon-open {
+    display: none;
+  }
+
+  .site-header .menu-button[aria-expanded="true"] .menu-icon-close {
+    display: block;
+  }
+
+  /* Narrow layout: top-layer native popover anchored below the menu button */
+  .site-header .site-menu {
+    position: fixed;
+    inset: auto;
+    inset-block-start: 4.5rem;
+    inset-block-start: anchor(--menu-button bottom);
+    inset-inline-end: 1rem;
+    inline-size: min(85dvw, 20rem);
+    max-inline-size: calc(100dvw - 2rem);
+    block-size: fit-content;
+    max-block-size: calc(100dvh - 5.5rem);
+    margin: 0;
+    margin-block-start: 0.5rem;
+    padding: 0.5rem;
+    overflow: auto;
+    list-style: none;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(51, 65, 85, 0.85);
+    background-color: rgba(9, 13, 22, 0.98);
+    color: #e2e8f0;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.55);
+  }
+
+  .site-header .site-menu:not(:is(:popover-open, .\:popover-open)) {
+    display: none;
+  }
+
+  .site-header .site-menu:is(:popover-open, .\:popover-open) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .site-header .site-menu::backdrop {
+    background: rgba(3, 7, 18, 0.55);
+  }
+
+  .site-header .site-menu-link {
+    display: flex;
+    align-items: center;
+    min-block-size: 44px;
+    padding-inline: 0.875rem;
+    padding-block: 0.5rem;
+    border-radius: 0.5rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: #cbd5e1;
+    text-decoration: none;
+    transition: color 150ms ease, background-color 150ms ease;
+  }
+
+  .site-header .site-menu-link:hover {
+    color: #ffffff;
+    background-color: rgba(30, 41, 59, 0.75);
+  }
+
+  .site-header .site-menu-link[aria-current="page"] {
+    color: #ffffff;
+    font-weight: 600;
+    background-color: rgba(30, 41, 59, 0.8);
+    border-inline-start: 3px solid #38bdf8;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .site-header .site-menu {
+      opacity: 0;
+      translate: 0 -0.5rem;
+      transition: opacity 150ms ease, translate 150ms ease, display 150ms ease, overlay 150ms ease;
+      transition-behavior: allow-discrete;
+    }
+
+    .site-header .site-menu:is(:popover-open, .\:popover-open) {
+      opacity: 1;
+      translate: 0 0;
+    }
+
+    @starting-style {
+      .site-header .site-menu:is(:popover-open, .\:popover-open) {
+        opacity: 0;
+        translate: 0 -0.5rem;
+      }
+    }
+  }
+
+  /* Wide layout (>= 768px): inline navigation with zero CLS */
+  @media (min-width: 768px) {
+    .site-header .menu-button {
+      display: none;
+    }
+
+    .site-header .site-menu,
+    .site-header .site-menu:not(:is(:popover-open, .\:popover-open)) {
+      position: static;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 1.75rem;
+      inline-size: auto;
+      max-inline-size: none;
+      block-size: auto;
+      max-block-size: none;
+      margin: 0;
+      padding: 0;
+      overflow: visible;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      opacity: 1;
+      translate: none;
+    }
+
+    .site-header .site-menu::backdrop {
+      display: none;
+    }
+
+    .site-header .site-menu-link {
+      min-block-size: auto;
+      padding: 0.25rem 0;
+      border-radius: 0.25rem;
+      font-size: 0.875rem;
+      background: transparent;
+    }
+
+    .site-header .site-menu-link:hover {
+      background: transparent;
+      color: #ffffff;
+    }
+
+    .site-header .site-menu-link[aria-current="page"] {
+      background: transparent;
+      border-inline-start: 0;
+      text-decoration: underline;
+      text-decoration-color: #38bdf8;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 6px;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .site-header .site-menu {
+      border: 1px solid CanvasText;
+    }
+
+    .site-header .site-menu-link[aria-current="page"] {
+      border-inline-start-color: Highlight;
+      text-decoration: underline;
+    }
+  }
+</style>
+
+<script>
+  const menu = document.getElementById('site-menu');
+  const button = document.querySelector<HTMLButtonElement>('.site-header .menu-button');
+
+  if (menu && button) {
+    const desktopQuery = window.matchMedia('(min-width: 768px)');
+    const supportsPopover = Object.hasOwn(HTMLElement.prototype, 'popover');
+
+    const syncLayout = () => {
+      if (desktopQuery.matches) {
+        if (supportsPopover && menu.matches(':popover-open')) {
+          menu.hidePopover();
+        }
+        menu.classList.remove(':popover-open');
+        menu.removeAttribute('popover');
+        button.setAttribute('aria-expanded', 'false');
+      } else {
+        menu.setAttribute('popover', 'auto');
+      }
+    };
+
+    syncLayout();
+    desktopQuery.addEventListener('change', syncLayout);
+
+    if (supportsPopover) {
+      menu.addEventListener('toggle', (event) => {
+        const toggleEvent = event as ToggleEvent;
+        button.setAttribute('aria-expanded', String(toggleEvent.newState === 'open'));
+      });
+    } else {
+      button.addEventListener('click', () => {
+        const isOpen = menu.classList.toggle(':popover-open');
+        button.setAttribute('aria-expanded', String(isOpen));
+      });
+    }
+
+    menu.addEventListener('click', (event) => {
+      const target = event.target as HTMLElement | null;
+      if (!target?.closest('a')) return;
+      if (supportsPopover && menu.hasAttribute('popover') && menu.matches(':popover-open')) {
+        menu.hidePopover();
+      } else if (!supportsPopover) {
+        menu.classList.remove(':popover-open');
+        button.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+</script>
