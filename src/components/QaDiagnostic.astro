@@ -1,0 +1,1019 @@
+<section
+  id="qa-diagnostic"
+  class="py-20 md:py-28 relative scroll-reveal"
+  aria-labelledby="qa-diagnostic-heading"
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6">
+    <!-- Section Header -->
+    <div class="text-left max-w-2xl mb-10">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md border border-brand-500/30 bg-brand-500/10 text-brand-400 text-xs font-mono font-medium mb-3">
+        <span class="w-2 h-2 rounded-full bg-brand-400" aria-hidden="true"></span>
+        <span>2-Minute Interactive Assessment</span>
+      </div>
+      <h2 id="qa-diagnostic-heading" class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+        QA & CI Pipeline Readiness Diagnostic
+      </h2>
+      <p class="mt-3 text-slate-300 text-sm sm:text-base leading-relaxed">
+        Score your release pipeline across CI speed, pre-merge gating, and WCAG 2.1 AA / AI safety gates. Get an instant 100-point scorecard, weekly engineering hours lost, and a tailored remediation path.
+      </p>
+    </div>
+
+    <!-- Main Diagnostic Card -->
+    <div class="rounded-2xl border border-dark-700 bg-dark-900/90 p-6 sm:p-10 shadow-2xl overflow-hidden">
+      <!-- Progress Bar Header (hidden on results view) -->
+      <div id="diag-progress-header" class="mb-8 pb-6 border-b border-dark-800">
+        <div class="flex items-center justify-between text-xs font-mono mb-3">
+          <span id="diag-step-label" class="text-brand-400 font-semibold uppercase tracking-wider">
+            Step 1 of 5: CI Speed & Determinism
+          </span>
+          <span id="diag-step-percent" class="text-slate-400">20%</span>
+        </div>
+        <div
+          class="w-full h-2 rounded-full bg-dark-800 overflow-hidden"
+          role="progressbar"
+          aria-label="Diagnostic completion progress"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow="20"
+          id="diag-progress-bar-track"
+        >
+          <div
+            id="diag-progress-bar-fill"
+            class="h-full bg-gradient-to-r from-brand-500 to-indigo-500 rounded-full transition-all duration-300"
+            style="width: 20%"
+          ></div>
+        </div>
+      </div>
+
+      <!-- Validation / Status Live Region -->
+      <div
+        id="diag-error"
+        role="alert"
+        aria-live="assertive"
+        class="hidden mb-6 p-3.5 rounded-xl border border-rose-500/40 bg-rose-950/30 text-rose-200 text-xs sm:text-sm font-medium"
+      ></div>
+
+      <!-- Multi-Step Form -->
+      <form id="diag-form" novalidate>
+        <!-- STEP 1: CI Speed & Determinism (0-40 pts) -->
+        <div class="diag-step" data-step="1">
+          <fieldset>
+            <legend class="text-lg sm:text-xl font-bold text-white mb-2">
+              How long does your full E2E / CI suite take, and how often do flakes block merges?
+            </legend>
+            <p class="text-xs sm:text-sm text-slate-400 mb-6">
+              Measures CI speed, determinism, and developer merge friction (up to 40 points).
+            </p>
+            <div class="grid grid-cols-1 gap-3">
+              <label class="block cursor-pointer">
+                <input type="radio" name="ci_speed" value="40" data-label="< 10 min, rarely flakes" class="sr-only peer" />
+                <div class="p-4 rounded-xl border border-dark-700 bg-dark-800/60 hover:bg-dark-800 hover:border-dark-600 peer-checked:border-brand-400 peer-checked:bg-brand-500/10 peer-focus-visible:ring-2 peer-focus-visible:ring-brand-400 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-dark-900 transition-colors flex items-center justify-between gap-4">
+                  <span class="text-sm font-medium text-slate-100">&lt; 10 min, rarely flakes</span>
+                  <span class="text-xs font-mono text-slate-400 shrink-0">Fast & Deterministic</span>
+                </div>
+              </label>
+
+              <label class="block cursor-pointer">
+                <input type="radio" name="ci_speed" value="24" data-label="10-30 min, occasional reruns" class="sr-only peer" />
+                <div class="p-4 rounded-xl border border-dark-700 bg-dark-800/60 hover:bg-dark-800 hover:border-dark-600 peer-checked:border-brand-400 peer-checked:bg-brand-500/10 peer-focus-visible:ring-2 peer-focus-visible:ring-brand-400 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-dark-900 transition-colors flex items-center justify-between gap-4">
+                  <span class="text-sm font-medium text-slate-100">10-30 min, occasional reruns</span>
+                  <span class="text-xs font-mono text-slate-400 shrink-0">Moderate Drag</span>
+                </div>
+              </label>
+
+              <label class="block cursor-pointer">
+                <input type="radio" name="ci_speed" value="8" data-label="30-60+ min or frequent flaky failures" class="sr-only peer" />
+                <div class="p-4 rounded-xl border border-dark-700 bg-dark-800/60 hover:bg-dark-800 hover:border-dark-600 peer-checked:border-brand-400 peer-checked:bg-brand-500/10 peer-focus-visible:ring-2 peer-focus-visible:ring-brand-400 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-dark-900 transition-colors flex items-center justify-between gap-4">
+                  <span class="text-sm font-medium text-slate-100">30-60+ min or frequent flaky failures</span>
+                  <span class="text-xs font-mono text-slate-400 shrink-0">High Merge Drag</span>
+                </div>
+              </label>
+
+              <label class="block cursor-pointer">
+                <input type="radio" name="ci_speed" value="4" data-label="No automated E2E suite yet" class="sr-only peer" />
+                <div class="p-4 rounded-xl border border-dark-700 bg-dark-800/60 hover:bg-dark-800 hover:border-dark-600 peer-checked:border-brand-400 peer-checked:bg-brand-500/10 peer-focus-visible:ring-2 peer-focus-visible:ring-brand-400 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-dark-900 transition-colors flex items-center justify-between gap-4">
+                  <span class="text-sm font-medium text-slate-100">No automated E2E suite yet</span>
+                  <span class="text-xs font-mono text-slate-400 shrink-0">Greenfield</span>
+                </div>
+              </label>
+            </div>
+          </fieldset>
+        </div>
+
+        <!-- STEP 2: Pre-Merge Release Gating (0-35 pts) -->
+        <div class="diag-step hidden" data-step="2">
+          <fieldset>
+            <legend class="text-lg sm:text-xl font-bold text-white mb-2">
+              How are critical user flows verified before merging to production?
+            </legend>
+            <p class="text-xs sm:text-sm text-slate-400 mb-6">
+              Measures regression protection before code reaches production (up to 35 points).
+            </p>
+            <div class="grid grid-cols-1 gap-3">
+              <label class="block cursor-pointer">
+                <input type="radio" name="release_gate" value="35" data-label="Automated E2E PR gate (sharded)" class="sr-only peer" />
+                <div class="p-4 rounded-xl border border-dark-700 bg-dark-800/60 hover:bg-dark-800 hover:border-dark-600 peer-checked:border-brand-400 peer-checked:bg-brand-500/10 peer-focus-visible:ring-2 peer-focus-visible:ring-brand-400 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-dark-900 transition-colors flex items-center justify-between gap-4">
+                  <span class="text-sm font-medium text-slate-100">Automated E2E PR gate (sharded)</span>
+                  <span class="text-xs font-mono text-slate-400 shrink-0">Pre-Merge Gate</span>
+                </div>
+              </label>
+
+              <label class="block cursor-pointer">
+                <input type="radio" name="release_gate" value="20" data-label="Automated suite runs nightly / post-merge only" class="sr-only peer" />
+                <div class="p-4 rounded-xl border border-dark-700 bg-dark-800/60 hover:bg-dark-800 hover:border-dark-600 peer-checked:border-brand-400 peer-checked:bg-brand-500/10 peer-focus-visible:ring-2 peer-focus-visible:ring-brand-400 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-dark-900 transition-colors flex items-center justify-between gap-4">
+                  <span class="text-sm font-medium text-slate-100">Automated suite runs nightly / post-merge only</span>
+                  <span class="text-xs font-mono text-slate-400 shrink-0">Delayed Feedback</span>
+                </div>
+              </label>
+
+              <label class="block cursor-pointer">
+                <input type="radio" name="release_gate" value="10" data-label="Manual QA / spot-checks before release" class="sr-only peer" />
+                <div class="p-4 rounded-xl border border-dark-700 bg-dark-800/60 hover:bg-dark-800 hover:border-dark-600 peer-checked:border-brand-400 peer-checked:bg-brand-500/10 peer-focus-visible:ring-2 peer-focus-visible:ring-brand-400 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-dark-900 transition-colors flex items-center justify-between gap-4">
+                  <span class="text-sm font-medium text-slate-100">Manual QA / spot-checks before release</span>
+                  <span class="text-xs font-mono text-slate-400 shrink-0">Manual Bottleneck</span>
+                </div>
+              </label>
+
+              <label class="block cursor-pointer">
+                <input type="radio" name="release_gate" value="5" data-label="Unit tests only / ship and monitor" class="sr-only peer" />
+                <div class="p-4 rounded-xl border border-dark-700 bg-dark-800/60 hover:bg-dark-800 hover:border-dark-600 peer-checked:border-brand-400 peer-checked:bg-brand-500/10 peer-focus-visible:ring-2 peer-focus-visible:ring-brand-400 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-dark-900 transition-colors flex items-center justify-between gap-4">
+                  <span class="text-sm font-medium text-slate-100">Unit tests only / ship and monitor</span>
+                  <span class="text-xs font-mono text-slate-400 shrink-0">High Regression Risk</span>
+                </div>
+              </label>
+            </div>
+          </fieldset>
+        </div>
+
+        <!-- STEP 3: WCAG 2.1 AA & AI Safety Gates (0-25 pts) -->
+        <div class="diag-step hidden" data-step="3">
+          <fieldset>
+            <legend class="text-lg sm:text-xl font-bold text-white mb-2">
+              How are WCAG 2.1 AA accessibility or AI/LLM outputs verified in CI?
+            </legend>
+            <p class="text-xs sm:text-sm text-slate-400 mb-6">
+              Measures automated compliance and non-deterministic output guardrails (up to 25 points).
+            </p>
+            <div class="grid grid-cols-1 gap-3">
+              <label class="block cursor-pointer">
+                <input type="radio" name="wcag_ai" value="25" data-label="Automated CI gates (@axe-core / LLM evals)" class="sr-only peer" />
+                <div class="p-4 rounded-xl border border-dark-700 bg-dark-800/60 hover:bg-dark-800 hover:border-dark-600 peer-checked:border-brand-400 peer-checked:bg-brand-500/10 peer-focus-visible:ring-2 peer-focus-visible:ring-brand-400 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-dark-900 transition-colors flex items-center justify-between gap-4">
+                  <span class="text-sm font-medium text-slate-100">Automated CI gates (@axe-core / LLM evals)</span>
+                  <span class="text-xs font-mono text-slate-400 shrink-0">Continuous Guardrails</span>
+                </div>
+              </label>
+
+              <label class="block cursor-pointer">
+                <input type="radio" name="wcag_ai" value="12" data-label="Periodic manual audits / ad-hoc checks" class="sr-only peer" />
+                <div class="p-4 rounded-xl border border-dark-700 bg-dark-800/60 hover:bg-dark-800 hover:border-dark-600 peer-checked:border-brand-400 peer-checked:bg-brand-500/10 peer-focus-visible:ring-2 peer-focus-visible:ring-brand-400 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-dark-900 transition-colors flex items-center justify-between gap-4">
+                  <span class="text-sm font-medium text-slate-100">Periodic manual audits / ad-hoc checks</span>
+                  <span class="text-xs font-mono text-slate-400 shrink-0">Drift Between Audits</span>
+                </div>
+              </label>
+
+              <label class="block cursor-pointer">
+                <input type="radio" name="wcag_ai" value="4" data-label="Not tested systematically yet" class="sr-only peer" />
+                <div class="p-4 rounded-xl border border-dark-700 bg-dark-800/60 hover:bg-dark-800 hover:border-dark-600 peer-checked:border-brand-400 peer-checked:bg-brand-500/10 peer-focus-visible:ring-2 peer-focus-visible:ring-brand-400 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-dark-900 transition-colors flex items-center justify-between gap-4">
+                  <span class="text-sm font-medium text-slate-100">Not tested systematically yet</span>
+                  <span class="text-xs font-mono text-slate-400 shrink-0">Unverified Exposure</span>
+                </div>
+              </label>
+            </div>
+          </fieldset>
+        </div>
+
+        <!-- STEP 4: Routing & ROI -->
+        <div class="diag-step hidden" data-step="4">
+          <div class="space-y-6">
+            <fieldset>
+              <legend class="text-base sm:text-lg font-bold text-white mb-3">
+                Primary Friction Point
+              </legend>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <label class="block cursor-pointer">
+                  <input type="radio" name="primary_friction" value="Flaky tests blocking PR merges" class="sr-only peer" />
+                  <div class="p-3.5 rounded-xl border border-dark-700 bg-dark-800/60 hover:bg-dark-800 hover:border-dark-600 peer-checked:border-brand-400 peer-checked:bg-brand-500/10 peer-focus-visible:ring-2 peer-focus-visible:ring-brand-400 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-dark-900 transition-colors">
+                    <span class="text-sm font-medium text-slate-100">Flaky tests blocking PR merges</span>
+                  </div>
+                </label>
+
+                <label class="block cursor-pointer">
+                  <input type="radio" name="primary_friction" value="Slow CI / Cypress or Selenium" class="sr-only peer" />
+                  <div class="p-3.5 rounded-xl border border-dark-700 bg-dark-800/60 hover:bg-dark-800 hover:border-dark-600 peer-checked:border-brand-400 peer-checked:bg-brand-500/10 peer-focus-visible:ring-2 peer-focus-visible:ring-brand-400 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-dark-900 transition-colors">
+                    <span class="text-sm font-medium text-slate-100">Slow CI / Cypress or Selenium</span>
+                  </div>
+                </label>
+
+                <label class="block cursor-pointer">
+                  <input type="radio" name="primary_friction" value="WCAG 2.1 AA / ADA Title II gaps" class="sr-only peer" />
+                  <div class="p-3.5 rounded-xl border border-dark-700 bg-dark-800/60 hover:bg-dark-800 hover:border-dark-600 peer-checked:border-brand-400 peer-checked:bg-brand-500/10 peer-focus-visible:ring-2 peer-focus-visible:ring-brand-400 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-dark-900 transition-colors">
+                    <span class="text-sm font-medium text-slate-100">WCAG 2.1 AA / ADA Title II gaps</span>
+                  </div>
+                </label>
+
+                <label class="block cursor-pointer">
+                  <input type="radio" name="primary_friction" value="Unreliable AI/LLM agent outputs" class="sr-only peer" />
+                  <div class="p-3.5 rounded-xl border border-dark-700 bg-dark-800/60 hover:bg-dark-800 hover:border-dark-600 peer-checked:border-brand-400 peer-checked:bg-brand-500/10 peer-focus-visible:ring-2 peer-focus-visible:ring-brand-400 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-dark-900 transition-colors">
+                    <span class="text-sm font-medium text-slate-100">Unreliable AI/LLM agent outputs</span>
+                  </div>
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend class="text-base sm:text-lg font-bold text-white mb-3">
+                Engineering Scale (Active Engineers)
+              </legend>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <label class="block cursor-pointer">
+                  <input type="radio" name="team_scale" value="1-10" class="sr-only peer" />
+                  <div class="p-3 rounded-xl border border-dark-700 bg-dark-800/60 hover:bg-dark-800 hover:border-dark-600 peer-checked:border-brand-400 peer-checked:bg-brand-500/10 peer-focus-visible:ring-2 peer-focus-visible:ring-brand-400 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-dark-900 transition-colors text-center">
+                    <span class="text-sm font-mono font-semibold text-slate-100">1-10</span>
+                  </div>
+                </label>
+
+                <label class="block cursor-pointer">
+                  <input type="radio" name="team_scale" value="11-40" class="sr-only peer" />
+                  <div class="p-3 rounded-xl border border-dark-700 bg-dark-800/60 hover:bg-dark-800 hover:border-dark-600 peer-checked:border-brand-400 peer-checked:bg-brand-500/10 peer-focus-visible:ring-2 peer-focus-visible:ring-brand-400 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-dark-900 transition-colors text-center">
+                    <span class="text-sm font-mono font-semibold text-slate-100">11-40</span>
+                  </div>
+                </label>
+
+                <label class="block cursor-pointer">
+                  <input type="radio" name="team_scale" value="41-100" class="sr-only peer" />
+                  <div class="p-3 rounded-xl border border-dark-700 bg-dark-800/60 hover:bg-dark-800 hover:border-dark-600 peer-checked:border-brand-400 peer-checked:bg-brand-500/10 peer-focus-visible:ring-2 peer-focus-visible:ring-brand-400 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-dark-900 transition-colors text-center">
+                    <span class="text-sm font-mono font-semibold text-slate-100">41-100</span>
+                  </div>
+                </label>
+
+                <label class="block cursor-pointer">
+                  <input type="radio" name="team_scale" value="100+" class="sr-only peer" />
+                  <div class="p-3 rounded-xl border border-dark-700 bg-dark-800/60 hover:bg-dark-800 hover:border-dark-600 peer-checked:border-brand-400 peer-checked:bg-brand-500/10 peer-focus-visible:ring-2 peer-focus-visible:ring-brand-400 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-dark-900 transition-colors text-center">
+                    <span class="text-sm font-mono font-semibold text-slate-100">100+</span>
+                  </div>
+                </label>
+              </div>
+            </fieldset>
+
+            <div>
+              <label for="diag-notes" class="block text-sm font-semibold text-slate-200 mb-2">
+                Any details on your stack or release bottleneck? (Optional)
+              </label>
+              <textarea
+                id="diag-notes"
+                name="stack_notes"
+                rows="3"
+                maxlength="1000"
+                placeholder="e.g. Next.js + GitHub Actions, 45-min Cypress suite, upcoming VPAT 2.5 audit..."
+                class="w-full rounded-xl border border-dark-700 bg-dark-800/80 px-4 py-3 text-sm text-slate-100 placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:border-brand-400"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 5: Unlock Scorecard (Native Dark-Mode Form) -->
+        <div class="diag-step hidden" data-step="5">
+          <div class="mb-6">
+            <h3 class="text-lg sm:text-xl font-bold text-white mb-2">
+              Unlock Your QA Readiness Report
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+              Enter your details below to unlock your 100-point scorecard, estimated weekly engineering hours lost, and recommended remediation sprint.
+            </p>
+          </div>
+
+          <div class="space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="diag-name" class="block text-sm font-semibold text-slate-200 mb-1.5">
+                  Name <span class="text-brand-400" aria-hidden="true">*</span>
+                </label>
+                <input
+                  id="diag-name"
+                  name="name"
+                  type="text"
+                  required
+                  maxlength="120"
+                  autocomplete="name"
+                  placeholder="Alex Rivera"
+                  class="w-full rounded-xl border border-dark-700 bg-dark-800/80 px-4 py-3 text-sm text-slate-100 placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:border-brand-400"
+                />
+              </div>
+
+              <div>
+                <label for="diag-company" class="block text-sm font-semibold text-slate-200 mb-1.5">
+                  Company <span class="text-brand-400" aria-hidden="true">*</span>
+                </label>
+                <input
+                  id="diag-company"
+                  name="company"
+                  type="text"
+                  required
+                  maxlength="120"
+                  autocomplete="organization"
+                  placeholder="Acme Engineering"
+                  class="w-full rounded-xl border border-dark-700 bg-dark-800/80 px-4 py-3 text-sm text-slate-100 placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:border-brand-400"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label for="diag-email" class="block text-sm font-semibold text-slate-200 mb-1.5">
+                Work Email <span class="text-brand-400" aria-hidden="true">*</span>
+              </label>
+              <input
+                id="diag-email"
+                name="email"
+                type="email"
+                required
+                maxlength="254"
+                autocomplete="email"
+                placeholder="alex@company.com"
+                class="w-full rounded-xl border border-dark-700 bg-dark-800/80 px-4 py-3 text-sm text-slate-100 placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:border-brand-400"
+              />
+            </div>
+
+            <!-- Visually-hidden honeypot field -->
+            <div class="sr-only" aria-hidden="true">
+              <label for="diag-website">Website</label>
+              <input
+                id="diag-website"
+                name="website"
+                type="text"
+                tabindex="-1"
+                autocomplete="off"
+                aria-hidden="true"
+              />
+            </div>
+
+            <div class="pt-2">
+              <button
+                type="submit"
+                id="diag-submit-btn"
+                class="w-full sm:w-auto px-6 py-3 rounded-lg text-sm font-bold text-dark-900 bg-white hover:bg-slate-100 transition-colors shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                Unlock My QA Scorecard &rarr;
+              </button>
+            </div>
+          </div>
+
+          <p class="mt-4 text-xs text-slate-400 leading-relaxed">
+            By submitting, you agree to receive your diagnostic report. Read our <a href="/privacy" class="text-brand-400 underline underline-offset-2 hover:text-brand-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 rounded">Privacy Policy</a>.
+          </p>
+        </div>
+
+        <!-- Navigation Controls -->
+        <div id="diag-nav" class="mt-8 pt-6 border-t border-dark-800 flex items-center justify-between gap-4">
+          <button
+            type="button"
+            id="diag-prev-btn"
+            class="hidden px-4 py-2.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-200 border border-dark-600 bg-dark-800 hover:bg-dark-700 hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 cursor-pointer"
+          >
+            &larr; Back
+          </button>
+
+          <div class="ml-auto flex items-center gap-3">
+            <button
+              type="button"
+              id="diag-next-btn"
+              class="px-5 py-2.5 rounded-lg text-xs sm:text-sm font-bold text-dark-900 bg-white hover:bg-slate-100 transition-colors shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 cursor-pointer"
+            >
+              Next Step &rarr;
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <!-- Instant Results View -->
+      <div id="diag-results" class="hidden" aria-live="polite" tabindex="-1">
+        <!-- Top Score & Tier Summary -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-8 mb-8 border-b border-dark-800">
+          <div>
+            <span class="text-xs font-mono text-brand-400 uppercase tracking-wider font-semibold block mb-1">
+              Diagnostic Scorecard
+            </span>
+            <h3 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+              Pipeline Score: <span id="res-total-score" class="text-brand-400">0</span><span class="text-slate-400 text-xl">/100</span>
+            </h3>
+            <p id="res-tier-summary" class="mt-2 text-sm text-slate-300 max-w-xl leading-relaxed"></p>
+          </div>
+          <div class="shrink-0">
+            <span
+              id="res-tier-badge"
+              class="inline-flex items-center px-3.5 py-1.5 rounded-lg border text-xs font-mono font-bold uppercase tracking-wider"
+            ></span>
+          </div>
+        </div>
+
+        <!-- 3-Bar Sub-Score Breakdown -->
+        <div class="space-y-5 mb-8">
+          <div>
+            <div class="flex items-center justify-between text-xs sm:text-sm mb-1.5">
+              <span class="font-semibold text-slate-200">CI Speed & Determinism</span>
+              <span id="res-ci-text" class="font-mono text-slate-300">0 / 40</span>
+            </div>
+            <div class="w-full h-2.5 rounded-full bg-dark-800 overflow-hidden" role="progressbar" aria-label="CI Speed and Determinism score" aria-valuemin="0" aria-valuemax="40" aria-valuenow="0" id="res-ci-track">
+              <div id="res-ci-bar" class="h-full bg-brand-400 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between text-xs sm:text-sm mb-1.5">
+              <span class="font-semibold text-slate-200">Pre-Merge Release Gating</span>
+              <span id="res-gate-text" class="font-mono text-slate-300">0 / 35</span>
+            </div>
+            <div class="w-full h-2.5 rounded-full bg-dark-800 overflow-hidden" role="progressbar" aria-label="Pre-Merge Release Gating score" aria-valuemin="0" aria-valuemax="35" aria-valuenow="0" id="res-gate-track">
+              <div id="res-gate-bar" class="h-full bg-indigo-400 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between text-xs sm:text-sm mb-1.5">
+              <span class="font-semibold text-slate-200">WCAG 2.1 AA & AI Safety Gates</span>
+              <span id="res-wcag-text" class="font-mono text-slate-300">0 / 25</span>
+            </div>
+            <div class="w-full h-2.5 rounded-full bg-dark-800 overflow-hidden" role="progressbar" aria-label="WCAG 2.1 AA and AI Safety Gates score" aria-valuemin="0" aria-valuemax="25" aria-valuenow="0" id="res-wcag-track">
+              <div id="res-wcag-bar" class="h-full bg-emerald-400 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ROI & Recommended Sprint Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          <div class="p-5 rounded-xl border border-dark-700 bg-dark-800/60">
+            <span class="text-xs font-mono text-slate-400 uppercase tracking-wider block mb-1">
+              Estimated Weekly Eng Hours Lost
+            </span>
+            <p class="text-3xl font-black text-white">
+              ~<span id="res-hours-lost">0</span> <span class="text-base font-semibold text-slate-300">hrs / week</span>
+            </p>
+            <p class="mt-2 text-xs text-slate-400 leading-relaxed">
+              Modeled from CI flake reruns, slow feedback loops, and manual release verification across your engineering team.
+            </p>
+          </div>
+
+          <div class="p-5 rounded-xl border border-brand-500/30 bg-brand-500/5">
+            <span class="text-xs font-mono text-brand-400 uppercase tracking-wider block mb-1">
+              Recommended Engagement
+            </span>
+            <p id="res-sprint-name" class="text-lg sm:text-xl font-extrabold text-white"></p>
+            <p id="res-sprint-desc" class="mt-2 text-xs text-slate-300 leading-relaxed"></p>
+          </div>
+        </div>
+
+        <!-- Action Row -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pt-6 border-t border-dark-800">
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <a
+              id="res-cal-cta"
+              href="https://cal.com/avilano/15min"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center px-6 py-3 rounded-lg text-sm font-bold text-dark-900 bg-white hover:bg-slate-100 transition-colors shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
+            >
+              Book 15-Min Architecture Review &rarr;
+            </a>
+            <a
+              id="res-email-fallback"
+              href="mailto:contact@avilano.dev"
+              class="inline-flex items-center justify-center px-4 py-3 rounded-lg text-xs sm:text-sm font-semibold text-slate-200 border border-dark-600 bg-dark-800 hover:bg-dark-700 hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
+            >
+              Email Diagnostic Summary
+            </a>
+          </div>
+
+          <button
+            type="button"
+            id="diag-reset-btn"
+            class="text-xs font-mono text-slate-400 hover:text-white underline underline-offset-4 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 rounded px-2 py-1 self-start sm:self-center cursor-pointer"
+          >
+            Retake Diagnostic
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-6 text-center">
+      <a
+        id="diag-reveal-offers-link"
+        href="#services"
+        class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium text-slate-400 hover:text-white underline underline-offset-4 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 rounded px-2 py-1"
+      >
+        Already know your scope? Reveal sprints & pricing
+      </a>
+    </div>
+  </div>
+</section>
+
+<script>
+  function trackAnalyticsEvent(
+    eventName: string,
+    data?: Record<string, string | number>
+  ): void {
+    const va = (
+      window as unknown as {
+        va?: ((event: 'event', properties?: unknown) => void) & {
+          track?: (event: string, properties?: Record<string, string | number>) => void;
+        };
+      }
+    ).va;
+
+    if (typeof va?.track === 'function') {
+      va.track(eventName, data);
+    } else if (typeof va === 'function') {
+      va('event', { name: eventName, data });
+    }
+  }
+
+  const STEP_META: Record<number, { title: string; percent: number }> = {
+    1: { title: 'Step 1 of 5: CI Speed & Determinism', percent: 20 },
+    2: { title: 'Step 2 of 5: Pre-Merge Release Gating', percent: 40 },
+    3: { title: 'Step 3 of 5: WCAG 2.1 AA & AI Safety Gates', percent: 60 },
+    4: { title: 'Step 4 of 5: Routing & Team Scale', percent: 80 },
+    5: { title: 'Step 5 of 5: Unlock Your QA Readiness Report', percent: 100 },
+  };
+
+  const TEAM_MULTIPLIER: Record<string, number> = {
+    '1-10': 6,
+    '11-40': 22,
+    '41-100': 65,
+    '100+': 120,
+  };
+
+  const CI_HOURS_PER_DEV: Record<number, number> = {
+    40: 0.3,
+    24: 1.2,
+    8: 2.8,
+    4: 2.0,
+  };
+
+  const GATE_HOURS_PER_DEV: Record<number, number> = {
+    35: 0.1,
+    20: 0.5,
+    10: 1.1,
+    5: 0.8,
+  };
+
+  const SPRINT_DESCRIPTIONS: Record<string, string> = {
+    'AI-Ready Playwright Foundation':
+      'Stand up a production Playwright + TypeScript suite with API auth caching, sharded GitHub Actions CI (<3 min), and deterministic locators in 21 days.',
+    'Legacy Framework Migration':
+      'Zero-downtime dual-run cutover from brittle Cypress or Selenium suites to parallelized Playwright + TypeScript, cutting CI runtimes by 60%+.',
+    'WCAG 2.1 AA Frontend Migration':
+      'Hands-on semantic DOM, ARIA, and keyboard remediation paired with automated @axe-core CI regression gates to prepare for VPAT 2.5 filings.',
+    'AI Eval Gate Sprint':
+      'Deterministic CI evaluation harnesses for LLM and agentic workflows, catching prompt regressions, hallucinated tool calls, and latency drift pre-merge.',
+    'Fractional Retainer':
+      'Dedicated async Senior SDET & AI Quality partner in a shared Linear queue to keep your hardened pipeline fast as your engineering org scales.',
+  };
+
+  function getTier(score: number): {
+    label: string;
+    summary: string;
+    badgeClass: string;
+  } {
+    if (score <= 44) {
+      return {
+        label: 'High Release Drag',
+        summary:
+          'Flaky checks or missing pre-merge gates are taxing engineering velocity and pushing regression risk into production.',
+        badgeClass: 'border-rose-500/40 bg-rose-500/10 text-rose-300',
+      };
+    }
+    if (score <= 74) {
+      return {
+        label: 'Scaling Bottleneck',
+        summary:
+          'You have foundational coverage in place, but slow CI feedback loops or unautomated compliance gates will compound as your team grows.',
+        badgeClass: 'border-amber-500/40 bg-amber-500/10 text-amber-300',
+      };
+    }
+    return {
+      label: 'Hardened Pipeline',
+      summary:
+        'Your release gates are strong. Focus on preserving low CI latency, expanding AI eval coverage, and preventing drift across new features.',
+      badgeClass: 'border-emerald-500/40 bg-emerald-500/10 text-emerald-300',
+    };
+  }
+
+  function getRecommendedSprint(
+    primaryFriction: string,
+    ciScore: number,
+    totalScore: number,
+    teamScale: string
+  ): string {
+    if (primaryFriction === 'WCAG 2.1 AA / ADA Title II gaps') {
+      return 'WCAG 2.1 AA Frontend Migration';
+    }
+    if (primaryFriction === 'Unreliable AI/LLM agent outputs') {
+      return 'AI Eval Gate Sprint';
+    }
+    if (primaryFriction === 'Slow CI / Cypress or Selenium') {
+      return 'Legacy Framework Migration';
+    }
+    if (totalScore >= 75) {
+      return 'Fractional Retainer';
+    }
+    if (ciScore === 4) {
+      return 'AI-Ready Playwright Foundation';
+    }
+    if (teamScale === '41-100' || teamScale === '100+') {
+      return 'Fractional Retainer';
+    }
+    return 'AI-Ready Playwright Foundation';
+  }
+
+  interface DiagnosticResult {
+    ciScore: number;
+    gateScore: number;
+    wcagScore: number;
+    totalScore: number;
+    ciLabel: string;
+    gateLabel: string;
+    wcagLabel: string;
+    primaryFriction: string;
+    teamScale: string;
+    notes: string;
+    tier: {
+      label: string;
+      summary: string;
+      badgeClass: string;
+    };
+    weeklyHoursLost: number;
+    recommendedSprint: string;
+  }
+
+  const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+  function initQaDiagnostic(): void {
+    const section = document.getElementById('qa-diagnostic');
+    const form = document.getElementById('diag-form') as HTMLFormElement | null;
+    const progressHeader = document.getElementById('diag-progress-header');
+    const stepLabel = document.getElementById('diag-step-label');
+    const stepPercent = document.getElementById('diag-step-percent');
+    const progressTrack = document.getElementById('diag-progress-bar-track');
+    const progressFill = document.getElementById('diag-progress-bar-fill');
+    const errorBox = document.getElementById('diag-error');
+    const prevBtn = document.getElementById('diag-prev-btn');
+    const nextBtn = document.getElementById('diag-next-btn');
+    const submitBtn = document.getElementById('diag-submit-btn') as HTMLButtonElement | null;
+    const nameInput = document.getElementById('diag-name') as HTMLInputElement | null;
+    const companyInput = document.getElementById('diag-company') as HTMLInputElement | null;
+    const emailInput = document.getElementById('diag-email') as HTMLInputElement | null;
+    const websiteInput = document.getElementById('diag-website') as HTMLInputElement | null;
+    const emailFallback = document.getElementById('res-email-fallback') as HTMLAnchorElement | null;
+    const resultsPanel = document.getElementById('diag-results');
+    const resetBtn = document.getElementById('diag-reset-btn');
+    const calCta = document.getElementById('res-cal-cta');
+
+    if (!section || !form || !prevBtn || !nextBtn || !resultsPanel) {
+      return;
+    }
+
+    const steps = Array.from(form.querySelectorAll<HTMLElement>('.diag-step'));
+    let currentStep = 1;
+    const totalSteps = steps.length;
+    let isResultsUnlocked = false;
+    let isSubmitting = false;
+
+    const showError = (msg: string) => {
+      if (!errorBox) return;
+      errorBox.textContent = msg;
+      errorBox.classList.remove('hidden');
+    };
+
+    const clearError = () => {
+      if (!errorBox) return;
+      errorBox.textContent = '';
+      errorBox.classList.add('hidden');
+    };
+
+    const getCheckedRadio = (name: string): HTMLInputElement | null => {
+      return form.querySelector<HTMLInputElement>(`input[name="${name}"]:checked`);
+    };
+
+    const computeDiagnosticResult = (): DiagnosticResult => {
+      const ciInput = getCheckedRadio('ci_speed');
+      const gateInput = getCheckedRadio('release_gate');
+      const wcagInput = getCheckedRadio('wcag_ai');
+      const frictionInput = getCheckedRadio('primary_friction');
+      const scaleInput = getCheckedRadio('team_scale');
+
+      const ciScore = Number(ciInput?.value || 0);
+      const gateScore = Number(gateInput?.value || 0);
+      const wcagScore = Number(wcagInput?.value || 0);
+      const totalScore = ciScore + gateScore + wcagScore;
+
+      const ciLabel = ciInput?.dataset.label || String(ciScore);
+      const gateLabel = gateInput?.dataset.label || String(gateScore);
+      const wcagLabel = wcagInput?.dataset.label || String(wcagScore);
+      const primaryFriction = frictionInput?.value || '';
+      const teamScale = scaleInput?.value || '1-10';
+      const notes = (form.querySelector<HTMLTextAreaElement>('#diag-notes')?.value || '').trim();
+
+      const tier = getTier(totalScore);
+      const multiplier = TEAM_MULTIPLIER[teamScale] ?? 6;
+      const hoursPerDev =
+        (CI_HOURS_PER_DEV[ciScore] ?? 1.2) + (GATE_HOURS_PER_DEV[gateScore] ?? 0.5);
+      const weeklyHoursLost = Math.max(2, Math.round(multiplier * hoursPerDev));
+      const recommendedSprint = getRecommendedSprint(
+        primaryFriction,
+        ciScore,
+        totalScore,
+        teamScale
+      );
+
+      return {
+        ciScore,
+        gateScore,
+        wcagScore,
+        totalScore,
+        ciLabel,
+        gateLabel,
+        wcagLabel,
+        primaryFriction,
+        teamScale,
+        notes,
+        tier,
+        weeklyHoursLost,
+        recommendedSprint,
+      };
+    };
+
+    const updateFallbackMailto = (result: DiagnosticResult) => {
+      if (!emailFallback) return;
+      const subject = `QA & CI Diagnostic Scorecard (${result.totalScore}/100 - ${result.tier.label})`;
+      const bodyLines = [
+        `Total Score: ${result.totalScore}/100 (${result.tier.label})`,
+        `CI Speed & Determinism: ${result.ciLabel} (${result.ciScore}/40)`,
+        `Pre-Merge Release Gating: ${result.gateLabel} (${result.gateScore}/35)`,
+        `WCAG 2.1 AA & AI Safety Gates: ${result.wcagLabel} (${result.wcagScore}/25)`,
+        `Primary Friction: ${result.primaryFriction}`,
+        `Engineering Scale: ${result.teamScale}`,
+        `Estimated Weekly Eng Hours Lost: ~${result.weeklyHoursLost} hrs/wk`,
+        `Recommended Sprint: ${result.recommendedSprint}`,
+        result.notes ? `Notes: ${result.notes}` : '',
+      ]
+        .filter(Boolean)
+        .join('\n');
+      emailFallback.href = `mailto:contact@avilano.dev?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines)}`;
+    };
+
+    const unlockResultsView = (result: DiagnosticResult) => {
+      if (isResultsUnlocked) return;
+      isResultsUnlocked = true;
+      updateFallbackMailto(result);
+
+      const setElText = (id: string, text: string) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
+      };
+
+      setElText('res-total-score', String(result.totalScore));
+      setElText('res-tier-summary', result.tier.summary);
+      setElText('res-hours-lost', String(result.weeklyHoursLost));
+      setElText('res-sprint-name', result.recommendedSprint);
+      setElText('res-sprint-desc', SPRINT_DESCRIPTIONS[result.recommendedSprint] || '');
+
+      const badge = document.getElementById('res-tier-badge');
+      if (badge) {
+        badge.textContent = result.tier.label;
+        badge.className = `inline-flex items-center px-3.5 py-1.5 rounded-lg border text-xs font-mono font-bold uppercase tracking-wider ${result.tier.badgeClass}`;
+      }
+
+      const updateBar = (
+        textId: string,
+        barId: string,
+        trackId: string,
+        val: number,
+        max: number
+      ) => {
+        setElText(textId, `${val} / ${max}`);
+        const bar = document.getElementById(barId);
+        const track = document.getElementById(trackId);
+        if (bar) bar.style.width = `${Math.round((val / max) * 100)}%`;
+        if (track) track.setAttribute('aria-valuenow', String(val));
+      };
+
+      updateBar('res-ci-text', 'res-ci-bar', 'res-ci-track', result.ciScore, 40);
+      updateBar('res-gate-text', 'res-gate-bar', 'res-gate-track', result.gateScore, 35);
+      updateBar('res-wcag-text', 'res-wcag-bar', 'res-wcag-track', result.wcagScore, 25);
+
+      clearError();
+      form.classList.add('hidden');
+      progressHeader?.classList.add('hidden');
+      resultsPanel.classList.remove('hidden');
+      resultsPanel.focus();
+
+      window.dispatchEvent(new CustomEvent('qa-diagnostic:unlocked'));
+
+      trackAnalyticsEvent('qa_diagnostic_completed', {
+        score: result.totalScore,
+        tier: result.tier.label,
+        recommended_sprint: result.recommendedSprint,
+      });
+    };
+
+    const updateStepUI = () => {
+      clearError();
+      steps.forEach((el) => {
+        const stepNum = Number(el.dataset.step);
+        el.classList.toggle('hidden', stepNum !== currentStep);
+      });
+
+      const meta = STEP_META[currentStep];
+      if (meta) {
+        if (stepLabel) stepLabel.textContent = meta.title;
+        if (stepPercent) stepPercent.textContent = `${meta.percent}%`;
+        if (progressTrack) progressTrack.setAttribute('aria-valuenow', String(meta.percent));
+        if (progressFill) progressFill.style.width = `${meta.percent}%`;
+      }
+
+      prevBtn.classList.toggle('hidden', currentStep === 1);
+      nextBtn.classList.toggle('hidden', currentStep === totalSteps);
+    };
+
+    const validateStep = (step: number): boolean => {
+      if (step === 1 && !getCheckedRadio('ci_speed')) {
+        showError('Select an option for CI speed and flake frequency to continue.');
+        return false;
+      }
+      if (step === 2 && !getCheckedRadio('release_gate')) {
+        showError('Select how critical user flows are verified before merging.');
+        return false;
+      }
+      if (step === 3 && !getCheckedRadio('wcag_ai')) {
+        showError('Select how WCAG 2.1 AA or AI/LLM outputs are verified in CI.');
+        return false;
+      }
+      if (step === 4) {
+        if (!getCheckedRadio('primary_friction')) {
+          showError('Select your primary engineering friction point to continue.');
+          return false;
+        }
+        if (!getCheckedRadio('team_scale')) {
+          showError('Select your engineering team scale to estimate weekly hours lost.');
+          return false;
+        }
+      }
+      return true;
+    };
+
+    const advanceStep = () => {
+      if (!validateStep(currentStep)) return;
+      if (currentStep < totalSteps) {
+        currentStep += 1;
+        updateStepUI();
+        if (currentStep === totalSteps) {
+          nameInput?.focus();
+        }
+      }
+    };
+
+    nextBtn.addEventListener('click', advanceStep);
+
+    prevBtn.addEventListener('click', () => {
+      if (currentStep > 1) {
+        currentStep -= 1;
+        updateStepUI();
+      }
+    });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      if (currentStep < totalSteps) {
+        advanceStep();
+        return;
+      }
+
+      if (isSubmitting || isResultsUnlocked) return;
+
+      const name = (nameInput?.value || '').trim();
+      const company = (companyInput?.value || '').trim();
+      const email = (emailInput?.value || '').trim();
+      const website = (websiteInput?.value || '').trim();
+
+      if (name.length < 1 || name.length > 120) {
+        showError('Enter your name (1 to 120 characters) to unlock your scorecard.');
+        nameInput?.focus();
+        return;
+      }
+
+      if (company.length < 1 || company.length > 120) {
+        showError('Enter your company name (1 to 120 characters) to unlock your scorecard.');
+        companyInput?.focus();
+        return;
+      }
+
+      if (email.length < 1 || email.length > 254 || !EMAIL_REGEX.test(email)) {
+        showError('Enter a valid work email address to unlock your scorecard.');
+        emailInput?.focus();
+        return;
+      }
+
+      clearError();
+      isSubmitting = true;
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Unlocking Scorecard...';
+      }
+
+      const result = computeDiagnosticResult();
+      const payload = {
+        name,
+        company,
+        email,
+        website,
+        notes: result.notes.slice(0, 1000),
+        totalScore: result.totalScore,
+        tier: result.tier.label,
+        ciScore: result.ciScore,
+        ciLabel: result.ciLabel,
+        gateScore: result.gateScore,
+        gateLabel: result.gateLabel,
+        wcagScore: result.wcagScore,
+        wcagLabel: result.wcagLabel,
+        primaryFriction: result.primaryFriction,
+        teamScale: result.teamScale,
+        weeklyHoursLost: result.weeklyHoursLost,
+        recommendedSprint: result.recommendedSprint,
+      };
+
+      try {
+        const response = await fetch('/api/diagnostic', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        if (response.status === 400) {
+          let errMsg = 'Please verify your contact details and try again.';
+          try {
+            const errJson = (await response.json()) as { error?: string };
+            if (errJson?.error) errMsg = errJson.error;
+          } catch {
+            // Keep default validation error message
+          }
+          showError(errMsg);
+          isSubmitting = false;
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Unlock My QA Scorecard →';
+          }
+          return;
+        }
+      } catch {
+        // Gracefully fall through and unlock scorecard if local dev or network blocks /api/diagnostic
+      }
+
+      isSubmitting = false;
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Unlock My QA Scorecard →';
+      }
+      unlockResultsView(result);
+    });
+
+    calCta?.addEventListener('click', () => {
+      trackAnalyticsEvent('qa_diagnostic_cta_click', {
+        destination: 'cal_15min',
+      });
+    });
+
+    resetBtn?.addEventListener('click', () => {
+      form.reset();
+      currentStep = 1;
+      isResultsUnlocked = false;
+      isSubmitting = false;
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Unlock My QA Scorecard →';
+      }
+      resultsPanel.classList.add('hidden');
+      form.classList.remove('hidden');
+      progressHeader?.classList.remove('hidden');
+      updateStepUI();
+    });
+
+    const revealOffersLink = document.getElementById('diag-reveal-offers-link');
+    revealOffersLink?.addEventListener('click', (event) => {
+      event.preventDefault();
+      const gatedOffers = document.getElementById('gated-offers');
+      if (gatedOffers) {
+        gatedOffers.classList.remove('hidden');
+        gatedOffers.querySelectorAll('.scroll-reveal').forEach((el) => {
+          el.classList.add('is-visible');
+        });
+      }
+      const servicesSection = document.getElementById('services');
+      if (servicesSection) {
+        servicesSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+
+    updateStepUI();
+  }
+
+  initQaDiagnostic();
+</script>
