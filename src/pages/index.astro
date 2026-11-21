@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
+import NorthStarBadge from '../components/NorthStarBadge.astro';
 import QaDiagnostic from '../components/QaDiagnostic.astro';
 import Services from '../components/Services.astro';
 import Comparison from '../components/Comparison.astro';
@@ -15,65 +16,13 @@ import Footer from '../components/Footer.astro';
   <Header />
   <main id="main-content" class="flex-grow">
     <Hero />
+    <NorthStarBadge />
     <QaDiagnostic />
-    <div id="gated-offers" class="hidden">
-      <Services />
-      <Comparison />
-      <CalEmbed />
-    </div>
+    <Services />
+    <Comparison />
+    <CalEmbed />
     <BlogPreview />
     <Faq />
   </main>
   <Footer />
-
-  <script is:inline>
-    (function () {
-      const gatedOffers = document.getElementById('gated-offers');
-      if (!gatedOffers) return;
-
-      const gatedHashes = new Set(['#services', '#comparison', '#book-call']);
-
-      const revealOffers = () => {
-        if (!gatedOffers.classList.contains('hidden')) return;
-        gatedOffers.classList.remove('hidden');
-        gatedOffers.querySelectorAll('.scroll-reveal').forEach((el) => {
-          el.classList.add('is-visible');
-        });
-      };
-
-      const revealAndScrollToHash = (hash) => {
-        if (!gatedHashes.has(hash)) return;
-        revealOffers();
-        const target = document.querySelector(hash);
-        if (target) {
-          requestAnimationFrame(() => {
-            target.scrollIntoView({ behavior: 'smooth' });
-          });
-        }
-      };
-
-      window.addEventListener('qa-diagnostic:unlocked', revealOffers);
-
-      if (gatedHashes.has(window.location.hash)) {
-        revealAndScrollToHash(window.location.hash);
-      }
-
-      window.addEventListener('hashchange', () => {
-        if (gatedHashes.has(window.location.hash)) {
-          revealAndScrollToHash(window.location.hash);
-        }
-      });
-
-      document.addEventListener('click', (event) => {
-        const target = event.target instanceof Element ? event.target.closest('a[href]') : null;
-        if (!target) return;
-        const href = target.getAttribute('href') || '';
-        const hashIndex = href.indexOf('#');
-        if (hashIndex === -1) return;
-        const hash = href.slice(hashIndex);
-        if (!gatedHashes.has(hash)) return;
-        revealOffers();
-      });
-    })();
-  </script>
 </Layout>

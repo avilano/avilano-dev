@@ -278,8 +278,42 @@
               Unlock Your QA Readiness Report
             </h3>
             <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
-              Enter your details below to unlock your 100-point scorecard, estimated weekly engineering hours lost, and recommended remediation sprint.
+              Review your selections below and enter your details to unlock your 100-point scorecard, estimated weekly engineering hours lost, and recommended remediation sprint.
             </p>
+          </div>
+
+          <!-- Compact Final Review Summary -->
+          <div
+            id="diag-review-summary"
+            class="mb-6 p-4 rounded-xl border border-dark-700 bg-dark-800/60"
+            aria-label="Diagnostic selection summary"
+          >
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-mono font-semibold uppercase tracking-wider text-brand-400">
+                Your Diagnostic Summary
+              </span>
+              <span class="text-xs font-mono text-slate-400">
+                4 of 4 answered
+              </span>
+            </div>
+            <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2.5 text-xs">
+              <div>
+                <dt class="font-mono text-slate-400 uppercase tracking-wide text-[11px]">CI Speed</dt>
+                <dd id="review-ci-speed" class="text-slate-100 font-medium mt-0.5">Not selected</dd>
+              </div>
+              <div>
+                <dt class="font-mono text-slate-400 uppercase tracking-wide text-[11px]">Release Gate</dt>
+                <dd id="review-release-gate" class="text-slate-100 font-medium mt-0.5">Not selected</dd>
+              </div>
+              <div>
+                <dt class="font-mono text-slate-400 uppercase tracking-wide text-[11px]">WCAG / AI Gates</dt>
+                <dd id="review-wcag-ai" class="text-slate-100 font-medium mt-0.5">Not selected</dd>
+              </div>
+              <div>
+                <dt class="font-mono text-slate-400 uppercase tracking-wide text-[11px]">Friction & Scale</dt>
+                <dd id="review-friction-scale" class="text-slate-100 font-medium mt-0.5">Not selected</dd>
+              </div>
+            </dl>
           </div>
 
           <div class="space-y-4">
@@ -296,8 +330,18 @@
                   maxlength="120"
                   autocomplete="name"
                   placeholder="Alex Rivera"
-                  class="w-full rounded-xl border border-dark-700 bg-dark-800/80 px-4 py-3 text-sm text-slate-100 placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:border-brand-400"
+                  class="w-full rounded-xl border border-dark-700 bg-dark-800/80 px-4 py-3 text-sm text-slate-100 placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:border-brand-400 transition-colors"
                 />
+                <p
+                  id="diag-name-error"
+                  role="alert"
+                  class="hidden mt-1.5 flex items-start gap-1.5 text-xs font-medium text-rose-300"
+                >
+                  <svg class="w-4 h-4 shrink-0 mt-0.5 text-rose-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                  </svg>
+                  <span class="diag-field-error-text"></span>
+                </p>
               </div>
 
               <div>
@@ -312,8 +356,18 @@
                   maxlength="120"
                   autocomplete="organization"
                   placeholder="Acme Engineering"
-                  class="w-full rounded-xl border border-dark-700 bg-dark-800/80 px-4 py-3 text-sm text-slate-100 placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:border-brand-400"
+                  class="w-full rounded-xl border border-dark-700 bg-dark-800/80 px-4 py-3 text-sm text-slate-100 placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:border-brand-400 transition-colors"
                 />
+                <p
+                  id="diag-company-error"
+                  role="alert"
+                  class="hidden mt-1.5 flex items-start gap-1.5 text-xs font-medium text-rose-300"
+                >
+                  <svg class="w-4 h-4 shrink-0 mt-0.5 text-rose-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                  </svg>
+                  <span class="diag-field-error-text"></span>
+                </p>
               </div>
             </div>
 
@@ -329,8 +383,18 @@
                 maxlength="254"
                 autocomplete="email"
                 placeholder="alex@company.com"
-                class="w-full rounded-xl border border-dark-700 bg-dark-800/80 px-4 py-3 text-sm text-slate-100 placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:border-brand-400"
+                class="w-full rounded-xl border border-dark-700 bg-dark-800/80 px-4 py-3 text-sm text-slate-100 placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:border-brand-400 transition-colors"
               />
+              <p
+                id="diag-email-error"
+                role="alert"
+                class="hidden mt-1.5 flex items-start gap-1.5 text-xs font-medium text-rose-300"
+              >
+                <svg class="w-4 h-4 shrink-0 mt-0.5 text-rose-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+                <span class="diag-field-error-text"></span>
+              </p>
             </div>
 
             <!-- Visually-hidden honeypot field -->
@@ -461,6 +525,15 @@
           </div>
         </div>
 
+        <!-- Non-blocking submission fallback notice -->
+        <div
+          id="res-sync-notice"
+          role="status"
+          class="hidden mb-6 p-3.5 rounded-xl border border-amber-500/30 bg-amber-950/20 text-amber-200 text-xs sm:text-sm leading-relaxed"
+        >
+          Your scorecard is unlocked, though automatic submission failed. Use "Email Diagnostic Summary" below if you would like to send a copy directly.
+        </div>
+
         <!-- Action Row -->
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pt-6 border-t border-dark-800">
           <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
@@ -499,7 +572,7 @@
         href="#services"
         class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium text-slate-400 hover:text-white underline underline-offset-4 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 rounded px-2 py-1"
       >
-        Already know your scope? Reveal sprints & pricing
+        Already know your scope? Jump to sprints & pricing
       </a>
     </div>
   </div>
@@ -662,6 +735,11 @@
     const emailInput = document.getElementById('diag-email') as HTMLInputElement | null;
     const websiteInput = document.getElementById('diag-website') as HTMLInputElement | null;
     const emailFallback = document.getElementById('res-email-fallback') as HTMLAnchorElement | null;
+    const syncNotice = document.getElementById('res-sync-notice');
+    const reviewCiSpeed = document.getElementById('review-ci-speed');
+    const reviewReleaseGate = document.getElementById('review-release-gate');
+    const reviewWcagAi = document.getElementById('review-wcag-ai');
+    const reviewFrictionScale = document.getElementById('review-friction-scale');
     const resultsPanel = document.getElementById('diag-results');
     const resetBtn = document.getElementById('diag-reset-btn');
     const calCta = document.getElementById('res-cal-cta');
@@ -671,10 +749,14 @@
     }
 
     const steps = Array.from(form.querySelectorAll<HTMLElement>('.diag-step'));
+    const contactInputs = [nameInput, companyInput, emailInput].filter(
+      (el): el is HTMLInputElement => el !== null
+    );
     let currentStep = 1;
     const totalSteps = steps.length;
     let isResultsUnlocked = false;
     let isSubmitting = false;
+    let suppressFocusClearEl: HTMLInputElement | null = null;
 
     const showError = (msg: string) => {
       if (!errorBox) return;
@@ -688,8 +770,117 @@
       errorBox.classList.add('hidden');
     };
 
+    const validateContactField = (input: HTMLInputElement): string | null => {
+      const value = input.value.trim();
+      if (input.id === 'diag-name') {
+        if (value.length < 1 || value.length > 120) {
+          return 'Enter your name (1 to 120 characters).';
+        }
+        return null;
+      }
+      if (input.id === 'diag-company') {
+        if (value.length < 1 || value.length > 120) {
+          return 'Enter your company name (1 to 120 characters).';
+        }
+        return null;
+      }
+      if (input.id === 'diag-email') {
+        if (value.length < 1 || value.length > 254 || !EMAIL_REGEX.test(value)) {
+          return 'Enter a valid work email address.';
+        }
+        return null;
+      }
+      return null;
+    };
+
+    const setFieldError = (input: HTMLInputElement, message: string) => {
+      const errorId = `${input.id}-error`;
+      const fieldErrorEl = document.getElementById(errorId);
+      input.setAttribute('aria-invalid', 'true');
+      input.setAttribute('aria-describedby', errorId);
+      input.classList.remove('border-dark-700');
+      input.classList.add('border-rose-500');
+      if (fieldErrorEl) {
+        const textEl = fieldErrorEl.querySelector('.diag-field-error-text');
+        if (textEl) {
+          textEl.textContent = message;
+        }
+        fieldErrorEl.classList.remove('hidden');
+      }
+    };
+
+    const clearFieldError = (input: HTMLInputElement) => {
+      const errorId = `${input.id}-error`;
+      const fieldErrorEl = document.getElementById(errorId);
+      input.removeAttribute('aria-invalid');
+      input.removeAttribute('aria-describedby');
+      input.classList.remove('border-rose-500');
+      input.classList.add('border-dark-700');
+      if (fieldErrorEl) {
+        const textEl = fieldErrorEl.querySelector('.diag-field-error-text');
+        if (textEl) {
+          textEl.textContent = '';
+        }
+        fieldErrorEl.classList.add('hidden');
+      }
+    };
+
+    const clearAllFieldErrors = () => {
+      contactInputs.forEach((input) => clearFieldError(input));
+    };
+
+    contactInputs.forEach((input) => {
+      input.addEventListener('blur', () => {
+        const errorMessage = validateContactField(input);
+        if (errorMessage) {
+          setFieldError(input, errorMessage);
+        } else {
+          clearFieldError(input);
+        }
+      });
+
+      input.addEventListener('focus', () => {
+        if (suppressFocusClearEl === input) {
+          suppressFocusClearEl = null;
+          return;
+        }
+        clearFieldError(input);
+      });
+
+      input.addEventListener('input', () => {
+        clearFieldError(input);
+      });
+    });
+
     const getCheckedRadio = (name: string): HTMLInputElement | null => {
       return form.querySelector<HTMLInputElement>(`input[name="${name}"]:checked`);
+    };
+
+    const updateFinalReviewSummary = () => {
+      const ciInput = getCheckedRadio('ci_speed');
+      const gateInput = getCheckedRadio('release_gate');
+      const wcagInput = getCheckedRadio('wcag_ai');
+      const frictionInput = getCheckedRadio('primary_friction');
+      const scaleInput = getCheckedRadio('team_scale');
+
+      if (reviewCiSpeed) {
+        reviewCiSpeed.textContent = ciInput?.dataset.label || 'Not selected';
+      }
+      if (reviewReleaseGate) {
+        reviewReleaseGate.textContent = gateInput?.dataset.label || 'Not selected';
+      }
+      if (reviewWcagAi) {
+        reviewWcagAi.textContent = wcagInput?.dataset.label || 'Not selected';
+      }
+      if (reviewFrictionScale) {
+        const friction = frictionInput?.value || '';
+        const scale = scaleInput?.value || '';
+        if (friction && scale) {
+          reviewFrictionScale.textContent = `${friction} (${scale} engineers)`;
+        } else {
+          reviewFrictionScale.textContent = friction || scale || 'Not selected';
+        }
+      }
     };
 
     const computeDiagnosticResult = (): DiagnosticResult => {
@@ -759,7 +950,7 @@
       emailFallback.href = `mailto:contact@avilano.dev?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines)}`;
     };
 
-    const unlockResultsView = (result: DiagnosticResult) => {
+    const unlockResultsView = (result: DiagnosticResult, submissionFailed = false) => {
       if (isResultsUnlocked) return;
       isResultsUnlocked = true;
       updateFallbackMailto(result);
@@ -799,6 +990,8 @@
       updateBar('res-gate-text', 'res-gate-bar', 'res-gate-track', result.gateScore, 35);
       updateBar('res-wcag-text', 'res-wcag-bar', 'res-wcag-track', result.wcagScore, 25);
 
+      syncNotice?.classList.toggle('hidden', !submissionFailed);
+
       clearError();
       form.classList.add('hidden');
       progressHeader?.classList.add('hidden');
@@ -816,6 +1009,12 @@
 
     const updateStepUI = () => {
       clearError();
+      if (currentStep !== totalSteps) {
+        clearAllFieldErrors();
+      } else {
+        updateFinalReviewSummary();
+      }
+
       steps.forEach((el) => {
         const stepNum = Number(el.dataset.step);
         el.classList.toggle('hidden', stepNum !== currentStep);
@@ -894,21 +1093,23 @@
       const email = (emailInput?.value || '').trim();
       const website = (websiteInput?.value || '').trim();
 
-      if (name.length < 1 || name.length > 120) {
-        showError('Enter your name (1 to 120 characters) to unlock your scorecard.');
-        nameInput?.focus();
-        return;
-      }
+      let firstInvalidField: HTMLInputElement | null = null;
+      contactInputs.forEach((input) => {
+        const errorMessage = validateContactField(input);
+        if (errorMessage) {
+          setFieldError(input, errorMessage);
+          if (!firstInvalidField) {
+            firstInvalidField = input;
+          }
+        } else {
+          clearFieldError(input);
+        }
+      });
 
-      if (company.length < 1 || company.length > 120) {
-        showError('Enter your company name (1 to 120 characters) to unlock your scorecard.');
-        companyInput?.focus();
-        return;
-      }
-
-      if (email.length < 1 || email.length > 254 || !EMAIL_REGEX.test(email)) {
-        showError('Enter a valid work email address to unlock your scorecard.');
-        emailInput?.focus();
+      if (firstInvalidField) {
+        clearError();
+        suppressFocusClearEl = firstInvalidField;
+        (firstInvalidField as HTMLInputElement).focus();
         return;
       }
 
@@ -940,6 +1141,8 @@
         recommendedSprint: result.recommendedSprint,
       };
 
+      let submissionFailed = false;
+
       try {
         const response = await fetch('/api/diagnostic', {
           method: 'POST',
@@ -963,8 +1166,13 @@
           }
           return;
         }
+
+        if (!response.ok) {
+          submissionFailed = true;
+        }
       } catch {
         // Gracefully fall through and unlock scorecard if local dev or network blocks /api/diagnostic
+        submissionFailed = true;
       }
 
       isSubmitting = false;
@@ -972,7 +1180,7 @@
         submitBtn.disabled = false;
         submitBtn.textContent = 'Unlock My QA Scorecard →';
       }
-      unlockResultsView(result);
+      unlockResultsView(result, submissionFailed);
     });
 
     calCta?.addEventListener('click', () => {
@@ -983,6 +1191,8 @@
 
     resetBtn?.addEventListener('click', () => {
       form.reset();
+      clearAllFieldErrors();
+      syncNotice?.classList.add('hidden');
       currentStep = 1;
       isResultsUnlocked = false;
       isSubmitting = false;
@@ -994,22 +1204,6 @@
       form.classList.remove('hidden');
       progressHeader?.classList.remove('hidden');
       updateStepUI();
-    });
-
-    const revealOffersLink = document.getElementById('diag-reveal-offers-link');
-    revealOffersLink?.addEventListener('click', (event) => {
-      event.preventDefault();
-      const gatedOffers = document.getElementById('gated-offers');
-      if (gatedOffers) {
-        gatedOffers.classList.remove('hidden');
-        gatedOffers.querySelectorAll('.scroll-reveal').forEach((el) => {
-          el.classList.add('is-visible');
-        });
-      }
-      const servicesSection = document.getElementById('services');
-      if (servicesSection) {
-        servicesSection.scrollIntoView({ behavior: 'smooth' });
-      }
     });
 
     updateStepUI();
