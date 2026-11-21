@@ -3,6 +3,12 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { ALL_ACCESS_BUNDLE, DIGITAL_PRODUCTS } from '../data/products';
+
+const sampleExcerpt = `// .cursor/rules/playwright-determinism.mdc (Excerpt from Kit #1)
+- NEVER use waitForTimeout() or arbitrary sleep calls.
+- ALWAYS prefer user-facing locators: getByRole(), getByLabel(), getByText().
+- Enforce web-first assertions: await expect(locator).toBeVisible().
+- Gate every critical route with @axe-core/playwright (wcag21aa) in CI.`;
 ---
 
 <Layout
@@ -14,27 +20,27 @@ import { ALL_ACCESS_BUNDLE, DIGITAL_PRODUCTS } from '../data/products';
   <main id="main-content" class="flex-grow py-16 md:py-24 max-w-6xl mx-auto px-4 sm:px-6 w-full">
     <!-- Page Header -->
     <div class="max-w-3xl mb-12">
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md border border-dark-700 bg-dark-800 text-xs font-mono text-brand-400 mb-5">
-        <span>Instant Digital Download • Commercial Team License</span>
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md border border-zinc-200 bg-white text-xs font-mono text-sky-700 font-semibold mb-5">
+        <span>Instant Digital Download · Commercial Team License</span>
       </div>
-      <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-tight">
+      <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-zinc-950 tracking-tight leading-tight">
         Field-Tested QA, Accessibility &amp; AI Quality Kits
       </h1>
-      <p class="mt-4 text-base sm:text-lg text-slate-300 leading-relaxed">
+      <p class="mt-4 text-base sm:text-lg text-zinc-600 leading-relaxed">
         Skip weeks of trial and error. Grab the exact checklists, Cursor rules, ESLint guardrails, and CI/CD templates used in production engineering engagements.
       </p>
     </div>
 
-    <!-- Featured All-Access Bundle -->
+    <!-- Featured All-Access Bundle (Dark Editorial Island) -->
     <section
       aria-labelledby="bundle-heading"
-      class="mb-14 p-7 sm:p-9 rounded-2xl border border-brand-500/40 bg-gradient-to-br from-dark-900 via-dark-900 to-brand-950/30 shadow-lg"
+      class="mb-14 p-7 sm:p-9 rounded-xl border border-dark-700 bg-dark-900 text-slate-100 shadow-xl"
     >
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         <div class="lg:col-span-8 space-y-4">
           <div class="flex flex-wrap items-center gap-3">
             <span class="px-2.5 py-1 rounded bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-mono text-xs font-semibold">
-              SAVE 41% • COMPLETE BUNDLE
+              SAVE 41% · COMPLETE BUNDLE
             </span>
             <span class="font-mono text-xs text-slate-400">
               {ALL_ACCESS_BUNDLE.format}
@@ -54,71 +60,94 @@ import { ALL_ACCESS_BUNDLE, DIGITAL_PRODUCTS } from '../data/products';
               </li>
             ))}
           </ul>
+
+          <!-- Expandable Preview Sample Excerpt (R5) -->
+          <details class="mt-4 rounded-lg border border-dark-700 bg-dark-800/80 overflow-hidden">
+            <summary class="px-4 py-3 text-xs font-mono font-semibold text-brand-400 hover:text-sky-300 cursor-pointer select-none flex items-center justify-between gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400">
+              <span>Preview Sample: Playwright Determinism Rule Excerpt</span>
+              <span class="text-slate-400 text-[11px]">Click to expand</span>
+            </summary>
+            <div class="px-4 pb-4 pt-2 border-t border-dark-700 bg-[#070a13] overflow-x-auto">
+              <pre class="text-xs font-mono text-slate-200 leading-relaxed"><code>{sampleExcerpt}</code></pre>
+            </div>
+          </details>
         </div>
 
-        <div class="lg:col-span-4 flex flex-col items-start lg:items-end justify-center gap-3 border-t lg:border-t-0 lg:border-l border-dark-700/70 pt-6 lg:pt-0 lg:pl-8">
+        <div class="lg:col-span-4 flex flex-col items-start lg:items-end justify-center gap-3 border-t lg:border-t-0 lg:border-l border-dark-700 pt-6 lg:pt-0 lg:pl-8">
           <div class="flex items-baseline gap-3">
-            <span class="text-4xl font-extrabold text-white">${ALL_ACCESS_BUNDLE.price}</span>
+            <span class="text-4xl font-extrabold text-white font-mono">${ALL_ACCESS_BUNDLE.price}</span>
             <span class="text-base font-mono text-slate-400 line-through">${ALL_ACCESS_BUNDLE.compareAtPrice}</span>
           </div>
-          <p class="text-xs font-mono text-slate-400">One-time purchase • Instant .zip</p>
+          <p class="text-xs font-mono text-slate-400">One-time purchase · Instant .zip</p>
           <a
             href={ALL_ACCESS_BUNDLE.checkoutUrl}
             target="_blank"
             rel="noopener noreferrer"
-            class="w-full lg:w-auto px-6 py-3.5 rounded-lg text-sm font-bold text-dark-900 bg-white hover:bg-slate-100 transition-colors text-center focus:outline-none focus:ring-2 focus:ring-brand-400"
+            class="w-full lg:w-auto px-6 py-3.5 rounded-md text-sm font-bold text-dark-900 bg-white hover:bg-slate-100 transition-colors text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
           >
             Get All 5 Kits (${ALL_ACCESS_BUNDLE.price})
           </a>
+          <!-- Polar.sh Secure Checkout Badge (R7) -->
+          <div class="flex items-center gap-2 text-[11px] font-mono text-slate-400 pt-1">
+            <svg class="w-3.5 h-3.5 text-emerald-400 shrink-0" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path fill-rule="evenodd" d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z" clip-rule="evenodd" />
+            </svg>
+            <span>Secure checkout &amp; VAT invoice via Polar.sh</span>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- Individual Kits Grid -->
     <section aria-labelledby="kits-heading">
-      <h2 id="kits-heading" class="text-xl font-bold text-white mb-6">
-        Or Pick an Individual Kit
-      </h2>
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
+        <h2 id="kits-heading" class="text-xl font-bold text-zinc-950">
+          Or Pick an Individual Kit
+        </h2>
+        <span class="text-xs font-mono text-zinc-600">
+          Instant download via Polar.sh · Commercial team license included
+        </span>
+      </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         {DIGITAL_PRODUCTS.map((product) => (
-          <article class="flex flex-col justify-between p-6 rounded-2xl border border-dark-700 bg-dark-900/80 hover:border-dark-600 transition-colors">
+          <article class="flex flex-col justify-between p-6 rounded-xl border border-zinc-200 bg-white hover:border-zinc-400 transition-colors interactive-card">
             <div>
               <div class="flex items-center justify-between gap-2 mb-3">
-                <span class="font-mono text-xs px-2.5 py-0.5 rounded bg-dark-800 border border-dark-700 text-brand-400">
+                <span class="font-mono text-xs px-2.5 py-0.5 rounded bg-sky-50 border border-sky-200 text-sky-800 font-medium">
                   {product.format}
                 </span>
-                <span class="font-mono text-xs text-slate-400">
+                <span class="font-mono text-xs text-zinc-600">
                   {product.badge}
                 </span>
               </div>
 
-              <h3 class="text-xl font-bold text-white mb-2">
+              <h3 class="text-xl font-bold text-zinc-950 mb-2">
                 {product.title}
               </h3>
-              <p class="text-sm text-slate-300 leading-relaxed mb-5">
+              <p class="text-sm text-zinc-600 leading-relaxed mb-5">
                 {product.tagline}
               </p>
 
-              <ul class="space-y-2 mb-6 text-sm text-slate-300">
+              <ul class="space-y-2 mb-6 text-sm text-zinc-700">
                 {product.highlights.map((item) => (
                   <li class="flex items-start gap-2">
-                    <span class="text-emerald-400 font-bold" aria-hidden="true">✓</span>
+                    <span class="text-emerald-700 font-bold" aria-hidden="true">✓</span>
                     <span>{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div class="pt-4 border-t border-dark-800 flex items-center justify-between gap-4">
+            <div class="pt-4 border-t border-zinc-200 flex items-center justify-between gap-4">
               <div>
-                <span class="text-2xl font-extrabold text-white">${product.price}</span>
-                <span class="ml-1.5 text-xs font-mono text-slate-400">USD</span>
+                <span class="text-2xl font-extrabold text-zinc-950 font-mono">${product.price}</span>
+                <span class="ml-1.5 text-xs font-mono text-zinc-600">USD</span>
               </div>
               <a
                 href={product.checkoutUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="px-5 py-2.5 rounded-lg text-xs font-bold text-dark-900 bg-white hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-400"
+                class="px-5 py-2.5 rounded-md text-xs font-semibold text-white bg-zinc-950 hover:bg-zinc-800 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600"
               >
                 Buy Now
               </a>
@@ -126,22 +155,32 @@ import { ALL_ACCESS_BUNDLE, DIGITAL_PRODUCTS } from '../data/products';
           </article>
         ))}
       </div>
+      <p class="mt-6 text-xs text-zinc-600 leading-relaxed">
+        Payments, global VAT invoices, and instant downloads are handled securely via Polar.sh with a perpetual commercial team license included. Digital sales are final once downloaded; for broken files or billing issues within 14 days, email <a href="mailto:contact@avilano.dev" class="text-zinc-800 underline underline-offset-2 hover:text-zinc-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 rounded-sm">contact@avilano.dev</a>. Full details in <a href="/privacy#terms" class="text-zinc-800 underline underline-offset-2 hover:text-zinc-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 rounded-sm">Privacy &amp; Terms</a>.
+      </p>
     </section>
 
-    <!-- Trust & Delivery Note -->
-    <section class="mt-14 p-6 rounded-xl border border-dark-800 bg-dark-900/50 text-sm text-slate-300 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-      <div>
-        <h3 class="font-bold text-white mb-1">Checkout, Invoices &amp; Team Licensing</h3>
-        <p class="text-slate-400">
-          Payments, global VAT/sales tax invoices, and instant file delivery are handled securely by Polar.sh. Every kit includes a commercial license for your team.
+    <!-- Custom Implementation CTA -->
+    <section
+      aria-labelledby="custom-implementation-heading"
+      class="mt-12 p-7 sm:p-9 rounded-xl border border-zinc-200 bg-white shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-6"
+    >
+      <div class="max-w-xl">
+        <h2 id="custom-implementation-heading" class="text-xl sm:text-2xl font-extrabold text-zinc-950 tracking-tight">
+          Need a Custom Implementation?
+        </h2>
+        <p class="mt-2 text-sm text-zinc-600 leading-relaxed">
+          Book a 15-minute architecture fit call if you want these Playwright, WCAG 2.1 AA, or AI eval guardrails wired directly into your CI/CD pipeline.
         </p>
       </div>
-      <a
-        href="/#book-call"
-        class="shrink-0 px-4 py-2 rounded-lg text-xs font-semibold text-slate-200 border border-dark-700 bg-dark-800 hover:bg-dark-700 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-400"
-      >
-        Need Custom Implementation?
-      </a>
+      <div class="shrink-0">
+        <a
+          href="/#book-call"
+          class="inline-flex items-center justify-center w-full sm:w-auto px-6 py-3.5 rounded-md text-sm font-semibold text-white bg-zinc-950 hover:bg-zinc-800 transition-colors shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600"
+        >
+          Need a Custom Implementation?
+        </a>
+      </div>
     </section>
   </main>
 

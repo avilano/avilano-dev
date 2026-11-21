@@ -1,27 +1,45 @@
 ---
 ---
-<footer class="mt-auto border-t border-dark-800 bg-dark-950 py-12 text-sm text-slate-400">
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-6">
-    
-    <div class="flex items-center gap-3">
-      <div class="w-6 h-6 rounded bg-brand-500/20 text-brand-400 font-mono font-bold flex items-center justify-center text-xs">
-        a.
+<footer class="mt-auto border-t border-zinc-200 bg-white py-12 text-sm text-zinc-600">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col gap-8">
+    <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
+      <!-- Clickable Brand Logo linking back to homepage -->
+      <div class="flex flex-wrap items-center gap-3">
+        <a
+          href="/"
+          class="inline-flex items-center gap-2.5 group rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600"
+        >
+          <span class="w-7 h-7 rounded-md bg-zinc-950 text-white font-mono font-bold flex items-center justify-center text-xs group-hover:bg-zinc-800 transition-colors">
+            a.
+          </span>
+          <span class="font-mono font-semibold text-zinc-950 group-hover:text-sky-700 transition-colors">
+            avilano<span class="text-sky-700">.dev</span>
+          </span>
+        </a>
+        <span class="text-zinc-300" aria-hidden="true">|</span>
+        <span class="text-zinc-600">Senior SDET &amp; AI Quality Engineer</span>
       </div>
-      <span class="font-mono text-slate-300">avilano<span class="text-brand-400">.dev</span></span>
-      <span class="text-slate-600">|</span>
-      <span>Senior SDET & AI Quality Engineer</span>
+
+      <!-- Structured Site Navigation Links -->
+      <nav aria-label="Footer" class="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-medium text-zinc-700">
+        <a href="/" class="hover:text-zinc-950 transition-colors">Home</a>
+        <a href="/#services" class="hover:text-zinc-950 transition-colors">Sprints &amp; Pricing</a>
+        <a href="/products" class="hover:text-zinc-950 transition-colors">Digital Kits</a>
+        <a href="/blog" class="hover:text-zinc-950 transition-colors">Field Notes</a>
+        <a href="/privacy" class="hover:text-zinc-950 transition-colors">Privacy &amp; Terms</a>
+      </nav>
     </div>
 
-    <div class="flex flex-wrap items-center justify-center gap-6 font-mono text-xs">
-      <a href="https://github.com/avilano" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">GitHub</a>
-      <a href="https://linkedin.com/in/avilano" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">LinkedIn</a>
-      <a href="mailto:contact@avilano.dev" class="hover:text-white transition-colors">contact@avilano.dev</a>
-      <a href="/privacy" class="hover:text-white transition-colors">Privacy Policy</a>
-    </div>
+    <div class="pt-6 border-t border-zinc-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs">
+      <p class="text-zinc-600">
+        © {new Date().getFullYear()} avilano.dev. All rights reserved.
+      </p>
 
-  </div>
-  
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 mt-6 pt-6 border-t border-dark-800/60 text-center text-xs text-slate-400">
-    © {new Date().getFullYear()} avilano.dev. All rights reserved.
+      <div class="flex flex-wrap items-center gap-6 font-mono text-zinc-600">
+        <a href="https://github.com/avilano" target="_blank" rel="noopener noreferrer" class="hover:text-zinc-950 transition-colors">GitHub</a>
+        <a href="https://linkedin.com/in/avilano" target="_blank" rel="noopener noreferrer" class="hover:text-zinc-950 transition-colors">LinkedIn</a>
+        <a href="mailto:contact@avilano.dev" class="hover:text-zinc-950 transition-colors">contact@avilano.dev</a>
+      </div>
+    </div>
   </div>
 </footer>

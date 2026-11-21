@@ -27,17 +27,16 @@ const faqs = [
 ];
 ---
 
-<section id="faq" class="py-20 md:py-28 border-t border-dark-800 bg-dark-900/40 scroll-reveal">
+<section id="faq" class="py-20 md:py-28 border-b border-zinc-200 bg-[#F9F9F9] scroll-reveal">
   <div class="max-w-4xl mx-auto px-4 sm:px-6">
-    
     <div class="text-left max-w-2xl mb-14">
-      <div class="inline-flex items-center gap-2 font-mono text-xs text-brand-400 font-semibold mb-2 uppercase tracking-wider">
+      <div class="inline-flex items-center gap-2 font-mono text-xs text-sky-700 font-semibold mb-2 uppercase tracking-wider">
         <span>Common Questions</span>
       </div>
-      <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-zinc-950 tracking-tight">
         Frequently Asked Questions
       </h2>
-      <p class="mt-3 text-slate-400 text-sm sm:text-base">
+      <p class="mt-3 text-zinc-600 text-sm sm:text-base">
         Everything you need to know about the async queue, sprints, and delivery.
       </p>
     </div>
@@ -45,20 +44,20 @@ const faqs = [
     <!-- Accessible Animated Accordion List -->
     <div class="space-y-3.5">
       {faqs.map((faq) => (
-        <details class="group rounded-xl border border-dark-700 bg-dark-800/40 hover:border-dark-600 transition-colors overflow-hidden">
-          <summary class="flex items-center justify-between p-5 sm:p-6 text-left cursor-pointer list-none select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400">
-            <span class="text-sm sm:text-base font-semibold text-white group-hover:text-brand-300 transition-colors pr-4">
+        <details class="group rounded-lg border border-zinc-200 bg-white hover:border-zinc-300 transition-colors overflow-hidden">
+          <summary class="flex items-center justify-between p-5 sm:p-6 text-left cursor-pointer list-none select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600">
+            <span class="text-sm sm:text-base font-semibold text-zinc-950 group-hover:text-sky-700 transition-colors pr-4">
               {faq.question}
             </span>
-            <span class="w-7 h-7 rounded-lg bg-dark-700/80 border border-dark-600 flex items-center justify-center flex-shrink-0 text-slate-300 group-open:rotate-180 group-open:bg-brand-500/20 group-open:text-brand-300 transition-transform duration-200">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <span class="w-7 h-7 rounded-md bg-zinc-100 border border-zinc-200 flex items-center justify-center flex-shrink-0 text-zinc-700 group-open:rotate-180 group-open:bg-zinc-950 group-open:text-white group-open:border-zinc-950 transition-transform duration-200">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
               </svg>
             </span>
           </summary>
           <div class="faq-content-grid">
             <div class="overflow-hidden">
-              <div class="px-5 sm:px-6 pb-6 pt-1 text-xs sm:text-sm text-slate-300 leading-relaxed border-t border-dark-700/40 mt-1">
+              <div class="px-5 sm:px-6 pb-6 pt-3 text-xs sm:text-sm text-zinc-600 leading-relaxed border-t border-zinc-100">
                 <p>{faq.answer}</p>
               </div>
             </div>
@@ -66,6 +65,5 @@ const faqs = [
         </details>
       ))}
     </div>
-
   </div>
 </section>

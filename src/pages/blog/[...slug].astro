@@ -16,6 +16,23 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content } = await render(post);
 
+// Compute 2 related articles by shared tag overlap, falling back to recency (R9)
+const allPosts = await getCollection('blog');
+const postTags = new Set(post.data.tags);
+const relatedPosts = allPosts
+  .filter((candidate) => candidate.id !== post.id)
+  .map((candidate) => ({
+    post: candidate,
+    sharedTags: candidate.data.tags.filter((t) => postTags.has(t)).length,
+  }))
+  .sort(
+    (a, b) =>
+      b.sharedTags - a.sharedTags ||
+      b.post.data.pubDate.valueOf() - a.post.data.pubDate.valueOf()
+  )
+  .slice(0, 2)
+  .map((entry) => entry.post);
+
 const articleStructuredData = {
   "@type": "TechArticle",
   "headline": post.data.title,
@@ -86,25 +103,25 @@ const articleGraph = {
 
   <main id="main-content" class="flex-grow py-16 md:py-24 max-w-3xl mx-auto px-4 sm:px-6 w-full">
     <!-- Accessible Breadcrumb Navigation -->
-    <nav aria-label="Breadcrumbs" class="mb-8 font-mono text-xs text-slate-400">
+    <nav aria-label="Breadcrumbs" class="mb-8 font-mono text-xs text-zinc-600">
       <ol class="flex items-center gap-2 flex-wrap">
         <li>
-          <a href="/" class="hover:text-brand-400 transition-colors">Home</a>
+          <a href="/" class="hover:text-sky-700 transition-colors">Home</a>
         </li>
-        <li class="text-slate-600">/</li>
+        <li class="text-zinc-400" aria-hidden="true">/</li>
         <li>
-          <a href="/blog" class="hover:text-brand-400 transition-colors">Architecture Notes</a>
+          <a href="/blog" class="hover:text-sky-700 transition-colors">Architecture Notes</a>
         </li>
-        <li class="text-slate-600">/</li>
-        <li class="text-slate-300 truncate max-w-xs sm:max-w-md font-medium" aria-current="page">
+        <li class="text-zinc-400" aria-hidden="true">/</li>
+        <li class="text-zinc-950 truncate max-w-xs sm:max-w-md font-medium" aria-current="page">
           {post.data.title}
         </li>
       </ol>
     </nav>
 
     <!-- Header -->
-    <header class="mb-10 pb-8 border-b border-dark-800">
-      <div class="flex flex-wrap items-center gap-3 text-xs font-mono text-slate-400 mb-4">
+    <header class="mb-10 pb-8 border-b border-zinc-200">
+      <div class="flex flex-wrap items-center gap-3 text-xs font-mono text-zinc-600 mb-4">
         <time datetime={post.data.pubDate.toISOString()}>
           {post.data.pubDate.toLocaleDateString('en-US', {
             month: 'long',
@@ -112,46 +129,62 @@ const articleGraph = {
             year: 'numeric',
           })}
         </time>
-        <span>•</span>
+        <span aria-hidden="true">•</span>
         <span>{post.data.readTime}</span>
-        <span class="hidden sm:inline">•</span>
+        <span class="hidden sm:inline" aria-hidden="true">•</span>
         <div class="flex flex-wrap items-center gap-2">
           {post.data.tags.map((tag) => (
-            <span class="px-2 py-0.5 rounded bg-dark-800 text-brand-400 text-[11px] border border-dark-700 whitespace-nowrap">
+            <span class="px-2 py-0.5 rounded bg-sky-50 text-sky-800 text-[11px] border border-sky-200 whitespace-nowrap font-medium">
               {tag}
             </span>
           ))}
         </div>
       </div>
 
-      <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-tight">
+      <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-zinc-950 tracking-tight leading-tight">
         {post.data.title}
       </h1>
 
-      <p class="mt-4 text-base sm:text-lg text-slate-300 leading-relaxed">
+      <p class="mt-4 text-base sm:text-lg text-zinc-600 leading-relaxed">
         {post.data.description}
       </p>
 
-      <div class="mt-6 flex flex-wrap items-center justify-between gap-4 pt-6 border-t border-dark-800/60 text-xs font-mono text-slate-400">
+      <div class="mt-6 flex flex-wrap items-center justify-between gap-4 pt-6 border-t border-zinc-200 text-xs font-mono text-zinc-600">
         <div class="flex items-center gap-3">
-          <div class="w-7 h-7 rounded-full bg-brand-500/20 text-brand-300 flex items-center justify-center font-bold">
+          <div class="w-7 h-7 rounded-full bg-zinc-950 text-white flex items-center justify-center font-bold text-[11px]">
             AV
           </div>
-          <span>By Alberto E. Vilano Reyna • Senior SDET and AI Quality Engineer</span>
+          <span>By Alberto E. Vilano Reyna · Senior SDET and AI Quality Engineer</span>
         </div>
-        {post.data.repoUrl && (
-          <a
-            href={post.data.repoUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-dark-800 hover:bg-dark-700 text-slate-200 border border-dark-700 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-400"
+
+        <div class="flex flex-wrap items-center gap-2">
+          <!-- Copy Link Share Button (R9) -->
+          <button
+            type="button"
+            id="copy-article-link-btn"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white hover:bg-zinc-100 text-zinc-800 border border-zinc-300 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600"
           >
-            <svg class="w-4 h-4 text-brand-400" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+            <svg class="w-3.5 h-3.5 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
             </svg>
-            <span>{post.data.repoLabel ?? 'View Source on GitHub'}</span>
-          </a>
-        )}
+            <span id="copy-article-link-label">Copy link</span>
+          </button>
+          <span id="copy-article-link-status" class="sr-only" aria-live="polite"></span>
+
+          {post.data.repoUrl && (
+            <a
+              href={post.data.repoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-zinc-950 hover:bg-zinc-800 text-white border border-zinc-950 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600"
+            >
+              <svg class="w-4 h-4 text-brand-400" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+              </svg>
+              <span>{post.data.repoLabel ?? 'View Source on GitHub'}</span>
+            </a>
+          )}
+        </div>
       </div>
     </header>
 
@@ -162,8 +195,41 @@ const articleGraph = {
 
     <ProductCta slug={post.id} tags={post.data.tags} />
 
-    <!-- Bottom CTA Card -->
-    <div class="mt-16 p-8 rounded-2xl border border-dark-700 bg-dark-900/90 text-center">
+    <!-- Related Field Notes (R9) -->
+    {relatedPosts.length > 0 && (
+      <section aria-labelledby="related-notes-heading" class="mt-14 pt-10 border-t border-zinc-200">
+        <div class="flex items-center justify-between gap-4 mb-6">
+          <h2 id="related-notes-heading" class="text-xl font-bold text-zinc-950">
+            Related Field Notes
+          </h2>
+          <a href="/blog" class="text-xs font-mono font-semibold text-sky-700 hover:text-zinc-950 transition-colors">
+            All articles &rarr;
+          </a>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          {relatedPosts.map((related) => (
+            <a
+              href={`/blog/${related.id}`}
+              class="group block p-5 rounded-xl border border-zinc-200 bg-white hover:border-zinc-400 transition-all interactive-card"
+            >
+              <div class="flex items-center justify-between gap-2 text-[11px] font-mono text-zinc-600 mb-2.5">
+                <span>{related.data.tags[0]}</span>
+                <span>{related.data.readTime}</span>
+              </div>
+              <h3 class="text-base font-bold text-zinc-950 group-hover:text-sky-700 transition-colors leading-snug mb-2">
+                {related.data.title}
+              </h3>
+              <p class="text-xs text-zinc-600 line-clamp-2 leading-relaxed">
+                {related.data.description}
+              </p>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- Bottom CTA Card (Dark Editorial Island) -->
+    <div class="mt-14 p-8 rounded-xl border border-dark-700 bg-dark-900 text-center shadow-lg">
       <h3 class="text-xl font-bold text-white mb-2">Need This Architecture Built in Your Codebase?</h3>
       <p class="text-sm text-slate-300 max-w-lg mx-auto mb-6">
         I partner with SaaS engineering leaders on fixed 21-day sprints and async monthly retainers.
@@ -171,13 +237,13 @@ const articleGraph = {
       <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
         <a
           href="/#services"
-          class="w-full sm:w-auto px-6 py-2.5 rounded-lg text-xs font-semibold bg-white text-dark-900 hover:bg-slate-100 transition-colors"
+          class="w-full sm:w-auto px-6 py-2.5 rounded-md text-xs font-bold bg-white text-dark-900 hover:bg-slate-100 transition-colors"
         >
-          View Sprints & Retainers
+          View Sprints &amp; Retainers
         </a>
         <a
           href="/#book-call"
-          class="w-full sm:w-auto px-6 py-2.5 rounded-lg text-xs font-semibold text-slate-200 border border-dark-700 bg-dark-800 hover:bg-dark-700 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-400"
+          class="w-full sm:w-auto px-6 py-2.5 rounded-md text-xs font-semibold text-slate-200 border border-dark-600 bg-dark-800 hover:bg-dark-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
         >
           Book 15-Min Architecture Call
         </a>
@@ -187,3 +253,30 @@ const articleGraph = {
 
   <Footer />
 </Layout>
+
+<script>
+  const copyLinkBtn = document.getElementById('copy-article-link-btn');
+  const copyLinkLabel = document.getElementById('copy-article-link-label');
+  const copyLinkStatus = document.getElementById('copy-article-link-status');
+
+  if (copyLinkBtn && copyLinkLabel) {
+    copyLinkBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        copyLinkLabel.textContent = 'Link copied';
+        if (copyLinkStatus) {
+          copyLinkStatus.textContent = 'Article URL copied to clipboard.';
+        }
+        setTimeout(() => {
+          copyLinkLabel.textContent = 'Copy link';
+          if (copyLinkStatus) copyLinkStatus.textContent = '';
+        }, 2000);
+      } catch {
+        copyLinkLabel.textContent = 'Copy failed';
+        setTimeout(() => {
+          copyLinkLabel.textContent = 'Copy link';
+        }, 2000);
+      }
+    });
+  }
+</script>

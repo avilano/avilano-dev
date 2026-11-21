@@ -4,23 +4,22 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 ---
 
-<Layout title="404 — Page Not Found | avilano.dev" description="The page or article you are looking for does not exist.">
+<Layout title="404 - Page Not Found | avilano.dev" description="The page or article you are looking for does not exist.">
   <Header />
 
   <main id="main-content" class="flex-grow flex items-center justify-center py-24 sm:py-32 px-4 sm:px-6">
     <div class="max-w-xl mx-auto text-center">
-      
-      <!-- Monospace Error Status -->
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md border border-dark-700 bg-dark-800 text-xs font-mono text-brand-400 mb-6">
-        <span class="w-1.5 h-1.5 rounded-full bg-red-400"></span>
+      <!-- Dark Terminal Error Status Badge -->
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-dark-700 bg-dark-900 text-xs font-mono text-brand-400 mb-6 shadow-sm">
+        <span class="w-1.5 h-1.5 rounded-full bg-rose-400" aria-hidden="true"></span>
         <span>ERROR 404: ROUTE_NOT_FOUND</span>
       </div>
 
-      <h1 class="text-4xl sm:text-5xl font-black text-white tracking-tight leading-tight">
+      <h1 class="text-4xl sm:text-5xl font-black text-zinc-950 tracking-tight leading-tight">
         Page Not Found
       </h1>
 
-      <p class="mt-4 text-base text-slate-300 leading-relaxed max-w-md mx-auto">
+      <p class="mt-4 text-base text-zinc-600 leading-relaxed max-w-md mx-auto">
         The route, article, or resource you requested does not exist or has been relocated.
       </p>
 
@@ -28,18 +27,17 @@ import Footer from '../components/Footer.astro';
       <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 font-mono text-xs">
         <a
           href="/"
-          class="w-full sm:w-auto px-6 py-3 rounded-lg font-bold bg-white hover:bg-slate-100 text-dark-900 transition-colors shadow-sm"
+          class="w-full sm:w-auto px-6 py-3 rounded-md font-bold bg-zinc-950 hover:bg-zinc-800 text-white transition-colors shadow-sm"
         >
           Return to Homepage
         </a>
         <a
           href="/blog"
-          class="w-full sm:w-auto px-6 py-3 rounded-lg font-medium border border-dark-700 bg-dark-800 text-slate-300 hover:text-white hover:bg-dark-700 transition-colors"
+          class="w-full sm:w-auto px-6 py-3 rounded-md font-semibold border border-zinc-300 bg-white text-zinc-800 hover:border-zinc-950 hover:text-zinc-950 transition-colors"
         >
           Read Field Notes
         </a>
       </div>
-
     </div>
   </main>
 

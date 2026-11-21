@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
+import ProofStrip from '../components/ProofStrip.astro';
 import NorthStarBadge from '../components/NorthStarBadge.astro';
 import QaDiagnostic from '../components/QaDiagnostic.astro';
 import Services from '../components/Services.astro';
@@ -9,6 +10,7 @@ import Comparison from '../components/Comparison.astro';
 import CalEmbed from '../components/CalEmbed.astro';
 import BlogPreview from '../components/BlogPreview.astro';
 import Faq from '../components/Faq.astro';
+import ClosingCta from '../components/ClosingCta.astro';
 import Footer from '../components/Footer.astro';
 ---
 
@@ -16,6 +18,7 @@ import Footer from '../components/Footer.astro';
   <Header />
   <main id="main-content" class="flex-grow">
     <Hero />
+    <ProofStrip />
     <NorthStarBadge />
     <QaDiagnostic />
     <Services />
@@ -23,6 +26,7 @@ import Footer from '../components/Footer.astro';
     <CalEmbed />
     <BlogPreview />
     <Faq />
+    <ClosingCta />
   </main>
   <Footer />
 </Layout>

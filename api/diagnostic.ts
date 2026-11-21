@@ -2,6 +2,108 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const LINEAR_GRAPHQL_URL = 'https://api.linear.app/graphql';
 const RESEND_API_URL = 'https://api.resend.com/emails';
 
+const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
+const RATE_LIMIT_MAX_REQUESTS = 5;
+const RATE_LIMIT_MAX_ENTRIES = 1000;
+const MAX_PAYLOAD_BYTES = 16 * 1024;
+
+const rateLimitStore = new Map<string, number[]>();
+
+export function resetDiagnosticRateLimit(): void {
+  rateLimitStore.clear();
+}
+
+function getHeaderValue(headers: Record<string, unknown> | undefined, name: string): string {
+  if (!headers || typeof headers !== 'object') return '';
+  const raw = headers[name] ?? headers[name.toLowerCase()];
+  if (Array.isArray(raw)) {
+    return typeof raw[0] === 'string' ? raw[0].trim() : '';
+  }
+  return typeof raw === 'string' ? raw.trim() : '';
+}
+
+function extractClientIp(req: any): string {
+  const forwardedFor = getHeaderValue(req?.headers, 'x-forwarded-for');
+  if (forwardedFor) {
+    const firstIp = forwardedFor.split(',')[0]?.trim();
+    if (firstIp) return firstIp;
+  }
+
+  const realIp = getHeaderValue(req?.headers, 'x-real-ip');
+  if (realIp) return realIp;
+
+  const remoteAddress = typeof req?.socket?.remoteAddress === 'string' ? req.socket.remoteAddress.trim() : '';
+  if (remoteAddress) return remoteAddress;
+
+  return 'unknown';
+}
+
+function pruneRateLimitStore(now: number): void {
+  const windowStart = now - RATE_LIMIT_WINDOW_MS;
+  for (const [ip, timestamps] of rateLimitStore.entries()) {
+    const recent = timestamps.filter((ts) => ts > windowStart);
+    if (recent.length === 0) {
+      rateLimitStore.delete(ip);
+    } else if (recent.length !== timestamps.length) {
+      rateLimitStore.set(ip, recent);
+    }
+  }
+
+  while (rateLimitStore.size >= RATE_LIMIT_MAX_ENTRIES) {
+    const oldestKey = rateLimitStore.keys().next().value;
+    if (oldestKey === undefined) break;
+    rateLimitStore.delete(oldestKey);
+  }
+}
+
+function checkRateLimit(ip: string, now = Date.now()): { allowed: boolean; retryAfterSeconds: number } {
+  const windowStart = now - RATE_LIMIT_WINDOW_MS;
+  const existing = rateLimitStore.get(ip) ?? [];
+  const recent = existing.filter((ts) => ts > windowStart);
+
+  if (recent.length >= RATE_LIMIT_MAX_REQUESTS) {
+    rateLimitStore.set(ip, recent);
+    const retryAfterSeconds = Math.max(1, Math.ceil((recent[0] + RATE_LIMIT_WINDOW_MS - now) / 1000));
+    return { allowed: false, retryAfterSeconds };
+  }
+
+  if (!rateLimitStore.has(ip) && rateLimitStore.size >= RATE_LIMIT_MAX_ENTRIES) {
+    pruneRateLimitStore(now);
+  }
+
+  recent.push(now);
+  rateLimitStore.delete(ip);
+  rateLimitStore.set(ip, recent);
+  return { allowed: true, retryAfterSeconds: 0 };
+}
+
+function isPayloadOversized(req: any): boolean {
+  const contentLengthHeader = getHeaderValue(req?.headers, 'content-length');
+  if (contentLengthHeader) {
+    const declaredLength = Number(contentLengthHeader);
+    if (Number.isFinite(declaredLength) && declaredLength > MAX_PAYLOAD_BYTES) {
+      return true;
+    }
+  }
+
+  const body = req?.body;
+  if (typeof body === 'string') {
+    return Buffer.byteLength(body, 'utf8') > MAX_PAYLOAD_BYTES;
+  }
+  if (Buffer.isBuffer(body)) {
+    return body.byteLength > MAX_PAYLOAD_BYTES;
+  }
+  if (body && typeof body === 'object') {
+    try {
+      const serialized = JSON.stringify(body);
+      return Buffer.byteLength(serialized, 'utf8') > MAX_PAYLOAD_BYTES;
+    } catch {
+      return true;
+    }
+  }
+  return false;
+}
+
 const CREATE_ISSUE_MUTATION = `
   mutation CreateDiagnosticLead($input: IssueCreateInput!) {
     issueCreate(input: $input) {
@@ -151,6 +253,17 @@ export default async function handler(req: any, res: any) {
     return res.status(405).json({ ok: false, error: 'Method Not Allowed' });
   }
 
+  const clientIp = extractClientIp(req);
+  const rateLimit = checkRateLimit(clientIp);
+  if (!rateLimit.allowed) {
+    res.setHeader?.('Retry-After', String(rateLimit.retryAfterSeconds));
+    return res.status(429).json({ ok: false, error: 'Too many requests. Please try again later.' });
+  }
+
+  if (isPayloadOversized(req)) {
+    return res.status(413).json({ ok: false, error: 'Payload too large.' });
+  }
+
   const body = parseBody(req.body);
   if (!body) {
     return res.status(400).json({ ok: false, error: 'Invalid JSON payload' });
@@ -210,12 +323,10 @@ export default async function handler(req: any, res: any) {
     console.info(
       '[diagnostic] Log-only mode (LINEAR_API_KEY or LINEAR_TEAM_ID not configured):',
       JSON.stringify({
-        name: lead.name,
-        company: lead.company,
-        email: lead.email,
         totalScore: lead.totalScore,
         tier: lead.tier,
         recommendedSprint: lead.recommendedSprint,
+        teamScale: lead.teamScale,
       })
     );
     await sendOptionalAlerts(lead, description);

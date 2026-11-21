@@ -8,6 +8,17 @@ const posts = (await getCollection('blog')).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
 
+const tagCounts = new Map<string, number>();
+for (const post of posts) {
+  for (const tag of post.data.tags) {
+    tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
+  }
+}
+
+const uniqueTags = Array.from(tagCounts.entries())
+  .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+  .map(([tag]) => tag);
+
 const blogBreadcrumbs = {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
@@ -36,32 +47,62 @@ const blogBreadcrumbs = {
   <Header />
 
   <main id="main-content" class="flex-grow py-16 md:py-24 max-w-5xl mx-auto px-4 sm:px-6 w-full">
-    <div class="mb-14">
-      <nav aria-label="Breadcrumbs" class="mb-6 font-mono text-xs text-slate-400">
+    <div class="mb-10">
+      <nav aria-label="Breadcrumbs" class="mb-6 font-mono text-xs text-zinc-600">
         <ol class="flex items-center gap-2">
           <li>
-            <a href="/" class="hover:text-brand-400 transition-colors">Home</a>
+            <a href="/" class="hover:text-sky-700 transition-colors">Home</a>
           </li>
-          <li class="text-slate-600">/</li>
-          <li class="text-slate-300 font-medium" aria-current="page">Architecture Notes</li>
+          <li class="text-zinc-400" aria-hidden="true">/</li>
+          <li class="text-zinc-950 font-medium" aria-current="page">Architecture Notes</li>
         </ol>
       </nav>
-      <div class="inline-flex items-center gap-2 font-mono text-xs text-brand-400 font-semibold mb-2 uppercase tracking-wider block">
+      <div class="inline-flex items-center gap-2 font-mono text-xs text-sky-700 font-semibold mb-2 uppercase tracking-wider">
         <span>Engineering Notes</span>
       </div>
-      <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
-        Architecture Notes & Case Studies
+      <h1 class="text-3xl sm:text-5xl font-extrabold text-zinc-950 tracking-tight">
+        Architecture Notes &amp; Case Studies
       </h1>
-      <p class="mt-4 text-slate-300 text-base max-w-2xl leading-relaxed">
+      <p class="mt-4 text-zinc-600 text-base max-w-2xl leading-relaxed">
         Deep dives on automated test infrastructure, eliminating flaky CI pipelines, and enforcing legally binding WCAG 2.1 AA accessibility standards in production.
       </p>
     </div>
 
+    <!-- Interactive Topic Tag Filter Bar (R8) -->
+    <div class="mb-8 pb-6 border-b border-zinc-200">
+      <div class="flex flex-wrap items-center gap-2" role="group" aria-label="Filter articles by topic">
+        <button
+          type="button"
+          data-filter-tag="all"
+          aria-pressed="true"
+          class="blog-filter-btn px-3 py-1.5 rounded-md text-xs font-mono font-semibold border border-zinc-950 bg-zinc-950 text-white transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600"
+        >
+          All ({posts.length})
+        </button>
+        {uniqueTags.map((tag) => (
+          <button
+            type="button"
+            data-filter-tag={tag}
+            aria-pressed="false"
+            class="blog-filter-btn px-3 py-1.5 rounded-md text-xs font-mono font-medium border border-zinc-200 bg-white text-zinc-700 hover:border-zinc-400 hover:text-zinc-950 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600"
+          >
+            {tag}
+          </button>
+        ))}
+      </div>
+      <p id="blog-filter-status" class="mt-3 text-xs font-mono text-zinc-600" aria-live="polite">
+        Showing all {posts.length} articles
+      </p>
+    </div>
+
     <!-- Articles List -->
-    <div class="space-y-6">
+    <div id="blog-articles-list" class="space-y-6">
       {posts.map((post) => (
-        <article class="p-6 sm:p-8 rounded-2xl border border-dark-700 bg-dark-800/40 hover:bg-dark-800/70 hover:border-dark-600 transition-all group">
-          <div class="flex flex-wrap items-center gap-3 text-xs font-mono text-slate-400 mb-3">
+        <article
+          data-tags={JSON.stringify(post.data.tags)}
+          class="p-6 sm:p-8 rounded-xl border border-zinc-200 bg-white hover:border-zinc-400 transition-all group interactive-card"
+        >
+          <div class="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs font-mono text-zinc-600 mb-3">
             <time datetime={post.data.pubDate.toISOString()}>
               {post.data.pubDate.toLocaleDateString('en-US', {
                 month: 'short',
@@ -69,35 +110,35 @@ const blogBreadcrumbs = {
                 year: 'numeric',
               })}
             </time>
-            <span>•</span>
+            <span aria-hidden="true">•</span>
             <span>{post.data.readTime}</span>
-            <span class="hidden sm:inline">•</span>
-            <div class="flex flex-wrap items-center gap-2">
+            <span class="hidden sm:inline" aria-hidden="true">•</span>
+            <div class="flex flex-wrap items-center gap-2 max-w-full">
               {post.data.tags.map((tag) => (
-                <span class="px-2 py-0.5 rounded bg-dark-700 text-slate-300 text-[11px] whitespace-nowrap">
+                <span class="px-2 py-0.5 rounded bg-zinc-100 border border-zinc-200 text-zinc-700 text-[11px] whitespace-nowrap">
                   {tag}
                 </span>
               ))}
             </div>
           </div>
 
-          <h2 class="text-xl sm:text-2xl font-bold text-white group-hover:text-brand-300 transition-colors">
-            <a href={`/blog/${post.id}`}>
+          <h2 class="text-xl sm:text-2xl font-bold text-zinc-950 group-hover:text-sky-700 transition-colors">
+            <a href={`/blog/${post.id}`} class="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 rounded">
               {post.data.title}
             </a>
           </h2>
 
-          <p class="mt-3 text-sm text-slate-300 leading-relaxed max-w-3xl">
+          <p class="mt-3 text-sm text-zinc-600 leading-relaxed max-w-3xl">
             {post.data.description}
           </p>
 
           <div class="mt-5">
             <a
               href={`/blog/${post.id}`}
-              class="inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-brand-400 group-hover:text-brand-300"
+              class="inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-sky-700 group-hover:text-zinc-950 transition-colors"
             >
               <span>Read article</span>
-              <svg class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
               </svg>
             </a>
@@ -109,3 +150,55 @@ const blogBreadcrumbs = {
 
   <Footer />
 </Layout>
+
+<script>
+  const filterButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('.blog-filter-btn'));
+  const articles = Array.from(document.querySelectorAll<HTMLElement>('#blog-articles-list article'));
+  const statusEl = document.getElementById('blog-filter-status');
+
+  const ACTIVE_CLASSES = ['border-zinc-950', 'bg-zinc-950', 'text-white', 'font-semibold'];
+  const INACTIVE_CLASSES = ['border-zinc-200', 'bg-white', 'text-zinc-700', 'font-medium', 'hover:border-zinc-400', 'hover:text-zinc-950'];
+
+  function applyFilter(selectedTag: string): void {
+    let visibleCount = 0;
+
+    articles.forEach((article) => {
+      let tags: string[] = [];
+      try {
+        tags = JSON.parse(article.dataset.tags || '[]');
+      } catch {
+        tags = [];
+      }
+      const matches = selectedTag === 'all' || tags.includes(selectedTag);
+      article.classList.toggle('hidden', !matches);
+      if (matches) visibleCount += 1;
+    });
+
+    filterButtons.forEach((btn) => {
+      const isSelected = btn.dataset.filterTag === selectedTag;
+      btn.setAttribute('aria-pressed', String(isSelected));
+      if (isSelected) {
+        btn.classList.remove(...INACTIVE_CLASSES);
+        btn.classList.add(...ACTIVE_CLASSES);
+      } else {
+        btn.classList.remove(...ACTIVE_CLASSES);
+        btn.classList.add(...INACTIVE_CLASSES);
+      }
+    });
+
+    if (statusEl) {
+      if (selectedTag === 'all') {
+        statusEl.textContent = `Showing all ${visibleCount} articles`;
+      } else {
+        statusEl.textContent = `Showing ${visibleCount} ${visibleCount === 1 ? 'article' : 'articles'} tagged "${selectedTag}"`;
+      }
+    }
+  }
+
+  filterButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const tag = btn.dataset.filterTag || 'all';
+      applyFilter(tag);
+    });
+  });
+</script>

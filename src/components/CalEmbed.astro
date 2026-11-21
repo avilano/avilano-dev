@@ -1,55 +1,52 @@
 ---
 ---
-<section id="book-call" class="py-20 md:py-28 relative scroll-reveal">
+<section id="book-call" class="py-20 md:py-28 relative bg-[#F9F9F9] border-b border-zinc-200 scroll-reveal">
   <div class="max-w-4xl mx-auto px-4 sm:px-6">
-    
     <div class="text-left max-w-2xl mb-12">
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs font-mono font-medium mb-3">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md border border-emerald-200 bg-emerald-50 text-emerald-800 text-xs font-mono font-semibold mb-3">
+        <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" aria-hidden="true"></span>
         <span>2 Sprint Slots Open This Month</span>
       </div>
-      <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-zinc-950 tracking-tight">
         Book a 15-Minute Architecture Fit Call
       </h2>
-      <p class="mt-3 text-slate-300 text-sm sm:text-base leading-relaxed">
-        Zero sales pitch. Let’s look at your current test suite, diagnose your release bottlenecks or WCAG compliance timeline, and see if our async model fits.
+      <p class="mt-3 text-zinc-600 text-sm sm:text-base leading-relaxed">
+        Zero sales pitch. Let's look at your current test suite, diagnose your release bottlenecks or WCAG compliance timeline, and see if our async model fits.
       </p>
     </div>
 
     <!-- Booking Container -->
-    <div class="rounded-2xl border border-dark-700 bg-dark-900/90 p-6 sm:p-10 shadow-2xl overflow-hidden">
-      
+    <div class="rounded-xl border border-zinc-200 bg-white p-6 sm:p-10 shadow-sm overflow-hidden">
       <!-- Qualification Criteria Header -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pb-8 mb-8 border-b border-dark-800 text-xs text-slate-300">
-        <div class="p-4 rounded-xl bg-dark-800/60 border border-dark-700/60">
-          <span class="font-mono text-brand-400 font-bold block mb-1">01. Tech Stack</span>
-          <p class="text-slate-400">Web applications built with TypeScript, React, Next.js, or Vue.</p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pb-8 mb-8 border-b border-zinc-200 text-xs text-zinc-600">
+        <div class="p-4 rounded-lg bg-zinc-50 border border-zinc-200">
+          <span class="font-mono text-sky-700 font-bold block mb-1">01. Tech Stack</span>
+          <p class="text-zinc-600">Web applications built with TypeScript, React, Next.js, or Vue.</p>
         </div>
-        <div class="p-4 rounded-xl bg-dark-800/60 border border-dark-700/60">
-          <span class="font-mono text-brand-400 font-bold block mb-1">02. Acute Need</span>
-          <p class="text-slate-400">Flaky CI pipelines, slow releases, or upcoming WCAG 2.1 AA mandates.</p>
+        <div class="p-4 rounded-lg bg-zinc-50 border border-zinc-200">
+          <span class="font-mono text-sky-700 font-bold block mb-1">02. Acute Need</span>
+          <p class="text-zinc-600">Flaky CI pipelines, slow releases, or upcoming WCAG 2.1 AA mandates.</p>
         </div>
-        <div class="p-4 rounded-xl bg-dark-800/60 border border-dark-700/60">
-          <span class="font-mono text-brand-400 font-bold block mb-1">03. Working Format</span>
-          <p class="text-slate-400">Choosing between a 21-Day Sprint or the $5,495/mo Async Retainer.</p>
+        <div class="p-4 rounded-lg bg-zinc-50 border border-zinc-200">
+          <span class="font-mono text-sky-700 font-bold block mb-1">03. Working Format</span>
+          <p class="text-zinc-600">Choosing between a 21-Day Sprint or the $5,495/mo Async Retainer.</p>
         </div>
       </div>
 
       <!-- Live Cal.com Inline Embed Container -->
-      <div class="w-full min-h-[640px] rounded-xl overflow-hidden bg-[#080c14] border border-dark-700/70 flex flex-col items-center justify-center p-2 sm:p-4 relative">
-        
+      <div class="w-full rounded-lg overflow-hidden bg-white border border-zinc-200 flex flex-col items-center justify-center p-2 sm:p-4 relative">
         <!-- Lazy Load Skeleton / Placeholder -->
-        <div id="cal-loading-placeholder" class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-[#080c14] z-10 transition-opacity duration-300">
-          <div class="w-12 h-12 rounded-full border-2 border-brand-400/30 border-t-brand-400 animate-spin mb-4"></div>
-          <h3 class="text-base font-bold text-white mb-2">15-Minute Architecture Fit Call</h3>
-          <p class="text-xs text-slate-400 max-w-sm mb-6">
-            Connecting to live availability calendar (Google Meet • CST / Central Time)...
+        <div id="cal-loading-placeholder" class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-zinc-50 z-10 transition-opacity duration-300">
+          <div class="w-12 h-12 rounded-full border-2 border-zinc-300 border-t-zinc-950 animate-spin mb-4" aria-hidden="true"></div>
+          <h3 class="text-base font-bold text-zinc-950 mb-2">15-Minute Architecture Fit Call</h3>
+          <p class="text-xs text-zinc-600 max-w-sm mb-6">
+            Connecting to live availability calendar (Google Meet · CST / Central Time)...
           </p>
           <div class="flex flex-col sm:flex-row gap-3">
             <button
               id="load-cal-btn"
               type="button"
-              class="px-5 py-2.5 rounded-lg text-xs font-bold text-dark-900 bg-white hover:bg-slate-100 transition-colors shadow-sm"
+              class="px-5 py-2.5 rounded-md text-xs font-semibold text-white bg-zinc-950 hover:bg-zinc-800 transition-colors shadow-sm cursor-pointer"
             >
               Load Interactive Calendar
             </button>
@@ -57,30 +54,27 @@
               href="https://cal.com/avilano/15min"
               target="_blank"
               rel="noopener noreferrer"
-              class="px-5 py-2.5 rounded-lg text-xs font-semibold text-slate-200 border border-dark-600 bg-dark-800 hover:bg-dark-700 transition-colors"
+              class="px-5 py-2.5 rounded-md text-xs font-semibold text-zinc-800 border border-zinc-300 bg-white hover:border-zinc-400 hover:text-zinc-950 transition-colors"
             >
               Open Direct in New Tab ↗
             </a>
           </div>
         </div>
 
-        <!-- Cal.com target container -->
-        <div id="my-cal-inline" style="width:100%;min-height:640px;height:100%;overflow:auto"></div>
+        <!-- Cal.com target container (fixed height prevents layout shift when iframe hydrates) -->
+        <div id="my-cal-inline" class="w-full h-[760px] overflow-y-auto overflow-x-hidden"></div>
 
         <!-- Direct Link / Email Fallback -->
         <div class="mt-4 text-center pb-4 pt-2">
-          <p class="text-xs text-slate-400">
-            Trouble seeing the calendar? <a href="https://cal.com/avilano/15min" target="_blank" rel="noopener noreferrer" class="text-brand-400 underline font-medium hover:text-brand-300">Open Cal.com in a new tab</a>
+          <p class="text-xs text-zinc-600">
+            Trouble seeing the calendar? <a href="https://cal.com/avilano/15min" target="_blank" rel="noopener noreferrer" class="text-sky-700 underline font-medium hover:text-zinc-950">Open Cal.com in a new tab</a>
           </p>
-          <p class="text-[11px] font-mono text-slate-400 mt-2">
-            Prefer email? Send your repository directly to <a href="mailto:contact@avilano.dev" class="text-slate-200 hover:underline">contact@avilano.dev</a>
+          <p class="text-[11px] font-mono text-zinc-600 mt-2">
+            Prefer email? Send your repository directly to <a href="mailto:contact@avilano.dev" class="text-zinc-950 font-medium hover:underline">contact@avilano.dev</a>
           </p>
         </div>
-
       </div>
-
     </div>
-
   </div>
 </section>
 
@@ -125,16 +119,16 @@
       });
 
       Cal("ui", {
-        theme: "dark",
+        theme: "light",
         cssVarsPerTheme: {
-          dark: {
-            "cal-brand": "#0ea5e9",
-            "cal-text": "#f8fafc",
-            "cal-text-muted": "#94a3b8",
-            "cal-bg": "#080c14",
-            "cal-bg-emphasis": "#0f172a",
-            "cal-border": "#1e293b",
-            "cal-border-subtle": "#1e293b"
+          light: {
+            "cal-brand": "#09090b",
+            "cal-text": "#09090b",
+            "cal-text-muted": "#52525b",
+            "cal-bg": "#ffffff",
+            "cal-bg-emphasis": "#f4f4f5",
+            "cal-border": "#e4e4e7",
+            "cal-border-subtle": "#e4e4e7"
           }
         },
         hideEventTypeDetails: true,
@@ -151,26 +145,96 @@
       }, 1200);
     }
 
-    // Lazy load when #book-call approaches viewport
     const section = document.getElementById("book-call");
+    const calInline = document.getElementById("my-cal-inline");
+
+    // Keep #my-cal-inline inert while offscreen so Cal.com iframe focus calls never jerk the viewport
+    if (section && calInline && "IntersectionObserver" in window) {
+      if (window.location.hash !== "#book-call") {
+        calInline.inert = true;
+      }
+      const inertObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          calInline.inert = !entry.isIntersecting;
+        });
+      }, { threshold: 0.05 });
+      inertObserver.observe(section);
+    }
+
+    // Lazy load when #book-call stays in viewport for 200ms (avoids firing while scrolling past to #faq)
+    let dwellTimer = null;
+    let loadObserver = null;
+    let suppressAutoLoadUntil = (window.location.hash && window.location.hash !== "#book-call")
+      ? Date.now() + 1200
+      : 0;
+
+    function clearDwellTimer() {
+      if (dwellTimer !== null) {
+        clearTimeout(dwellTimer);
+        dwellTimer = null;
+      }
+    }
+
     if (section && "IntersectionObserver" in window) {
-      const observer = new IntersectionObserver((entries) => {
+      loadObserver = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            initCal();
-            observer.unobserve(entry.target);
+            if (dwellTimer === null && !calInitialized && Date.now() >= suppressAutoLoadUntil) {
+              dwellTimer = window.setTimeout(() => {
+                dwellTimer = null;
+                if (Date.now() >= suppressAutoLoadUntil) {
+                  initCal();
+                  if (loadObserver) loadObserver.unobserve(section);
+                }
+              }, 200);
+            }
+          } else {
+            clearDwellTimer();
           }
         });
-      }, { rootMargin: "350px 0px" });
-      observer.observe(section);
+      }, { threshold: 0.2, rootMargin: "0px" });
+      loadObserver.observe(section);
     }
+
+    // Briefly suppress auto-load when clicking anchor links to other sections (such as #faq)
+    document.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!target || typeof target.closest !== "function") return;
+      const anchor = target.closest('a[href*="#"]');
+      if (!anchor) return;
+      const href = anchor.getAttribute("href") || "";
+      const hashIndex = href.indexOf("#");
+      if (hashIndex === -1) return;
+      const targetHash = href.slice(hashIndex);
+      if (targetHash && targetHash !== "#book-call") {
+        suppressAutoLoadUntil = Date.now() + 800;
+        clearDwellTimer();
+      }
+    });
 
     // Fallback: immediate trigger on manual button click or hash navigation
     const loadBtn = document.getElementById("load-cal-btn");
-    if (loadBtn) loadBtn.addEventListener("click", initCal);
-
-    if (window.location.hash === "#book-call") {
-      initCal();
+    if (loadBtn) {
+      loadBtn.addEventListener("click", () => {
+        clearDwellTimer();
+        if (calInline) calInline.inert = false;
+        initCal();
+        if (loadObserver && section) loadObserver.unobserve(section);
+      });
     }
+
+    function handleBookCallHash() {
+      if (window.location.hash === "#book-call") {
+        clearDwellTimer();
+        if (calInline) calInline.inert = false;
+        initCal();
+        if (loadObserver && section) loadObserver.unobserve(section);
+      } else {
+        clearDwellTimer();
+      }
+    }
+
+    handleBookCallHash();
+    window.addEventListener("hashchange", handleBookCallHash);
   })();
 </script>

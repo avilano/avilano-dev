@@ -2,21 +2,21 @@
 @config "../../tailwind.config.mjs";
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
-  @apply bg-dark-900 text-slate-100 font-sans antialiased selection:bg-brand-400 selection:text-slate-950;
-  background-color: #080c14;
-  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  @apply bg-[#F9F9F9] text-zinc-950 font-sans antialiased selection:bg-zinc-950 selection:text-white;
+  background-color: #f9f9f9;
+  background-image: linear-gradient(to right, rgba(9, 9, 11, 0.035) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(9, 9, 11, 0.035) 1px, transparent 1px);
   background-size: 64px 64px;
   min-height: 100vh;
 }
 
 /* W3C Focus Visible accessibility compliance */
 :focus-visible {
-  @apply outline-none ring-2 ring-brand-400 ring-offset-2 ring-offset-dark-900;
+  @apply outline-none ring-2 ring-brand-600 ring-offset-2 ring-offset-white;
 }
 
 /* Custom scrollbar */
@@ -24,24 +24,24 @@ body {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #090d16;
+  background: #f4f4f5;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+  background: #d4d4d8;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: #a1a1aa;
 }
 
-/* Polished Prose & Markdown Content Styling */
+/* Polished Prose & Markdown Content Styling (Editorial Light + Dark Code Islands) */
 .prose {
-  color: #cbd5e1;
+  color: #3f3f46;
   max-width: 100%;
 }
 
 .prose h1, .prose h2, .prose h3, .prose h4 {
-  color: #ffffff;
+  color: #09090b;
   font-weight: 700;
   letter-spacing: -0.025em;
   scroll-margin-top: 5rem;
@@ -52,7 +52,7 @@ body {
   margin-top: 2.5rem;
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid #1e293b;
+  border-bottom: 1px solid #e4e4e7;
 }
 
 .prose h3 {
@@ -89,48 +89,49 @@ body {
 }
 
 .prose strong {
-  color: #f8fafc;
+  color: #09090b;
   font-weight: 600;
 }
 
 .prose a {
-  color: #38bdf8;
+  color: #0369a1;
   text-decoration: underline;
   text-underline-offset: 4px;
   transition: color 0.15s ease;
 }
 
 .prose a:hover {
-  color: #7dd3fc;
+  color: #0c4a6e;
 }
 
 .prose blockquote {
   border-left: 3px solid #0284c7;
-  background: rgba(15, 23, 42, 0.4);
-  padding: 0.75rem 1.25rem;
+  background: #f4f4f5;
+  padding: 0.85rem 1.25rem;
   margin: 1.5rem 0;
   border-radius: 0 0.5rem 0.5rem 0;
   font-style: italic;
-  color: #94a3b8;
+  color: #3f3f46;
 }
 
 .prose hr {
-  border-color: #1e293b;
+  border-color: #e4e4e7;
   margin: 2.5rem 0;
 }
 
-/* Shiki & Preformatted Code Blocks */
+/* Shiki & Preformatted Code Blocks (Dark Code Islands) */
 .prose pre {
-  background-color: #070a13 !important;
+  background-color: #090d16 !important;
+  color: #e2e8f0;
   border: 1px solid #1e293b;
-  border-radius: 0.75rem;
+  border-radius: 0.5rem;
   padding: 1.25rem 1.5rem;
   margin: 1.75rem 0;
   overflow-x: auto;
   font-size: 0.875rem;
   line-height: 1.7;
   font-family: 'JetBrains Mono', 'Fira Code', monospace;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 12px 28px -10px rgba(9, 9, 11, 0.25);
 }
 
 .prose code {
@@ -141,9 +142,9 @@ body {
 
 /* Inline code (not inside pre) */
 .prose :not(pre) > code {
-  color: #38bdf8;
-  background-color: #0f172a;
-  border: 1px solid #1e293b;
+  color: #0369a1;
+  background-color: #f4f4f5;
+  border: 1px solid #e4e4e7;
   padding: 0.15rem 0.4rem;
   border-radius: 0.375rem;
 }
@@ -153,24 +154,25 @@ body {
   content: none;
 }
 
-/* Markdown Tables (WCAG AA Dark Mode Contrast) */
+/* Markdown Tables (WCAG AA Light Mode Contrast) */
 .prose table {
   width: 100%;
   border-collapse: collapse;
   margin: 1.75rem 0;
   font-size: 0.9375rem;
-  border: 1px solid #1e293b;
+  border: 1px solid #e4e4e7;
   border-radius: 0.5rem;
   overflow: hidden;
+  background-color: #ffffff;
 }
 
 .prose thead {
-  background-color: rgba(15, 23, 42, 0.85);
-  border-bottom: 1px solid #334155;
+  background-color: #f4f4f5;
+  border-bottom: 1px solid #d4d4d8;
 }
 
 .prose th {
-  color: #f8fafc;
+  color: #09090b;
   font-weight: 600;
   text-align: left;
   padding: 0.75rem 1rem;
@@ -178,9 +180,9 @@ body {
 }
 
 .prose td {
-  color: #cbd5e1;
+  color: #3f3f46;
   padding: 0.75rem 1rem;
-  border-top: 1px solid #1e293b;
+  border-top: 1px solid #e4e4e7;
   vertical-align: top;
   line-height: 1.6;
 }
@@ -278,8 +280,8 @@ details:not([open])::details-content {
 
 @media (prefers-reduced-motion: no-preference) {
   .interactive-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 28px -10px rgba(2, 132, 199, 0.18);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px -12px rgba(9, 9, 11, 0.12);
   }
 }
 

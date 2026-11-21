@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import handler from '../../api/diagnostic';
+import handler, { resetDiagnosticRateLimit } from '../../api/diagnostic';
 
 function createMockRes() {
   const headers: Record<string, string> = {};
@@ -50,6 +50,7 @@ describe('POST /api/diagnostic', () => {
   const originalEnv = { ...process.env };
 
   beforeEach(() => {
+    resetDiagnosticRateLimit();
     delete process.env.LINEAR_API_KEY;
     delete process.env.LINEAR_TEAM_ID;
     delete process.env.LINEAR_PROJECT_ID;
@@ -88,13 +89,83 @@ describe('POST /api/diagnostic', () => {
     expect(resLongNotes.getStatus()).toBe(400);
   });
 
-  it('returns log-only 200 when Linear env vars are not configured', async () => {
+  it('returns log-only 200 when Linear env vars are not configured without logging PII', async () => {
     const infoSpy = vi.spyOn(console, 'info').mockImplementation(() => undefined);
     const res = createMockRes();
     await handler({ method: 'POST', body: VALID_BODY }, res);
     expect(res.getStatus()).toBe(200);
     expect(res.getBody()).toEqual({ ok: true, mode: 'log-only' });
     expect(infoSpy).toHaveBeenCalledTimes(1);
+
+    const loggedPayload = String(infoSpy.mock.calls[0]?.[1] ?? '');
+    expect(loggedPayload).not.toContain('Alex Rivera');
+    expect(loggedPayload).not.toContain('alex@acme.com');
+    expect(JSON.parse(loggedPayload)).toEqual({
+      totalScore: VALID_BODY.totalScore,
+      tier: VALID_BODY.tier,
+      recommendedSprint: VALID_BODY.recommendedSprint,
+      teamScale: VALID_BODY.teamScale,
+    });
+  });
+
+  it('enforces per-IP rate limiting of 5 requests per window and returns 429 with Retry-After', async () => {
+    vi.spyOn(console, 'info').mockImplementation(() => undefined);
+
+    for (let i = 0; i < 5; i += 1) {
+      const res = createMockRes();
+      await handler(
+        {
+          method: 'POST',
+          headers: { 'x-forwarded-for': '203.0.113.10, 10.0.0.1' },
+          body: VALID_BODY,
+        },
+        res
+      );
+      expect(res.getStatus()).toBe(200);
+    }
+
+    const blockedRes = createMockRes();
+    await handler(
+      {
+        method: 'POST',
+        headers: { 'x-forwarded-for': '203.0.113.10, 10.0.0.1' },
+        body: VALID_BODY,
+      },
+      blockedRes
+    );
+    expect(blockedRes.getStatus()).toBe(429);
+    expect(blockedRes.getBody()).toEqual({
+      ok: false,
+      error: 'Too many requests. Please try again later.',
+    });
+    const retryAfter = Number(blockedRes.getHeaders()['Retry-After']);
+    expect(Number.isFinite(retryAfter)).toBe(true);
+    expect(retryAfter).toBeGreaterThan(0);
+
+    const otherIpRes = createMockRes();
+    await handler(
+      {
+        method: 'POST',
+        headers: { 'x-real-ip': '198.51.100.42' },
+        body: VALID_BODY,
+      },
+      otherIpRes
+    );
+    expect(otherIpRes.getStatus()).toBe(200);
+  });
+
+  it('rejects oversized payloads (>16KB) with 413', async () => {
+    const res = createMockRes();
+    await handler(
+      {
+        method: 'POST',
+        headers: { 'x-real-ip': '198.51.100.77' },
+        body: { ...VALID_BODY, notes: 'a'.repeat(17 * 1024) },
+      },
+      res
+    );
+    expect(res.getStatus()).toBe(413);
+    expect(res.getBody()).toEqual({ ok: false, error: 'Payload too large.' });
   });
 
   it('sends a parameterized GraphQL mutation to Linear when configured', async () => {
